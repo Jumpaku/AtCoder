@@ -1,0 +1,15 @@
+{
+    "name": "atcoder",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "atcoder",
+    "workspaceFolder": "/home/",
+    "shutdownAction": "stopCompose",
+    "extensions": [
+        "ms-vscode.cpptools",
+        "xaver.clang-format"
+    ],
+    "settings": {
+        "editor.formatOnSave": true,
+        "C_Cpp.clang_format_style": "Visual Studio",
+    }
+}
