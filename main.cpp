@@ -1,12 +1,11 @@
 #include <algorithm>
-#include <array>
 #include <cmath>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <list>
 #include <map>
 #include <numeric>
+#include <queue>
 #include <set>
 #include <sstream>
 #include <string>
@@ -16,6 +15,14 @@
 #include <vector>
 
 using namespace std;
+
+// Types
+using ll = long long int;
+using str = string;
+template <class T> using u_set = unordered_set<T>;
+template <class K, class V> using u_map = unordered_map<K, V>;
+template <class V> using graph = u_map<V, u_set<V>>;
+template <class V, class W> using w_graph = u_map<V, u_map<V, W>>;
 
 namespace io {
 // Input
@@ -28,8 +35,8 @@ template <class V> IS &operator>>(IS &i, vector<V> &a) {
   for_each(a.begin(), a.end(), [&i](auto &e) { i >> e; });
   return i;
 }
-template <class F, class S> IS &operator>>(IS &i, pair<F, S> const &p) {
-  return in(p.first, p.second);
+template <class F, class S> IS &operator>>(IS &i, pair<F, S> &p) {
+  return in(i, p.first, p.second);
 }
 template <class... Ts, size_t... I>
 IS &tuple_in(IS &i, tuple<Ts...> &t, index_sequence<I...>) {
@@ -46,7 +53,7 @@ template <class T, class... Ts> OS &out(OS &o, T const &a, Ts const &... as) {
   return out(o << a << " ", as...);
 }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
-  return o << "(" << p.first << " : " << p.second << ")";
+  return o << p.first << ":" << p.second;
 }
 template <class... Ts> OS &args_out(OS &o, Ts const &... ts);
 OS &args_out(OS &o) { return o; }
@@ -65,7 +72,7 @@ template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
 template <
     class C,
     class T = typename iterator_traits<typename C::iterator>::value_type,
-    typename enable_if<!is_same<C, string>::value, nullptr_t>::type = nullptr>
+    typename enable_if<!is_same<C, str>::value, nullptr_t>::type = nullptr>
 OS &operator<<(OS &o, C const &a) {
   return a.empty() ? (o << "[]") : ([&o, &a]() -> OS & {
     o << "[" << *a.begin();
@@ -74,13 +81,14 @@ OS &operator<<(OS &o, C const &a) {
   }());
 }
 } // namespace io
-template <class... Xs> void input(Xs &... xs) { io::in(cin, xs...); }
-template <class... Xs> void print(Xs const &... xs) { io::out(cout, xs...); }
+auto input = [](auto &... a) { io::in(cin, a...); };
+auto print = [](auto const &... a) { io::out(cout, a...); };
 #ifdef JUMPAKU_DEBUG
-template <class... Xs> void dump(Xs const &... xs) { io::out(cout, xs...); }
+auto dump = [](auto const &... a) { io::out(cout, a...); };
 #else
-template <class... Xs> void dump(Xs const &... xs) {}
+auto dump = [](auto const &... a) {};
 #endif
+
 // Hash
 namespace hashcode {
 template <class... Ts> size_t hash_args(size_t h, Ts const &... ts);
@@ -102,11 +110,6 @@ template <class... Ts> struct hash<tuple<Ts...>> {
 };
 } // namespace std
 
-// Types
-using ll = long long int;
-template <class T> using u_set = unordered_set<T>;
-template <class K, class V> using u_map = unordered_map<K, V>;
-
 // Range
 vector<ll> range(ll const &begin, ll const &end) {
   vector<ll> ret(max(0LL, end - begin));
@@ -114,7 +117,6 @@ vector<ll> range(ll const &begin, ll const &end) {
   return ret;
 }
 vector<ll> range(ll const &end) { return range(0, end); }
-
 template <class T = ll> vector<T> vec(size_t n, T &&init = T()) {
   return vector<T>(n, init);
 }
@@ -137,7 +139,7 @@ ll inv(ll a, ll p) { return pow(a, p - 2, p); }
 constexpr ll MOD = 1e9 + 7;
 
 int main() {
-  string S;
+  str S;
   input(S);
   print(S);
 }
