@@ -1,5 +1,10 @@
+#pragma GCC optimize("O3")
+#pragma GCC target("avx")
+
 #include <algorithm>
 #include <cmath>
+#include <functional>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <list>
@@ -9,6 +14,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -22,11 +28,14 @@ using str = string;
 template <class T> using u_set = unordered_set<T>;
 template <class K, class V> using u_map = unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
-template <class V, class W> using w_graph = u_map<V, u_map<V, W>>;
+template <class F,
+          typename enable_if<is_function<F>::value, nullptr_t>::type = nullptr>
+using fun = function<F>;
 
 namespace io {
 // Input
 using IS = istream;
+IS &in(IS &i);
 IS &in(IS &i) { return i; }
 template <class T, class... Ts> IS &in(IS &i, T &a, Ts &... as) {
   return in(i >> a, as...);
@@ -95,11 +104,11 @@ template <class... Ts> size_t hash_args(size_t h, Ts const &... ts);
 size_t hash_args(size_t h) { return h; }
 template <class T, class... Ts>
 size_t hash_args(size_t h, T const &t, Ts const &... ts) {
-  return hash_args(h * 31 + hash<T>{}(t), ts...);
+  return hash_args(((h << 10) - h + hash<T>{}(t)), ts...);
 }
 template <class... Ts, size_t... I>
 size_t hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
-  return hash_args(17, get<I>(t)...);
+  return hash_args(1089283, get<I>(t)...);
 }
 } // namespace hashcode
 namespace std {
@@ -125,8 +134,18 @@ vector<T> vec(Itr begin, Itr end) {
   return vector<T>(begin, end);
 }
 
-// MOD
+ll bisect(ll ng, ll ok, fun<bool(ll)> const &is_ok) {
+  while (ok - ng > 1) {
+    dump(ng, ok);
+    ll m = ng + (ok - ng) / 2;
+    (is_ok(m) ? ok : ng) = m;
+  }
+  return ok;
+}
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
+ll lcm(ll p, ll q) { return p * q / gcd(q, p); }
+
+// MOD
 ll pow(ll a, ll n, ll m) {
   if (n == 0)
     return 1;
@@ -141,5 +160,6 @@ constexpr ll MOD = 1e9 + 7;
 int main() {
   str S;
   input(S);
+  dump(S);
   print(S);
 }
