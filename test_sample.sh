@@ -2,6 +2,7 @@
 
 COMMAND="$1"
 
+mkdir -p ./tmp/
 rm ./tmp/*
 cat test_sample.in | awk 'BEGIN { RS = ""; FS = "\n" }; { for (i = 1; i <= NF; i++){ print $i >> "tmp/"NR} }; END { print NR >> "tmp/N" }'
 
