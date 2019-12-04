@@ -33,5 +33,9 @@
 
 \.DS_Store
 
+main
 debug_main
+validate
+validate_gen
+test_sample\.*
 tmp/*

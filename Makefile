@@ -1,11 +1,13 @@
 
 # make init
+# make clean
 # make run
 # make debug
 # make test_sample
 # make run_py
 # make debug_py
 # make test_sample_py
+# make validate
 
 
 .PHONY: init
