@@ -14,7 +14,7 @@ init:
 
 .PHONY: clean
 clean:
-	rm ./debug_main ./main ./a.out  ./tmp/* -f
+	rm ./debug_main ./main ./a.out  ./tmp/* gen test -f
 
 # cpp
 .PHONY: debug
@@ -45,3 +45,9 @@ run_py: main.py
 .PHONY: test_sample_py
 test_sample_py: test_sample.sh main.py test_sample.in test_sample.ans
 	./test_sample.sh "python3 main.py"
+
+
+# validate
+.PHONY: validate
+validate: validate.sh validate.cpp validate.py validate_gen.cpp validate_gen.py main.py main
+	./validate.sh 

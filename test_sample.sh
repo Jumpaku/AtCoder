@@ -1,7 +1,19 @@
 #!/bin/sh
 
+COMMAND="$1"
+
+rm ./tmp/*
+cat test_sample.in | awk 'BEGIN { RS = ""; FS = "\n" }; { for (i = 1; i <= NF; i++){ print $i >> "tmp/"NR} }; END { print NR >> "tmp/N" }'
+
+
+N=`cat ./tmp/N`
 : >| test_sample.out
-for i in `seq $1`;
+
+echo "Out:"
+for i in `seq $N`;
 do
-  ./main | tee -a test_sample.out
+  $COMMAND < "./tmp/$i" | tee -a test_sample.out 
 done
+
+echo "Diff:"
+diff ./test_sample.out ./test_sample.ans
