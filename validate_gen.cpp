@@ -1,5 +1,5 @@
-#pragma GCC optimize("O3")
-#pragma GCC target("avx")
+//#pragma GCC optimize("O3")
+//#pragma GCC target("avx")
 
 #include <algorithm>
 #include <cmath>
@@ -11,6 +11,7 @@
 #include <map>
 #include <numeric>
 #include <queue>
+#include <random>
 #include <set>
 #include <sstream>
 #include <string>
@@ -157,17 +158,13 @@ ll pow(ll a, ll n, ll m) {
 ll inv(ll a, ll p) { return pow(a, p - 2, p); }
 constexpr ll MOD = 1e9 + 7;
 
-#include <cassert>
-#include <random>
 int main(int argc, char const *argv[]) {
   auto seed = (argc > 1) ? stoll(argv[1]) : random_device{}();
   mt19937 e{seed};
   using dist_u = uniform_int_distribution<ll>;
 
-  ll N = 20;
-  auto u = dist_u{1, N};
-  ll K = u(e);
-  print(N, K);
-  for (auto &&i : range(N))
-    print(u(e));
+  // ll N = 20;
+  // auto u = dist_u{1, N};
+  // ll K = u(e);
 }
+

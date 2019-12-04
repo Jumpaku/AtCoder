@@ -16,10 +16,3 @@ def dump_dummy(*objects):
 
 
 dump = dump_impl if "DEBUG" in sys.argv else dump_dummy
-
-if len(sys.argv) > 1:
-    rng.seed(int(sys.argv[1]))
-
-#N = 20
-#K = rng.randint(1, N)
-

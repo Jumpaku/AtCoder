@@ -9,12 +9,12 @@
 
 
 .PHONY: init
-init:
-	: >| debug.in; : >| test_sample.in; : >| test_sample.ans
+init: clean init.sh
+	./init.sh
 
 .PHONY: clean
 clean:
-	rm ./debug_main ./main ./a.out  ./tmp/* gen test -f
+	rm ./debug_main ./main ./a.out  ./tmp/* validate validate_gen ./test_sample.out -f
 
 # cpp
 .PHONY: debug

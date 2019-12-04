@@ -157,10 +157,3 @@ ll pow(ll a, ll n, ll m) {
 }
 ll inv(ll a, ll p) { return pow(a, p - 2, p); }
 constexpr ll MOD = 1e9 + 7;
-
-int main() {
-  input();
-  dump();
-  print();
-}
-

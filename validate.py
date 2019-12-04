@@ -1,3 +1,4 @@
+import random as rng
 import itertools as it
 import collections as col
 import heapq as hq
@@ -16,13 +17,10 @@ def dump_dummy(*objects):
 
 dump = dump_impl if "DEBUG" in sys.argv else dump_dummy
 
-S = input()
-dump(S)
-print(S)
-
 if True:
     print("OK")
     exit(0)
 else:
-    print("NG", S)
+    print("NG")
     exit(1)
+

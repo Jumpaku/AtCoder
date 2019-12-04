@@ -1,3 +1,4 @@
+import random as rng
 import itertools as it
 import collections as col
 import heapq as hq
@@ -19,3 +20,4 @@ dump = dump_impl if "DEBUG" in sys.argv else dump_dummy
 S = input()
 dump(S)
 print(S)
+
