@@ -4,9 +4,9 @@
 : >| test_sample.in
 : >| test_sample.ans
 
-cat ./template_head.cpp >| ./main.cpp
-cat ./template_head.cpp >| ./validate.cpp
-cat ./template_head.cpp >| ./validate_gen.cpp
+cat ./template.cpp >| ./main.cpp
+cat ./template.cpp >| ./validate.cpp
+cat ./template.cpp >| ./validate_gen.cpp
 
 echo "\n\
 int main() {\n\
@@ -33,9 +33,9 @@ int main(int argc, char const *argv[]) {\n\
 }\n\
 " >> ./validate_gen.cpp
 
-cat ./template_head.py >| ./main.py
-cat ./template_head.py >| ./validate.py
-cat ./template_head.py >| ./validate_gen.py
+cat ./template.py >| ./main.py
+cat ./template.py >| ./validate.py
+cat ./template.py >| ./validate_gen.py
 
 
 echo "\n\
