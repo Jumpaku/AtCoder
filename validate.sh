@@ -1,11 +1,13 @@
 #!/bin/bash
 
-#VALIDATE_GEN="./validate_gen"
+VALIDATE_GEN="./validate_gen"
 EXEC_MAIN="./main"
 VALIDATE="./validate"
-VALIDATE_GEN="python3 ./validate_gen.py"
+#VALIDATE_GEN="python3 ./validate_gen.py"
 #EXEC_MAIN="python3 ./main.py"
 #VALIDATE="python3 ./validate.py"
+
+VALIDATIONS=100
 
 if [ "$VALIDATE_GEN" = "./validate_gen" ];then 
     g++ -std=c++14 -O2 -Wall -o ./validate_gen ./validate_gen.cpp
@@ -17,8 +19,7 @@ if [ "$VALIDATE" = "./validate" ];then
     g++ -std=c++14 -O2 -Wall -o ./validate ./validate.cpp
 fi
 
-TRIALS=100
-for I in `seq $TRIALS`
+for I in `seq $VALIDATIONS`
 do
     echo -n "SEED=$I : "
     $VALIDATE_GEN $I > ./tmp/validate.in
