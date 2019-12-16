@@ -94,7 +94,7 @@ OS &operator<<(OS &o, C const &a) {
 auto input = [](auto &... a) { io::in(cin, a...); };
 auto print = [](auto const &... a) { io::out(cout, a...); };
 #ifdef JUMPAKU_DEBUG
-auto dump = [](auto const &... a) { io::out(cout, a...); };
+auto dump = [](auto const &... a) { io::out(cerr, a...); };
 #else
 auto dump = [](auto const &... a) {};
 #endif

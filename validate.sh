@@ -10,13 +10,13 @@ VALIDATE="./validate"
 VALIDATIONS=100
 
 if [ "$VALIDATE_GEN" = "./validate_gen" ];then 
-    g++ -std=c++14 -O2 -Wall -o ./validate_gen ./validate_gen.cpp
+    g++ -std=c++14 -O2 -Wall -DJUMPAKU_DEBUG -o ./validate_gen ./validate_gen.cpp
 fi
 if [ "$EXEC_MAIN" = "./main" ];then 
     make main
 fi
 if [ "$VALIDATE" = "./validate" ];then 
-    g++ -std=c++14 -O2 -Wall -o ./validate ./validate.cpp
+    g++ -std=c++14 -O2 -Wall -DJUMPAKU_DEBUG -o ./validate ./validate.cpp
 fi
 
 for I in `seq $VALIDATIONS`
