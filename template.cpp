@@ -109,7 +109,7 @@ size_t hash_args(size_t h, T const &t, Ts const &... ts) {
 }
 template <class... Ts, size_t... I>
 size_t hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
-  return hash_args(1089283, get<I>(t)...);
+  return hash_args(17, get<I>(t)...);
 }
 } // namespace hashcode
 namespace std {
@@ -144,7 +144,7 @@ ll bisect(ll ng, ll ok, fun<bool(ll)> const &is_ok) {
   return ok;
 }
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
-ll lcm(ll p, ll q) { return p * q / gcd(q, p); }
+ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
 
 // MOD
 ll pow(ll a, ll n, ll m) {
