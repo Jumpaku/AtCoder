@@ -130,10 +130,6 @@ vector<ll> range(ll const &end) { return range(0, end); }
 template <class T = ll> vector<T> vec(size_t n, T &&init = T()) {
   return vector<T>(n, init);
 }
-template <class Itr, class T = typename iterator_traits<Itr>::value_type>
-vector<T> vec(Itr begin, Itr end) {
-  return vector<T>(begin, end);
-}
 
 ll bisect(ll ng, ll ok, fun<bool(ll)> const &is_ok) {
   while (ok - ng > 1) {
@@ -143,6 +139,7 @@ ll bisect(ll ng, ll ok, fun<bool(ll)> const &is_ok) {
   }
   return ok;
 }
+
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
 
@@ -156,6 +153,25 @@ ll pow(ll a, ll n, ll m) {
   return (b * b) % m;
 }
 ll inv(ll a, ll p) { return pow(a, p - 2, p); }
+
+template <ll N, ll M> struct Factrial {
+  Factrial() {
+    fact[0] = 1;
+    for (int i = 1; i <= N; ++i)
+      fact[i] = (fact[i - 1] * i) % M;
+    finv[N] = inv(fact[N], M);
+    for (int i = N; i > 0; --i)
+      finv[i - 1] = (finv[i] * i) % M;
+  }
+  array<ll, N + 1> fact;
+  array<ll, N + 1> finv;
+  ll comb(ll n, ll m) const {
+    if (m < 0 || n < m)
+      return 0LL;
+    return (fact[n] * ((finv[m] * finv[n - m]) % M)) % M;
+  }
+};
+
 constexpr ll MOD = 1e9 + 7;
 
 int main() {
