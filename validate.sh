@@ -1,23 +1,13 @@
 #!/bin/bash
 
-VALIDATE_GEN="./validate_gen"
+VALIDATE_GEN="./validate_gen_main"
 EXEC_MAIN="./main"
-VALIDATE="./validate"
+VALIDATE="./validate_main"
 #VALIDATE_GEN="python3 ./validate_gen.py"
 #EXEC_MAIN="python3 ./main.py"
 #VALIDATE="python3 ./validate.py"
 
 VALIDATIONS=100
-
-if [ "$VALIDATE_GEN" = "./validate_gen" ];then 
-    g++ -std=c++14 -O2 -Wall -DJUMPAKU_DEBUG -o ./validate_gen ./validate_gen.cpp
-fi
-if [ "$EXEC_MAIN" = "./main" ];then 
-    make main
-fi
-if [ "$VALIDATE" = "./validate" ];then 
-    g++ -std=c++14 -O2 -Wall -DJUMPAKU_DEBUG -o ./validate ./validate.cpp
-fi
 
 for I in `seq $VALIDATIONS`
 do

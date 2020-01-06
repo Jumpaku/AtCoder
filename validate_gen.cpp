@@ -36,7 +36,7 @@ using fun = function<F>;
 namespace io {
 // Input
 using IS = istream;
-IS &in(IS &i);
+IS &in(IS &);
 IS &in(IS &i) { return i; }
 template <class T, class... Ts> IS &in(IS &i, T &a, Ts &... as) {
   return in(i >> a, as...);
@@ -96,7 +96,7 @@ auto print = [](auto const &... a) { io::out(cout, a...); };
 #ifdef JUMPAKU_DEBUG
 auto dump = [](auto const &... a) { io::out(cerr, a...); };
 #else
-auto dump = [](auto const &... a) {};
+auto dump = [](auto const &...) {};
 #endif
 
 // Hash
@@ -179,8 +179,6 @@ int main(int argc, char const *argv[]) {
   mt19937 e{seed};
   using dist_u = uniform_int_distribution<ll>;
 
-  // ll N = 20;
-  // auto u = dist_u{1, N};
-  // ll K = u(e);
+  dump(dist_u{0, 1}(e));
 }
 

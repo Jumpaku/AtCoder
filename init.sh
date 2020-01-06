@@ -27,9 +27,7 @@ int main(int argc, char const *argv[]) {\n\
   mt19937 e{seed};\n\
   using dist_u = uniform_int_distribution<ll>;\n\
 \n\
-  // ll N = 20;\n\
-  // auto u = dist_u{1, N};\n\
-  // ll K = u(e);\n\
+  dump(dist_u{0, 1}(e));\n\
 }\n\
 " >> ./validate_gen.cpp
 

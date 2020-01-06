@@ -16,20 +16,20 @@ init: clean init.sh
 
 .PHONY: clean
 clean:
-	rm ./debug_main ./main ./a.out  ./tmp/* validate validate_gen ./test_sample.out -f
+	rm ./debug_main ./main ./a.out  ./tmp/* validate_main validate_gen_main ./test_sample.out -f
 
 # cpp
 .PHONY: debug
 debug: debug_main debug.in
 	./debug_main < debug.in
 debug_main: main.cpp
-	g++ -Wall -std=c++14 -DJUMPAKU_DEBUG -o debug_main main.cpp
+	g++ -std=c++14 -O2 -Wall -Wextra -DJUMPAKU_DEBUG -o debug_main main.cpp
 
 .PHONY: run
 run: main
 	./main
 main: main.cpp
-	g++ -std=c++14 -O2 -Wall -o main main.cpp
+	g++ -std=c++14 -O2 -Wall -Wextra -o main main.cpp
 
 .PHONY: test_sample
 test_sample: test_sample.sh main test_sample.in test_sample.ans
@@ -50,6 +50,10 @@ test_sample_py: test_sample.sh main.py test_sample.in test_sample.ans
 
 
 # validate
+validate_main: validate.cpp
+	g++ -std=c++14 -O2 -Wall -Wextra -o validate_main validate.cpp
+validate_gen_main: validate_gen.cpp
+	g++ -std=c++14 -O2 -Wall -Wextra -o validate_gen_main validate_gen.cpp
 .PHONY: validate
-validate: validate.sh validate.cpp validate.py validate_gen.cpp validate_gen.py main.py main
+validate: validate.sh validate_main validate_gen_main main validate.py validate_gen.py main.py 
 	./validate.sh 
