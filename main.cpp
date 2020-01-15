@@ -121,15 +121,40 @@ template <class... Ts> struct hash<tuple<Ts...>> {
 } // namespace std
 
 // Range
-vector<ll> range(ll const &begin, ll const &end) {
-  vector<ll> ret(max(0LL, end - begin));
-  iota(ret.begin(), ret.end(), begin);
-  return ret;
-}
-vector<ll> range(ll const &end) { return range(0, end); }
-template <class T = ll> vector<T> vec(size_t n, T &&init = T()) {
-  return vector<T>(n, init);
-}
+struct range {
+  ll const val_begin;
+  ll const val_end;
+  struct itr {
+    ll val;
+    constexpr explicit itr(ll const &val = 0) : val(val) {}
+    constexpr bool operator==(itr const &itr) const { return val == itr.val; }
+    constexpr bool operator!=(itr const &itr) const { return val != itr.val; }
+    constexpr bool operator<(itr const &itr) const { return val < itr.val; }
+    constexpr bool operator>=(itr const &itr) const { return val >= itr.val; }
+    constexpr bool operator>(itr const &itr) const { return val > itr.val; }
+    constexpr bool operator<=(itr const &itr) const { return val <= itr.val; }
+    constexpr itr &operator++() {
+      ++val;
+      return *this;
+    }
+    constexpr itr operator++(int) { return itr(val++); }
+    constexpr itr &operator--() {
+      --val;
+      return *this;
+    }
+    constexpr itr operator--(int) { return itr(val--); }
+    constexpr itr operator+(ll const &n) const { return itr(val + n); }
+    constexpr itr operator-(ll const &n) const { return itr(val - n); }
+    constexpr ll operator-(itr const &itr) const { return val - itr.val; }
+    constexpr ll const &operator*() const { return val; }
+  };
+  constexpr range(ll const &end = 0) : val_begin(0), val_end(end) {}
+  constexpr range(ll const &begin, ll const &end)
+      : val_begin(begin), val_end(end) {}
+  constexpr itr begin() const { return itr(val_begin); }
+  constexpr itr end() const { return itr(val_end); }
+  constexpr ll size() const { return val_end - val_begin; }
+};
 
 ll bisect(ll ng, ll ok, fun<bool(ll)> const &is_ok) {
   while (ok - ng > 1) {
