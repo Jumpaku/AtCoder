@@ -11,12 +11,14 @@ cat ./template.cpp >| ./validate_gen.cpp
 echo "\n\
 int main() {\n\
   input();\n\
-  dump();\n\
   print();\n\
 }\n\
 " >> ./main.cpp
 echo "\n\
 int main() {\n\
+  input()\n\
+  ll ans;\n\
+  input();\n\
   if (true) return print(\"OK\"), 0;\n\
   else return print(\"NG\"), 1;\n\
 }\n\
@@ -27,7 +29,7 @@ int main(int argc, char const *argv[]) {\n\
   mt19937 e{seed};\n\
   using dist_u = uniform_int_distribution<ll>;\n\
 \n\
-  dump(dist_u{0, 1}(e));\n\
+  print(dist_u{0, 1}(e));\n\
 }\n\
 " >> ./validate_gen.cpp
 

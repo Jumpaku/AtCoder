@@ -101,9 +101,6 @@ auto dump = [](auto const &...) {};
 
 // Hash
 namespace hashcode {
-
-// Hash
-namespace hashcode {
 template <class... Ts> uint64_t hash_args(uint64_t h, Ts const &... ts);
 uint64_t hash_args(uint64_t h) { return h; }
 template <class T, class... Ts>
@@ -121,14 +118,6 @@ template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
     uint64_t h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
     return h ^ (h >> 32);
-  }
-};
-} // namespace std
-} // namespace hashcode
-namespace std {
-template <class... Ts> struct hash<tuple<Ts...>> {
-  size_t operator()(tuple<Ts...> const &t) const {
-    return hashcode::hash_tuple(t, index_sequence_for<Ts...>());
   }
 };
 } // namespace std
