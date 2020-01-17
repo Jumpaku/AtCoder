@@ -101,15 +101,23 @@ auto dump = [](auto const &...) {};
 
 // Hash
 namespace hashcode {
-template <class... Ts> size_t hash_args(size_t h, Ts const &... ts);
-size_t hash_args(size_t h) { return h; }
+uint64_t xorshift(uint64_t x) {
+  x ^= x << 13;
+  x ^= x >> 7;
+  x ^= x << 17;
+  return x;
+}
+template <class... Ts> uint64_t hash_args(uint64_t h, Ts const &... ts);
+uint64_t hash_args(uint64_t h) { return h; }
 template <class T, class... Ts>
-size_t hash_args(size_t h, T const &t, Ts const &... ts) {
-  return hash_args(((h << 10) - h + hash<T>{}(t)), ts...);
+uint64_t hash_args(uint64_t h, T const &t, Ts const &... ts) {
+  constexpr hash<T> hasher;
+  uint64_t h = xorshift(hasher(t));
+  return hash_args(((h << 19) - h) ^ x, ts...);
 }
 template <class... Ts, size_t... I>
 size_t hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
-  return hash_args(17, get<I>(t)...);
+  return hash_args(0x880355f21e6d1965ULL, get<I>(t)...);
 }
 } // namespace hashcode
 namespace std {
@@ -121,96 +129,66 @@ template <class... Ts> struct hash<tuple<Ts...>> {
 } // namespace std
 
 // Range
-template <class T> struct seq;
-struct range {
-  struct itr {
-    using difference_type = ll;
-    using value_type = ll;
-    using pointer = ll *;
-    using reference = ll &;
-    using iterator_category = random_access_iterator_tag;
-    ll val;
-    explicit itr(ll const &val = 0) : val(val) {}
-    bool operator==(itr const &itr) const { return val == itr.val; }
-    bool operator!=(itr const &itr) const { return val != itr.val; }
-    itr &operator++() { return *this += 1; }
-    itr operator++(int) { return itr(val++); }
-    itr &operator--() { return *this -= 1; }
-    itr operator--(int) { return itr(val--); }
-    itr operator+(ll const &n) const { return itr(val + n); }
-    itr operator-(ll const &n) const { return itr(val - n); }
-    ll operator-(itr const &itr) const { return val - itr.val; }
-    itr &operator+=(ll const &n) {
-      val += n;
-      return *this;
-    }
-    itr &operator-=(ll const &n) { return *this += (-n); }
-    ll const &operator*() const { return val; }
-  };
-  using iterator = itr;
-  ll const val_begin;
-  ll const val_end;
-  range(ll const &end = 0) : range(0, end) {}
-  range(ll const &begin, ll const &end) : val_begin(begin), val_end(end) {}
-  itr begin() const { return itr(val_begin); }
-  itr end() const { return itr(val_end); }
-  ll size() const { return val_end - val_begin; }
-  bool empty() const { return size() == 0; }
-  template <class F> auto map(F const &f) const {
-    return seq<decltype(f(declval<ll>()))>(f, *this);
-  }
-};
-
-// using T = double;
+namespace ranges {
 template <class T> struct seq {
-  struct itr {
-    using difference_type = range::iterator::difference_type;
+  struct iterator {
+    using difference_type = ll;
     using value_type = T;
     using pointer = T *;
     using reference = T &;
     using iterator_category = random_access_iterator_tag;
-    fun<T(ll)> mapper;
-    range::itr base;
-    itr(fun<T(ll)> const &f, range::itr const &itr = range::itr(0))
-        : mapper(f), base(itr) {}
-    bool operator==(itr const &itr) const { return base == itr.base; }
-    bool operator!=(itr const &itr) const { return base != itr.base; }
-    itr &operator++() { return *this += 1; }
-    itr operator++(int) { return itr(mapper, base++); }
-    itr &operator--() { return *this -= 1; }
-    itr operator--(int) { return itr(mapper, base--); }
-    itr operator+(ll const &n) const { return itr(mapper, base + n); }
-    itr operator-(ll const &n) const { return itr(mapper, base - n); }
-    ll operator-(itr const &itr) const { return base - itr.base; }
-    itr &operator+=(ll const &n) {
-      base += n;
+    seq<T> const *s;
+    ll i;
+    iterator(seq const *s, ll const &i = 0) : s(s), i(i) {}
+    bool operator==(iterator const &itr) const { return i == itr.i; }
+    bool operator!=(iterator const &itr) const { return i != itr.i; }
+    iterator &operator++() { return *this += 1; }
+    iterator operator++(int) { return iterator(s, i++); }
+    iterator &operator--() { return *this -= 1; }
+    iterator operator--(int) { return iterator(s, i--); }
+    iterator operator+(ll const &n) const { return iterator(s, i + n); }
+    iterator operator-(ll const &n) const { return iterator(s, i - n); }
+    ll operator-(iterator const &itr) const { return i - itr.i; }
+    iterator &operator+=(ll const &n) {
+      i += n;
       return *this;
     }
-    itr &operator-=(ll const &n) { return *this += (-n); }
-    T const operator*() const { return mapper(*base); }
+    iterator &operator-=(ll const &n) { return *this += (-n); }
+    T const operator*() const { return (*s)[i]; }
   };
-  using iterator = itr;
-  fun<T(ll)> const mapper;
-  range const domain;
-  seq(fun<T(ll)> const &f, range const &r) : mapper(f), domain(r) {}
-  itr begin() const { return itr(mapper, domain.begin()); }
-  itr end() const { return itr(mapper, domain.end()); }
-  ll size() const { return domain.size(); }
-  bool empty() const { return domain.empty(); }
-  template <class F> auto map(F const &f) const {
-    return seq<decltype(f(mapper(declval<ll>())))>(
-        [g = mapper, f](auto i) { return f(g(i)); }, domain);
+  function<T(ll)> const f;
+  ll const l;
+  seq(function<T(ll)> const &f, ll const &l) : f(f), l(l) {}
+  iterator begin() const { return iterator(this, 0); }
+  iterator end() const { return iterator(this, l); }
+  ll size() const { return l; }
+  bool empty() const { return size() == 0; }
+  template <class F> auto map(F const &g) const {
+    return seq<decltype(g(f(declval<ll>())))>(
+        [g, f = f](auto i) { return g(f(i)); }, l);
   }
-  T operator[](ll i) const { return mapper(i); }
+  virtual T operator[](ll i) const { return f(i); }
 };
+} // namespace ranges
 
-ll bisect(ll ng, ll ok, fun<bool(ll)> const &is_ok) {
-  while (ok - ng > 1) {
-    dump(ng, ok);
-    ll m = ng + (ok - ng) / 2;
-    (is_ok(m) ? ok : ng) = m;
-  }
-  return ok;
+struct range : ranges::seq<ll> {
+  ll const begin_;
+  range(ll end) : range(0LL, end) {}
+  range(ll begin, ll end)
+      : seq<ll>([begin](auto i) { return i + begin; }, end - begin),
+        begin_(begin) {}
+  ll operator[](ll i) const override { return i + begin_; }
+};
+namespace ranges {
+range endless = range(-1LL);
+}
+range::iterator begin(ll i = 0LL) {
+  return range::iterator(&ranges::endless, i);
+}
+range::iterator end(ll i) { return begin(i); }
+
+template <class T = ll> vector<T> vec(size_t n, T &&init = T()) {
+  return vector<T>(n, init);
 }
 
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
