@@ -232,3 +232,9 @@ template <ll N, ll M> struct Factrial {
 };
 
 constexpr ll MOD = 1e9 + 7;
+
+int main() {
+  input();
+  print();
+}
+

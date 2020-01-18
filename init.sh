@@ -16,7 +16,7 @@ int main() {\n\
 " >> ./main.cpp
 echo "\n\
 int main() {\n\
-  input()\n\
+  input();\n\
   ll ans;\n\
   input();\n\
   if (true) return print(\"OK\"), 0;\n\

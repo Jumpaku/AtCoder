@@ -124,7 +124,7 @@ template <class... Ts> struct hash<tuple<Ts...>> {
 
 // Range
 namespace ranges {
-template <class T> struct iterator_base {
+template <class T, class Itr> struct iterator_base {
   using difference_type = ll;
   using value_type = T;
   using pointer = T *;
@@ -132,9 +132,24 @@ template <class T> struct iterator_base {
   using iterator_category = random_access_iterator_tag;
   ll i;
   iterator_base(ll const &i = 0) : i(i) {}
-  bool operator==(iterator_base const &itr) const { return i == itr.i; }
-  bool operator!=(iterator_base const &itr) const { return i != itr.i; }
-  ll operator-(iterator_base const &itr) const { return i - itr.i; }
+  bool operator==(Itr const &itr) const { return i == itr.i; }
+  bool operator!=(Itr const &itr) const { return i != itr.i; }
+  ll operator-(Itr const &itr) const { return i - itr.i; }
+  Itr operator++(int) { return with(i++); }
+  Itr operator--(int) { return with(i--); }
+  Itr operator+(ll const &n) const { return with(i + n); }
+  Itr operator-(ll const &n) const { return with(i - n); }
+  Itr &operator+=(ll const &n) {
+    i += n;
+    return self();
+  }
+  Itr &operator-=(ll const &n) { return self() += (-n); }
+  Itr &operator++() { return self() += 1; }
+  Itr &operator--() { return self() -= 1; }
+
+protected:
+  virtual Itr with(ll i) const = 0;
+  virtual Itr &self() = 0;
 };
 template <class T> struct seq_base {
   ll const b;
@@ -144,20 +159,11 @@ template <class T> struct seq_base {
   bool empty() const { return size() == 0; }
 };
 template <class T> struct seq : seq_base<T> {
-  struct iterator : iterator_base<T> {
+  struct iterator : iterator_base<T, iterator> {
     seq *s;
-    iterator(seq *s, ll const &i) : iterator_base<T>(i), s(s) {}
-    iterator operator++(int) { return iterator(s, this->i++); }
-    iterator operator--(int) { return iterator(s, this->i--); }
-    iterator operator+(ll const &n) { return iterator(s, this->i + n); }
-    iterator operator-(ll const &n) { return iterator(s, this->i - n); }
-    iterator &operator+=(ll const &n) {
-      this->i += n;
-      return *this;
-    }
-    iterator &operator-=(ll const &n) { return *this += (-n); }
-    iterator &operator++() { return *this += 1; }
-    iterator &operator--() { return *this -= 1; }
+    iterator(seq *s, ll const &i) : iterator_base<T, iterator>(i), s(s) {}
+    iterator with(ll i) const override { return iterator(s, i); }
+    iterator &self() override { return *this; }
     T operator*() const { return (*s)[this->i]; }
   };
   function<T(ll)> const f;
@@ -168,19 +174,10 @@ template <class T> struct seq : seq_base<T> {
   ll operator[](ll i) const { return f(i); }
 };
 struct range : seq_base<ll> {
-  struct iterator : iterator_base<ll> {
-    iterator(ll const &i) : iterator_base<ll>(i) {}
-    iterator operator++(int) { return iterator(i++); }
-    iterator operator--(int) { return iterator(i--); }
-    iterator operator+(ll const &n) const { return iterator(i + n); }
-    iterator operator-(ll const &n) const { return iterator(i - n); }
-    iterator &operator+=(ll const &n) {
-      i += n;
-      return *this;
-    }
-    iterator &operator-=(ll const &n) { return *this += (-n); }
-    iterator &operator++() { return *this += 1; }
-    iterator &operator--() { return *this -= 1; }
+  struct iterator : iterator_base<ll, iterator> {
+    iterator(ll const &i) : iterator_base<ll, iterator>(i) {}
+    iterator with(ll i) const override { return iterator(i); }
+    iterator &self() override { return *this; }
     ll operator*() const { return i; }
   };
   range(ll n) : range(0LL, n) {}
@@ -191,14 +188,14 @@ struct range : seq_base<ll> {
 };
 } // namespace ranges
 using range = ranges::range;
-range::iterator range_end(ll i) { return ranges::range::iterator(i); }
-range::iterator range_begin(ll i) { return range_end(i); }
+range::iterator end(ll i) { return ranges::range::iterator(i); }
+range::iterator begin(ll i) { return end(i); }
 template <class F> auto seq(ll b, ll e, F const &f) {
   using T = decltype(f(declval<ll>()));
   return ranges::seq<T>(b, e, f);
 }
 template <class F> auto seq(ll n, F const &f) { return seq(0, n, f); }
-template <class T = ll> vector<T> vec(size_t n, T &&init = T()) {
+template <class T = ll> vector<T> vec(size_t n, T const &init = T()) {
   return vector<T>(n, init);
 }
 
