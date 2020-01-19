@@ -29,9 +29,6 @@ using str = string;
 template <class T> using u_set = unordered_set<T>;
 template <class K, class V> using u_map = unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
-template <class F,
-          typename enable_if<is_function<F>::value, nullptr_t>::type = nullptr>
-using fun = function<F>;
 
 namespace io {
 // Input
@@ -171,7 +168,7 @@ template <class T> struct seq : seq_base<T> {
   seq(ll b, ll e, function<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
   iterator begin() { return iterator(this, this->b); }
   iterator end() { return iterator(this, this->e); }
-  ll operator[](ll i) const { return f(i); }
+  ll operator[](ll i) const { return f(i + this->b); }
 };
 struct range : seq_base<ll> {
   struct iterator : iterator_base<ll, iterator> {
@@ -188,8 +185,8 @@ struct range : seq_base<ll> {
 };
 } // namespace ranges
 using range = ranges::range;
-range::iterator end(ll i) { return ranges::range::iterator(i); }
-range::iterator begin(ll i) { return end(i); }
+range::iterator end(ll i) { return range::iterator(i); }
+range::iterator begin(ll i) { return range::iterator(i); }
 template <class F> auto seq(ll b, ll e, F const &f) {
   using T = decltype(f(declval<ll>()));
   return ranges::seq<T>(b, e, f);
