@@ -164,11 +164,10 @@ template <class T> struct seq : seq_base<T> {
     T operator*() const { return (*s)[this->i]; }
   };
   function<T(ll)> const f;
-  seq(ll n, function<T(ll)> const &f) : seq(0, n, f) {}
   seq(ll b, ll e, function<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
-  iterator begin() { return iterator(this, this->b); }
-  iterator end() { return iterator(this, this->e); }
-  ll operator[](ll i) const { return f(i + this->b); }
+  iterator begin() { return iterator(this, 0); }
+  iterator end() { return iterator(this, this->size()); }
+  T operator[](ll i) const { return f(i + this->b); }
 };
 struct range : seq_base<ll> {
   struct iterator : iterator_base<ll, iterator> {
@@ -231,7 +230,24 @@ template <ll N, ll M> struct Factrial {
 constexpr ll MOD = 1e9 + 7;
 
 int main() {
-  input();
-  print();
+  ll N;
+  input(N);
+  auto S = vec<str>(N);
+  transform(begin(1), end(N + 1), S.begin(),
+            static_cast<str (*)(ll)>(&::to_string));
+  dump(range(10));
+  dump(seq(10, [](auto i) { return i; }));
+  ll ans = 0;
+  for (auto const &cH : range('1', '9' + 1)) {
+    for (auto const &cL : range('1', '9' + 1)) {
+      ll nA = count_if(S.begin(), S.end(), [&](auto const sI) {
+        return sI.front() == cH && sI.back() == cL;
+      });
+      ll nB = count_if(S.begin(), S.end(), [&](auto const sI) {
+        return sI.front() == cL && sI.back() == cH;
+      });
+      ans += nA * nB;
+    }
+  }
+  print(ans);
 }
-

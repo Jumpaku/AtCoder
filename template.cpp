@@ -164,11 +164,10 @@ template <class T> struct seq : seq_base<T> {
     T operator*() const { return (*s)[this->i]; }
   };
   function<T(ll)> const f;
-  seq(ll n, function<T(ll)> const &f) : seq(0, n, f) {}
   seq(ll b, ll e, function<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
-  iterator begin() { return iterator(this, this->b); }
-  iterator end() { return iterator(this, this->e); }
-  ll operator[](ll i) const { return f(i + this->b); }
+  iterator begin() { return iterator(this, 0); }
+  iterator end() { return iterator(this, this->size()); }
+  T operator[](ll i) const { return f(i + this->b); }
 };
 struct range : seq_base<ll> {
   struct iterator : iterator_base<ll, iterator> {
@@ -209,7 +208,6 @@ ll pow(ll a, ll n, ll m) {
   return (b * b) % m;
 }
 ll inv(ll a, ll p) { return pow(a, p - 2, p); }
-
 template <ll N, ll M> struct Factrial {
   Factrial() {
     fact[0] = 1;
