@@ -157,16 +157,17 @@ template <class T> struct seq_base {
 };
 template <class T> struct seq : seq_base<T> {
   struct iterator : iterator_base<T, iterator> {
-    seq *s;
-    iterator(seq *s, ll const &i) : iterator_base<T, iterator>(i), s(s) {}
+    seq<T> const &s;
+    iterator(seq<T> const &s, ll const &i)
+        : iterator_base<T, iterator>(i), s(s) {}
     iterator with(ll i) const override { return iterator(s, i); }
     iterator &self() override { return *this; }
-    T operator*() const { return (*s)[this->i]; }
+    T operator*() const { return s[this->i]; }
   };
   function<T(ll)> const f;
   seq(ll b, ll e, function<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
-  iterator begin() { return iterator(this, 0); }
-  iterator end() { return iterator(this, this->size()); }
+  iterator begin() const { return iterator(*this, 0); }
+  iterator end() const { return iterator(*this, this->size()); }
   T operator[](ll i) const { return f(i + this->b); }
 };
 struct range : seq_base<ll> {
@@ -208,7 +209,6 @@ ll pow(ll a, ll n, ll m) {
   return (b * b) % m;
 }
 ll inv(ll a, ll p) { return pow(a, p - 2, p); }
-
 template <ll N, ll M> struct Factrial {
   Factrial() {
     fact[0] = 1;
@@ -228,26 +228,8 @@ template <ll N, ll M> struct Factrial {
 };
 
 constexpr ll MOD = 1e9 + 7;
-
 int main() {
-  ll N;
-  input(N);
-  auto S = vec<str>(N);
-  transform(begin(1), end(N + 1), S.begin(),
-            static_cast<str (*)(ll)>(&::to_string));
-  dump(range(10));
-  dump(seq(10, [](auto i) { return i; }));
-  ll ans = 0;
-  for (auto const &cH : range('1', '9' + 1)) {
-    for (auto const &cL : range('1', '9' + 1)) {
-      ll nA = count_if(S.begin(), S.end(), [&](auto const sI) {
-        return sI.front() == cH && sI.back() == cL;
-      });
-      ll nB = count_if(S.begin(), S.end(), [&](auto const sI) {
-        return sI.front() == cL && sI.back() == cH;
-      });
-      ans += nA * nB;
-    }
-  }
-  print(ans);
+  input();
+  print();
 }
+
