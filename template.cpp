@@ -163,6 +163,10 @@ template <class T> struct seq : seq_base<T> {
     iterator with(ll i) const override { return iterator(s, i); }
     iterator &self() override { return *this; }
     T operator*() const { return s[this->i]; }
+    iterator &operator=(iterator const &itr) {
+      this->i = itr.i;
+      return *this;
+    }
   };
   function<T(ll)> const f;
   seq(ll b, ll e, function<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
