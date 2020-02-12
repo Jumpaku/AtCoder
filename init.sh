@@ -9,9 +9,16 @@ cat ./template.cpp >| ./validate.cpp
 cat ./template.cpp >| ./validate_gen.cpp
 
 echo "\n\
-int main() {\n\
+void solve() {\n\
   input();\n\
   print();\n\
+}\n\
+int main() {\n\
+  ll t = 1;\n\
+  input(t);\n\
+  for (auto &&i : range(t)) {\n\
+    solve();\n\
+  }\n\
 }\n\
 " >> ./main.cpp
 echo "\n\

@@ -233,8 +233,15 @@ template <ll N, ll M> struct Factrial {
 
 constexpr ll MOD = 1e9 + 7;
 
-int main() {
+void solve() {
   input();
   print();
+}
+int main() {
+  ll t = 1;
+  input(t);
+  for (auto &&i : range(t)) {
+    solve();
+  }
 }
 
