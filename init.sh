@@ -15,7 +15,7 @@ void solve() {\n\
 }\n\
 int main() {\n\
   ll t = 1;\n\
-  input(t);\n\
+  /**/ input(t); /*/ t = 1; //*/\n\
   for (auto &&i : range(t)) {\n\
     solve();\n\
   }\n\

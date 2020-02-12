@@ -239,7 +239,7 @@ void solve() {
 }
 int main() {
   ll t = 1;
-  input(t);
+  /**/ input(t); /*/ t = 1; //*/
   for (auto &&i : range(t)) {
     solve();
   }
