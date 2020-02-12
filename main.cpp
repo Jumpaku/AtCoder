@@ -239,9 +239,8 @@ void solve() {
 }
 int main() {
   ll t = 1;
-  /**/ input(t); /*/ t = 1; //*/
+  /** input(t); /**/
   for (auto &&i : range(t)) {
     solve();
   }
 }
-
