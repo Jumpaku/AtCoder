@@ -76,16 +76,35 @@ OS &tuple_out(OS &o, tuple<Ts...> const &t, index_sequence<I...>) {
 template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
   return tuple_out(o << "(", t, make_index_sequence<sizeof...(Ts)>()) << ")";
 }
+template <class T> struct Joiner {
+  str const pre;
+  str const post;
+  str const delim;
+  vector<T> const container;
+  Joiner(vector<T> v, str const &delim, str const &pre, str const &post)
+      : pre(pre), post(post), delim(delim), container(v) {}
+};
+template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
+  auto itr = joiner.container.begin();
+  auto end = joiner.container.end();
+  o << joiner.pre;
+  if (itr != end)
+    o << *(itr++);
+  while (itr != end)
+    o << joiner.delim << *(itr++);
+  return o << joiner.post;
+}
+template <class Itr, class T = typename iterator_traits<Itr>::value_type>
+Joiner<T> join(Itr b, Itr e, str const &delim = ""s, str const &pre = ""s,
+               str const &post = ""s) {
+  return Joiner<T>(vector<T>(b, e), delim, pre, post);
+}
 template <
     class C,
     class T = typename iterator_traits<typename C::iterator>::value_type,
     typename enable_if<!is_same<C, str>::value, nullptr_t>::type = nullptr>
 OS &operator<<(OS &o, C const &a) {
-  return a.empty() ? (o << "[]") : ([&o, &a]() -> OS & {
-    o << "[" << *a.begin();
-    for_each(next(a.begin()), a.end(), [&o](auto const &e) { o << "," << e; });
-    return o << "]";
-  }());
+  return o << join(a.begin(), a.end(), ",", "[", "]");
 }
 } // namespace io
 auto input = [](auto &... a) { io::in(cin, a...); };
@@ -95,6 +114,7 @@ auto dump = [](auto const &... a) { io::out(cerr, a...); };
 #else
 auto dump = [](auto const &...) {};
 #endif
+using io::join;
 
 // Hash
 namespace hashcode {
@@ -233,14 +253,17 @@ template <ll N, ll M> struct Factrial {
 
 constexpr ll MOD = 1e9 + 7;
 
+void solve();
+int main() {
+  ll t = 1;
+  /** input(t); /**/
+  for ([[maybe_unused]] auto &&i : range(t)) {
+    solve();
+  }
+}
+
 void solve() {
   input();
   print();
 }
-int main() {
-  ll t = 1;
-  /** input(t); /**/
-  for (auto &&i : range(t)) {
-    solve();
-  }
-}
+

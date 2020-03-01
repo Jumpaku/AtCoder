@@ -9,16 +9,18 @@ cat ./template.cpp >| ./validate.cpp
 cat ./template.cpp >| ./validate_gen.cpp
 
 echo "\n\
-void solve() {\n\
-  input();\n\
-  print();\n\
-}\n\
+void solve();
 int main() {\n\
   ll t = 1;\n\
   /** input(t); /**/\n\
-  for (auto &&i : range(t)) {\n\
+  for ([[maybe_unused]] auto &&i : range(t)) {\n\
     solve();\n\
   }\n\
+}\n\
+\n\
+void solve() {\n\
+  input();\n\
+  print();\n\
 }\n\
 " >> ./main.cpp
 echo "\n\
