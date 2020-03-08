@@ -37,5 +37,10 @@ main
 debug_main
 validate
 validate_gen
-test_sample\.*
 tmp/*
+
+debug.in
+
+test_sample.ans
+
+test_sample.in
