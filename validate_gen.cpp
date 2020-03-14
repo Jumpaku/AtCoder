@@ -222,6 +222,8 @@ template <class T = ll> vector<T> vec(size_t n, T const &init = T()) {
 
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
+bool odd(ll n) { return n & 1; }
+bool even(ll n) { return !odd(n); }
 
 constexpr ll MOD = 1e9 + 7;
 
