@@ -1,4 +1,4 @@
-#include "template.cpp"
+#include "template.hpp"
 #include <bits/stdc++.h>
 
 /*********************************************************************/

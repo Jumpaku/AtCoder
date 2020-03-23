@@ -4,9 +4,9 @@
 : >| test_sample.in
 : >| test_sample.ans
 
-cat ./template.cpp >| ./main.cpp
-cat ./template.cpp >| ./validate.cpp
-cat ./template.cpp >| ./validate_gen.cpp
+cat ./template.hpp >| ./main.cpp
+cat ./template.hpp >| ./validate.cpp
+cat ./template.hpp >| ./validate_gen.cpp
 
 echo "\n\
 void solve();

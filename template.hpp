@@ -25,6 +25,7 @@ using namespace std;
 
 // Types
 using ll = long long int;
+using ld = long double;
 using str = string;
 template <class T> using u_set = unordered_set<T>;
 template <class K, class V> using u_map = unordered_map<K, V>;
