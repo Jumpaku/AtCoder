@@ -5,8 +5,8 @@
 : >| test_sample.ans
 
 cat ./template.hpp >| ./main.cpp
-cat ./template.hpp >| ./validate.cpp
-cat ./template.hpp >| ./validate_gen.cpp
+: >| ./validate.cpp
+: >| ./validate_gen.cpp
 
 echo "\n\
 void solve();
@@ -24,6 +24,8 @@ void solve() {\n\
 }\n\
 " >> ./main.cpp
 echo "\n\
+#include \"template.hpp\"\n\
+\n\
 int main() {\n\
   input();\n\
   ll ans;\n\
@@ -33,6 +35,9 @@ int main() {\n\
 }\n\
 " >> ./validate.cpp
 echo "\n\
+#include \"template.hpp\"\n\
+\n\
+using namespace std;\n\
 int main(int argc, char const *argv[]) {\n\
   auto seed = (argc > 1) ? stoll(argv[1]) : random_device{}();\n\
   mt19937 e{seed};\n\

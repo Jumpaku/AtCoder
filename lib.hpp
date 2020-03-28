@@ -1,11 +1,9 @@
 #include "template.hpp"
-#include <bits/stdc++.h>
 
-/*********************************************************************/
-/* GEOM ------------------------------------------------------------ */
-/*********************************************************************/
+/**
+ * GEOM
+ */
 namespace geom {
-using OS = std::ostream;
 template <class T> struct Vec final {
   T x;
   T y;
@@ -18,7 +16,7 @@ template <class T> struct Vec final {
   Vec(Vec<T> &&v) = default;
   T dot(Vec<T> const &v) const { return x * v.x + y * v.y + z * v.z; }
   T sq() const { return dot(*this); }
-  double norm2() const { return sqrt(sq()); }
+  lf norm2() const { return sqrt(sq()); }
   T norm1() const { return x + y + z; }
   Vec<T> cross(Vec<T> const &v) const {
     return Vec(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
@@ -32,12 +30,12 @@ template <class T> struct Vec final {
   Vec<T> &operator+=(Vec<T> const &v) { return *this = *this + v; }
   Vec<T> &operator-=(Vec<T> const &v) { return *this += -v; }
   Vec<T> &operator*=(T const &a) { return *this = *this * a; }
-  Vec<T> &operator/=(double const &a) { return *this = *this / a; }
+  Vec<T> &operator/=(lf const &a) { return *this = *this / a; }
 };
 template <class T> Vec<T> operator*(T const &a, Vec<T> const &v) {
   return v * a;
 }
-template <class T> Vec<T> operator/(Vec<T> const &v, double const &a) {
+template <class T> Vec<T> operator/(Vec<T> const &v, lf const &a) {
   return v * (1 / a);
 }
 template <class T> Vec<T> operator+(Vec<T> const &v) { return v; }
@@ -51,7 +49,7 @@ template <class T> bool operator==(Vec<T> const &u, Vec<T> const &v) {
 template <class T> bool operator!=(Vec<T> const &u, Vec<T> const &v) {
   return !(u == v);
 }
-template <class T> OS &operator<<(OS &o, Vec<T> const &v) {
+template <class T> io::OS &operator<<(io::OS &o, Vec<T> const &v) {
   return o << "Vec(" << v.x << "," << v.y << "," << v.z << ")";
 }
 
@@ -77,7 +75,7 @@ template <class T> struct Pt final {
   Pt<T> &operator+=(Vec<T> const &v) { return *this = *this + v; }
   Pt<T> &operator-=(Vec<T> const &v) { return *this += -v; }
   T dist1(Pt<T> const &p) const { return (*this - p).norm1(); }
-  double dist2(Pt<T> const &p) const { return (*this - p).norm2(); }
+  lf dist2(Pt<T> const &p) const { return (*this - p).norm2(); }
   T distSq(Pt<T> const &p) const { return (*this - p).sq(); }
 };
 template <class T> Pt<T> operator+(Vec<T> const &v, Pt<T> const &p) {
@@ -92,18 +90,31 @@ template <class T> bool operator==(Pt<T> const &p, Pt<T> const &q) {
 template <class T> bool operator!=(Pt<T> const &p, Pt<T> const &q) {
   return !(p == q);
 }
-template <class T> OS &operator<<(OS &o, Pt<T> const &p) {
+template <class T> io::OS &operator<<(io::OS &o, Pt<T> const &p) {
   return o << "Pt(" << p.x << "," << p.y << "," << p.z << ")";
 }
 } // namespace geom
-using Vec_ll = geom::Vec<long long int>;
-using Vec_d = geom::Vec<double>;
-using Pt_ll = geom::Vec<long long int>;
-using Pt_d = geom::Vec<double>;
+using Vec_ll = geom::Vec<ll>;
+using Vec_d = geom::Vec<lf>;
+using Pt_ll = geom::Pt<ll>;
+using Pt_d = geom::Pt<lf>;
+namespace std {
+template <> struct hash<Vec_ll> {
+  size_t operator()(Vec_ll const &t) const {
+    return hash<tuple<ll, ll, ll>>{}(make_tuple(t.x, t.y, t.z));
+  }
+};
+template <> struct hash<Pt_ll> {
+  size_t operator()(Pt_ll const &t) const {
+    return hash<tuple<ll, ll, ll>>{}(make_tuple(t.x, t.y, t.z));
+  }
+};
+} // namespace std
+/* end of GEOM */
 
-/*********************************************************************/
-/* MOD ------------------------------------------------------------- */
-/*********************************************************************/
+/**
+ * MOD
+ */
 namespace mod {
 ll pow(ll a, ll n, ll m) {
   if (n == 0)
@@ -135,3 +146,33 @@ template <ll N, ll M> struct Factrial {
 using mod::Factrial;
 using mod::inv;
 using mod::pow;
+/* end of MOD */
+
+/**
+ * DIJKSTRA
+ */
+template <class V>
+// using V = tuple<ll, ll>;
+u_map<V, ll> dijkstra(V const start, graph<V> const &g,
+                      fun<ll(V, V)> const &dist, u_set<V> const &vs,
+                      ll const inf = 1e16) {
+  auto d = u_map<V, ll>{};
+  for (auto &&v : vs)
+    d[v] = inf;
+  auto cmp = [](auto &t0, auto &t1) { return get<0>(t0) < get<0>(t1); };
+  auto q = multiset<tuple<ll, V>, decltype(cmp)>(cmp);
+  q.insert(make_tuple(d[start] = 0, start));
+  while (!q.empty()) {
+    auto u = get<1>(*q.begin());
+    q.erase(q.begin());
+    if (g.find(u) == g.end())
+      continue;
+    for (auto const &v : g.at(u)) {
+      auto alt = d[u] + dist(u, v);
+      if (d[v] > alt)
+        q.insert(make_tuple(d[v] = alt, v));
+    }
+  }
+  return d;
+}
+/* end of DIJKSTRA */

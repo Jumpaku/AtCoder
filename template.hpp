@@ -21,19 +21,66 @@
 #include <utility>
 #include <vector>
 
-using namespace std;
+// Utility
+using std::enable_if;
+using std::get;
+using std::index_sequence;
+using std::is_same;
+using std::make_index_sequence;
+using std::operator""s;
+using std::declval;
+using std::hash;
+using std::make_pair;
+using std::make_tuple;
+using std::nullptr_t;
 
 // Types
+using std::pair;
+using std::tuple;
 using ll = long long int;
-using ld = long double;
-using str = string;
-template <class T> using u_set = unordered_set<T>;
-template <class K, class V> using u_map = unordered_map<K, V>;
+using lf = long double;
+using str = std::string;
+template <class T> using u_set = std::unordered_set<T>;
+template <class K, class V> using u_map = std::unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
+template <typename _Signature> using fun = std::function<_Signature>;
+
+// Collections
+using std::deque;
+using std::iterator_traits;
+using std::list;
+using std::multiset;
+using std::random_access_iterator_tag;
+using std::unordered_multimap;
+using std::unordered_multiset;
+using std::vector;
+
+// Algorithms
+using std::accumulate;
+using std::all_of;
+using std::any_of;
+using std::find_if;
+using std::for_each;
+using std::lower_bound;
+using std::max;
+using std::max_element;
+using std::min;
+using std::min_element;
+using std::none_of;
+using std::partial_sum;
+using std::remove_if;
+using std::replace_if;
+using std::reverse;
+using std::sort;
+using std::stoll;
+using std::to_string;
+using std::transform;
+using std::unique;
+using std::upper_bound;
 
 namespace io {
 // Input
-using IS = istream;
+using IS = std::istream;
 IS &in(IS &);
 IS &in(IS &i) { return i; }
 template <class T, class... Ts> IS &in(IS &i, T &a, Ts &... as) {
@@ -54,9 +101,9 @@ template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t) {
   return tuple_in(i, t, make_index_sequence<sizeof...(Ts)>());
 }
 // Output
-using OS = ostream;
-OS &out(OS &o) { return o << endl; }
-template <class T> OS &out(OS &o, T const &a) { return o << a << endl; }
+using OS = std::ostream;
+OS &out(OS &o) { return o; }
+template <class T> OS &out(OS &o, T const &a) { return o << a; }
 template <class T, class... Ts> OS &out(OS &o, T const &a, Ts const &... as) {
   return out(o << a << " ", as...);
 }
@@ -108,10 +155,14 @@ OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
 }
 } // namespace io
+using std::cerr;
+using std::cin;
+using std::cout;
+using std::endl;
 auto input = [](auto &... a) { io::in(cin, a...); };
-auto print = [](auto const &... a) { io::out(cout, a...); };
+auto print = [](auto const &... a) { io::out(cout, a...) << endl; };
 #ifdef JUMPAKU_DEBUG
-auto dump = [](auto const &... a) { io::out(cerr, a...); };
+auto dump = [](auto const &... a) { io::out(cerr, a...) << endl; };
 #else
 auto dump = [](auto const &...) {};
 #endif
@@ -119,22 +170,22 @@ using io::join;
 
 // Hash
 namespace hashcode {
-template <class... Ts> uint64_t hash_args(uint64_t h, Ts const &... ts);
-uint64_t hash_args(uint64_t h) { return h; }
+template <class... Ts> ll hash_args(ll h, Ts const &... ts);
+ll hash_args(ll h) { return h; }
 template <class T, class... Ts>
-uint64_t hash_args(uint64_t h, T const &t, Ts const &... ts) {
+ll hash_args(ll h, T const &t, Ts const &... ts) {
   constexpr hash<T> hasher;
   return hash_args(((h << 19) - h) ^ hasher(t), ts...);
 }
 template <class... Ts, size_t... I>
-uint64_t hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
+ll hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
   return hash_args(17, get<I>(t)...);
 }
 } // namespace hashcode
 namespace std {
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
-    uint64_t h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
+    ll h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
     return h ^ (h >> 32);
   }
 };
@@ -189,8 +240,8 @@ template <class T> struct seq : seq_base<T> {
       return *this;
     }
   };
-  function<T(ll)> const f;
-  seq(ll b, ll e, function<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
+  fun<T(ll)> const f;
+  seq(ll b, ll e, fun<T(ll)> const &f) : seq_base<T>(b, e), f(f) {}
   iterator begin() const { return iterator(*this, 0); }
   iterator end() const { return iterator(*this, this->size()); }
   T operator[](ll i) const { return f(i + this->b); }
@@ -206,6 +257,7 @@ struct range : seq_base<ll> {
   range(ll b, ll e) : seq_base<ll>(b, e) {}
   iterator begin() const { return iterator(b); }
   iterator end() const { return iterator(e); }
+  bool contains(ll x) const { return b <= x && x < e; }
   ll operator[](ll i) const { return i + b; }
 };
 } // namespace ranges
