@@ -189,6 +189,15 @@ template <class... Ts> struct hash<tuple<Ts...>> {
     return h ^ (h >> 32);
   }
 };
+template <class T> struct hash<u_set<T>> {
+  size_t operator()(u_set<T> const &t) const {
+    auto hasher = hash<T>{};
+    auto h = (decltype(hash<T>{}(declval<T>())))0;
+    h = accumulate(t.begin(), t.end(), h,
+                   [&](auto acc, auto const &ti) { return acc + hasher(ti); });
+    return h;
+  }
+};
 } // namespace std
 
 // Range
