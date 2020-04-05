@@ -1,33 +1,17 @@
 //#pragma GCC optimize("O3")
 //#pragma GCC target("avx")
 
-#include <algorithm>
-#include <cmath>
-#include <functional>
-#include <iomanip>
-#include <iostream>
-#include <iterator>
-#include <list>
-#include <map>
-#include <numeric>
-#include <queue>
-#include <random>
-#include <set>
-#include <sstream>
-#include <string>
-#include <type_traits>
-#include <unordered_map>
-#include <unordered_set>
-#include <utility>
-#include <vector>
+#include <bits/stdc++.h>
 
 // Utility
-using std::enable_if, std::is_same, std::declval;
-using std::get, std::make_pair, std::make_tuple;
-using std::index_sequence, std::make_index_sequence;
+using std::enable_if_t, std::is_same_v, std::is_array_v, std::declval;
+using std::get, std::make_pair, std::make_tuple, std::apply;
+using std::iterator_traits, std::random_access_iterator_tag;
 using std::stoll, std::stold, std::to_string, std::operator""s;
 
 // Types
+using std::deque, std::list, std::multiset, std::unordered_multimap,
+    std::unordered_multiset;
 using std::nullptr_t, std::pair, std::tuple;
 using ll = long long int;
 using lf = long double;
@@ -40,11 +24,6 @@ using vecs = vec<str>;
 template <class K, class V> using u_map = std::unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
 template <typename _Signature> using fun = std::function<_Signature>;
-
-// Collections
-using std::deque, std::list, std::multiset, std::unordered_multimap,
-    std::unordered_multiset;
-using std::iterator_traits, std::random_access_iterator_tag;
 
 // Algorithms
 using std::accumulate, std::partial_sum, std::transform_inclusive_scan;
@@ -64,51 +43,42 @@ template <class T, class... Ts> IS &in(IS &i, T &a, Ts &... as) {
   return in(i >> a, as...);
 }
 template <class V> IS &operator>>(IS &i, vec<V> &a) {
-  for_each(a.begin(), a.end(), [&i](auto &e) { i >> e; });
+  for (auto &ai : a)
+    i >> ai;
   return i;
 }
 template <class F, class S> IS &operator>>(IS &i, pair<F, S> &p) {
   return in(i, p.first, p.second);
 }
-template <class... Ts, size_t... I>
-IS &tuple_in(IS &i, tuple<Ts...> &t, index_sequence<I...>) {
-  return in(i, get<I>(t)...);
-}
 template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t) {
-  return tuple_in(i, t, make_index_sequence<sizeof...(Ts)>());
+  return apply([&](auto &... ts) -> IS & { return in(i, ts...); }, t);
 }
 // Output
 using OS = std::ostream;
-OS &out(OS &o) { return o; }
-template <class T> OS &out(OS &o, T const &a) { return o << a; }
-template <class T, class... Ts> OS &out(OS &o, T const &a, Ts const &... as) {
-  return out(o << a << " ", as...);
+
+OS &out(OS &o, str const &) { return o; }
+template <class T> OS &out(OS &o, str const &, T const &a) { return o << a; }
+template <class T, class... Ts>
+OS &out(OS &o, str const &sep, T const &a, Ts const &... as) {
+  return out(o << a << sep, sep, as...);
 }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
-  return o << p.first << ":" << p.second;
-}
-template <class... Ts> OS &args_out(OS &o, Ts const &... ts);
-OS &args_out(OS &o) { return o; }
-template <class T> OS &args_out(OS &o, T const &t) { return o << t; }
-template <class T0, class T1, class... Ts>
-OS &args_out(OS &o, T0 const &t0, T1 const &t1, Ts const &... ts) {
-  return args_out(o << t0 << ",", t1, ts...);
-}
-template <class... Ts, size_t... I>
-OS &tuple_out(OS &o, tuple<Ts...> const &t, index_sequence<I...>) {
-  return args_out(o, get<I>(t)...);
+  return out(o, ":", p.first, p.second);
 }
 template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
-  return tuple_out(o << "(", t, make_index_sequence<sizeof...(Ts)>()) << ")";
+  auto f = [&](auto const &... ts) -> OS & {
+    return out(o << "(", ",", ts...);
+  };
+  return apply(f, t) << ")";
 }
 template <class T> struct Joiner {
   str const pre;
   str const post;
-  str const delim;
+  str const sep;
   vec<T> const container;
   template <class Itr>
-  Joiner(Itr begin, Itr end, str const &delim, str const &pre, str const &post)
-      : pre(pre), post(post), delim(delim), container(begin, end) {}
+  Joiner(Itr begin, Itr end, str const &sep, str const &pre, str const &post)
+      : pre(pre), post(post), sep(sep), container(begin, end) {}
 };
 template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
   auto itr = joiner.container.begin();
@@ -117,27 +87,26 @@ template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
   if (itr != end)
     o << *(itr++);
   while (itr != end)
-    o << joiner.delim << *(itr++);
+    o << joiner.sep << *(itr++);
   return o << joiner.post;
 }
-template <class Itr, class T = typename iterator_traits<Itr>::value_type>
-Joiner<T> join(Itr b, Itr e, str const &delim = ""s, str const &pre = ""s,
-               str const &post = ""s) {
-  return Joiner<T>(b, e, delim, pre, post);
+template <class Itr>
+auto join(Itr b, Itr e, str const &sep = ""s, str const &pre = ""s,
+          str const &post = ""s) {
+  using T = typename iterator_traits<Itr>::value_type;
+  return Joiner<T>(b, e, sep, pre, post);
 }
-template <
-    class C,
-    class T = typename iterator_traits<typename C::iterator>::value_type,
-    typename enable_if<!is_same<C, str>::value, nullptr_t>::type = nullptr>
+template <class C, enable_if_t<!is_same_v<C, str> && !is_array_v<C>,
+                               nullptr_t> = nullptr>
 OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
 }
 } // namespace io
 using std::cerr, std::cin, std::cout, std::endl;
 auto input = [](auto &... a) { io::in(cin, a...); };
-auto print = [](auto const &... a) { io::out(cout, a...) << endl; };
+auto print = [](auto const &... a) { io::out(cout, " ", a...) << endl; };
 #ifdef JUMPAKU_DEBUG
-auto dump = [](auto const &... a) { io::out(cerr, a...) << endl; };
+auto dump = [](auto const &... a) { io::out(cerr, " ", a...) << endl; };
 #else
 auto dump = [](auto const &...) {};
 #endif
@@ -156,18 +125,17 @@ ll hash_args(ll h, T const &t, Ts const &... ts) {
 namespace std {
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
-    ll h = std::apply(
-        [&](auto const &... ts) { return hashcode::hash_args(12, ts...); }, t);
+    ll h = apply(
+        [&](auto const &... ts) { return hashcode::hash_args(17, ts...); }, t);
     return h ^ (h >> 32);
   }
 };
 template <class T> struct hash<u_set<T>> {
   size_t operator()(u_set<T> const &t) const {
     auto hasher = std::hash<T>{};
-    auto h = (decltype(std::hash<T>{}(declval<T>())))0;
-    h = accumulate(t.begin(), t.end(), h,
-                   [&](auto acc, auto const &ti) { return acc + hasher(ti); });
-    return h;
+    return accumulate(
+        t.begin(), t.end(), (decltype(hasher(declval<T>())))0,
+        [&](auto acc, auto const &ti) { return acc + hasher(ti); });
   }
 };
 } // namespace std
@@ -264,43 +232,8 @@ int main() {
   }
 }
 
-void genLunlun(str const &s, ll n, u_set<str> &result) {
-  if (n == 0)
-    return;
-  auto l = s.back();
-  result.insert(s);
-  if (l > '0') {
-    auto t = s + static_cast<char>(l - 1);
-    result.insert(t);
-    genLunlun(t, n - 1, result);
-  }
-  if (l < '9') {
-    auto t = s + static_cast<char>(l + 1);
-    result.insert(t);
-    genLunlun(t, n - 1, result);
-  }
-  auto t = s + static_cast<char>(l);
-  result.insert(t);
-  genLunlun(t, n - 1, result);
-}
 void solve() {
-  ll K;
-  input(K);
-  dump(K);
-  str S = to_string(K);
-  if (range(1, 10).contains(K)) {
-    print(K);
-    return;
-  }
-  auto lunlun = u_set<str>{};
-  for (auto &&i : range(1, 10)) {
-    auto s = to_string(i);
-    genLunlun(s, 9, lunlun);
-  }
-  auto ans = vecl(lunlun.size());
-  transform(lunlun.begin(), lunlun.end(), ans.begin(),
-            [](auto const &s) { return std::stoll(s); });
-  sort(ans.begin(), ans.end());
-  dump(ans);
-  print(ans[K - 1]);
+  input();
+  print();
 }
+
