@@ -22,63 +22,38 @@
 #include <vector>
 
 // Utility
-using std::enable_if;
-using std::get;
-using std::index_sequence;
-using std::is_same;
-using std::make_index_sequence;
-using std::operator""s;
-using std::declval;
-using std::hash;
-using std::make_pair;
-using std::make_tuple;
-using std::stoll;
-using std::swap;
-using std::to_string;
+using std::enable_if, std::is_same, std::declval;
+using std::get, std::make_pair, std::make_tuple;
+using std::index_sequence, std::make_index_sequence;
+using std::stoll, std::stold, std::to_string, std::operator""s;
 
 // Types
-using std::nullptr_t;
-using std::pair;
-using std::tuple;
+using std::nullptr_t, std::pair, std::tuple;
 using ll = long long int;
 using lf = long double;
 using str = std::string;
 template <class T> using u_set = std::unordered_set<T>;
+template <class T> using vec = std::vector<T>;
+using vecl = vec<ll>;
+using vecf = vec<lf>;
+using vecs = vec<str>;
 template <class K, class V> using u_map = std::unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
 template <typename _Signature> using fun = std::function<_Signature>;
 
 // Collections
-using std::deque;
-using std::iterator_traits;
-using std::list;
-using std::multiset;
-using std::random_access_iterator_tag;
-using std::unordered_multimap;
-using std::unordered_multiset;
-using std::vector;
+using std::deque, std::list, std::multiset, std::unordered_multimap,
+    std::unordered_multiset;
+using std::iterator_traits, std::random_access_iterator_tag;
 
 // Algorithms
-using std::accumulate;
-using std::all_of;
-using std::any_of;
-using std::count_if;
-using std::find_if;
-using std::for_each;
-using std::lower_bound;
-using std::max;
-using std::max_element;
-using std::min;
-using std::min_element;
-using std::none_of;
-using std::partial_sum;
-using std::remove_if;
-using std::replace_if;
-using std::reverse;
-using std::sort;
-using std::transform;
-using std::unique;
-using std::upper_bound;
+using std::accumulate, std::partial_sum, std::transform_inclusive_scan;
+using std::all_of, std::any_of, std::none_of, std::count_if, std::find_if,
+    std::for_each, std::max_element, std::min_element, std::remove_if,
+    std::replace_if, std::reverse, std::transform, std::unique, std::sort,
+    std::next_permutation, std::swap;
+using std::lower_bound, std::upper_bound;
+using std::max, std::min, std::clamp, std::lcm, std::gcd;
 
 namespace io {
 // Input
@@ -88,7 +63,7 @@ IS &in(IS &i) { return i; }
 template <class T, class... Ts> IS &in(IS &i, T &a, Ts &... as) {
   return in(i >> a, as...);
 }
-template <class V> IS &operator>>(IS &i, vector<V> &a) {
+template <class V> IS &operator>>(IS &i, vec<V> &a) {
   for_each(a.begin(), a.end(), [&i](auto &e) { i >> e; });
   return i;
 }
@@ -130,9 +105,10 @@ template <class T> struct Joiner {
   str const pre;
   str const post;
   str const delim;
-  vector<T> const container;
-  Joiner(vector<T> v, str const &delim, str const &pre, str const &post)
-      : pre(pre), post(post), delim(delim), container(v) {}
+  vec<T> const container;
+  template <class Itr>
+  Joiner(Itr begin, Itr end, str const &delim, str const &pre, str const &post)
+      : pre(pre), post(post), delim(delim), container(begin, end) {}
 };
 template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
   auto itr = joiner.container.begin();
@@ -147,7 +123,7 @@ template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
 template <class Itr, class T = typename iterator_traits<Itr>::value_type>
 Joiner<T> join(Itr b, Itr e, str const &delim = ""s, str const &pre = ""s,
                str const &post = ""s) {
-  return Joiner<T>(vector<T>(b, e), delim, pre, post);
+  return Joiner<T>(b, e, delim, pre, post);
 }
 template <
     class C,
@@ -157,10 +133,7 @@ OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
 }
 } // namespace io
-using std::cerr;
-using std::cin;
-using std::cout;
-using std::endl;
+using std::cerr, std::cin, std::cout, std::endl;
 auto input = [](auto &... a) { io::in(cin, a...); };
 auto print = [](auto const &... a) { io::out(cout, a...) << endl; };
 #ifdef JUMPAKU_DEBUG
@@ -176,25 +149,22 @@ template <class... Ts> ll hash_args(ll h, Ts const &... ts);
 ll hash_args(ll h) { return h; }
 template <class T, class... Ts>
 ll hash_args(ll h, T const &t, Ts const &... ts) {
-  constexpr hash<T> hasher;
+  constexpr std::hash<T> hasher;
   return hash_args(((h << 19) - h) ^ hasher(t), ts...);
-}
-template <class... Ts, size_t... I>
-ll hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
-  return hash_args(17, get<I>(t)...);
 }
 } // namespace hashcode
 namespace std {
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
-    ll h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
+    ll h = std::apply(
+        [&](auto const &... ts) { return hashcode::hash_args(12, ts...); }, t);
     return h ^ (h >> 32);
   }
 };
 template <class T> struct hash<u_set<T>> {
   size_t operator()(u_set<T> const &t) const {
-    auto hasher = hash<T>{};
-    auto h = (decltype(hash<T>{}(declval<T>())))0;
+    auto hasher = std::hash<T>{};
+    auto h = (decltype(std::hash<T>{}(declval<T>())))0;
     h = accumulate(t.begin(), t.end(), h,
                    [&](auto acc, auto const &ti) { return acc + hasher(ti); });
     return h;
@@ -211,7 +181,7 @@ template <class T, class Itr> struct iterator_base {
   using reference = T &;
   using iterator_category = random_access_iterator_tag;
   ll i;
-  iterator_base(ll const &i = 0) : i(i) {}
+  iterator_base(ll const &i) : i(i) {}
   bool operator==(Itr const &itr) const { return i == itr.i; }
   bool operator!=(Itr const &itr) const { return i != itr.i; }
   ll operator-(Itr const &itr) const { return i - itr.i; }
@@ -257,6 +227,9 @@ template <class T> struct seq : seq_base<T> {
   iterator end() const { return iterator(*this, this->size()); }
   T operator[](ll i) const { return f(i + this->b); }
 };
+template <class F>
+seq(ll b, ll e, F const &f)->seq<typename std::invoke_result<F, ll>::type>;
+
 struct range : seq_base<ll> {
   struct iterator : iterator_base<ll, iterator> {
     iterator(ll const &i) : iterator_base<ll, iterator>(i) {}
@@ -275,17 +248,8 @@ struct range : seq_base<ll> {
 using range = ranges::range;
 range::iterator end(ll i) { return range::iterator(i); }
 range::iterator begin(ll i) { return range::iterator(i); }
-template <class F> auto seq(ll b, ll e, F const &f) {
-  using T = decltype(f(declval<ll>()));
-  return ranges::seq<T>(b, e, f);
-}
-template <class F> auto seq(ll n, F const &f) { return seq(0, n, f); }
-template <class T = ll> vector<T> vec(size_t n, T const &init = T()) {
-  return vector<T>(n, init);
-}
+template <class F> auto seq(ll n, F const &f) { return ranges::seq(0LL, n, f); }
 
-ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
-ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
 bool odd(ll n) { return n & 1; }
 bool even(ll n) { return !odd(n); }
 
@@ -300,8 +264,43 @@ int main() {
   }
 }
 
-void solve() {
-  input();
-  print();
+void genLunlun(str const &s, ll n, u_set<str> &result) {
+  if (n == 0)
+    return;
+  auto l = s.back();
+  result.insert(s);
+  if (l > '0') {
+    auto t = s + static_cast<char>(l - 1);
+    result.insert(t);
+    genLunlun(t, n - 1, result);
+  }
+  if (l < '9') {
+    auto t = s + static_cast<char>(l + 1);
+    result.insert(t);
+    genLunlun(t, n - 1, result);
+  }
+  auto t = s + static_cast<char>(l);
+  result.insert(t);
+  genLunlun(t, n - 1, result);
 }
-
+void solve() {
+  ll K;
+  input(K);
+  dump(K);
+  str S = to_string(K);
+  if (range(1, 10).contains(K)) {
+    print(K);
+    return;
+  }
+  auto lunlun = u_set<str>{};
+  for (auto &&i : range(1, 10)) {
+    auto s = to_string(i);
+    genLunlun(s, 9, lunlun);
+  }
+  auto ans = vecl(lunlun.size());
+  transform(lunlun.begin(), lunlun.end(), ans.begin(),
+            [](auto const &s) { return std::stoll(s); });
+  sort(ans.begin(), ans.end());
+  dump(ans);
+  print(ans[K - 1]);
+}

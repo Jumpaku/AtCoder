@@ -101,12 +101,12 @@ using Pt_d = geom::Pt<lf>;
 namespace std {
 template <> struct hash<Vec_ll> {
   size_t operator()(Vec_ll const &t) const {
-    return hash<tuple<ll, ll, ll>>{}(make_tuple(t.x, t.y, t.z));
+    return std::hash<tuple<ll, ll, ll>>{}(make_tuple(t.x, t.y, t.z));
   }
 };
 template <> struct hash<Pt_ll> {
   size_t operator()(Pt_ll const &t) const {
-    return hash<tuple<ll, ll, ll>>{}(make_tuple(t.x, t.y, t.z));
+    return std::hash<tuple<ll, ll, ll>>{}(make_tuple(t.x, t.y, t.z));
   }
 };
 } // namespace std

@@ -23,13 +23,13 @@ clean:
 debug: debug_main debug.in
 	./debug_main < debug.in
 debug_main: main.cpp
-	g++ -std=c++14 -O2 -Wall -Wextra -Wno-comment -DJUMPAKU_DEBUG -o debug_main main.cpp
+	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -DJUMPAKU_DEBUG -o debug_main main.cpp
 
 .PHONY: run
 run: main
 	./main
 main: main.cpp
-	g++ -std=c++14 -O2 -Wall -Wextra -Wno-comment -o main main.cpp
+	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o main main.cpp
 
 .PHONY: test_sample
 test_sample: test_sample.sh main test_sample.in test_sample.ans
@@ -46,14 +46,14 @@ run_py: main.py
 
 .PHONY: test_sample_py
 test_sample_py: test_sample.sh main.py test_sample.in test_sample.ans
-	./test_sample.sh "python3 main.py"
+	./test_sample.sh "pypy3 main.py"
 
 
 # validate
 validate_main: validate.cpp
-	g++ -std=c++14 -O2 -Wall -Wextra -Wno-comment -o validate_main validate.cpp
+	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o validate_main validate.cpp
 validate_gen_main: validate_gen.cpp
-	g++ -std=c++14 -O2 -Wall -Wextra -Wno-comment -o validate_gen_main validate_gen.cpp
+	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o validate_gen_main validate_gen.cpp
 .PHONY: validate
 validate: validate.sh validate_main validate_gen_main debug_main validate.py validate_gen.py main.py 
 	./validate.sh 

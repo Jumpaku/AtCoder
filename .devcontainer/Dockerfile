@@ -1,7 +1,7 @@
-FROM ubuntu:19.04
+FROM ubuntu:19.10
 
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update -y && apt install -y make g++ clang-format g++-multilib python3 pypy3 python3-autopep8 python3-pytest-pylint git
+RUN apt update -y && apt install -y make g++-9 clang-format g++-multilib python3.8 pypy3 python3-autopep8 python3-pytest-pylint git
 
 WORKDIR /home/
 

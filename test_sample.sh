@@ -16,5 +16,8 @@ do
   $COMMAND < "./tmp/$i" | tee -a test_sample.out 
 done
 
+echo "Ans:"
+cat ./test_sample.ans
+
 echo "Diff:"
 diff ./test_sample.out ./test_sample.ans
