@@ -11,11 +11,12 @@ cat ./template.hpp >| ./main.cpp
 echo "\n\
 void solve();
 int main() {\n\
+  init_io();\n\
   ll t = 1;\n\
   /** input(t); /**/\n\
-  for ([[maybe_unused]] auto &&i : range(t)) {\n\
+  while(t--)\n\
     solve();\n\
-  }\n\
+  cout.flush();\n\
 }\n\
 \n\
 void solve() {\n\
@@ -36,6 +37,7 @@ int main() {\n\
 " >> ./validate.cpp
 echo "\n\
 #include \"template.hpp\"\n\
+#include <random>\n\
 \n\
 using namespace std;\n\
 int main(int argc, char const *argv[]) {\n\

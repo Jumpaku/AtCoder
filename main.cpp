@@ -1,7 +1,22 @@
 //#pragma GCC optimize("O3")
 //#pragma GCC target("avx")
 
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <deque>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <list>
+#include <map>
+#include <numeric>
+#include <set>
+#include <string>
+#include <tuple>
+#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 // Utility
 using std::enable_if_t, std::is_same_v, std::is_array_v, std::declval;
@@ -26,7 +41,7 @@ template <class V> using graph = u_map<V, u_set<V>>;
 template <typename _Signature> using fun = std::function<_Signature>;
 
 // Algorithms
-using std::accumulate, std::partial_sum, std::transform_inclusive_scan;
+using std::accumulate, std::partial_sum;
 using std::all_of, std::any_of, std::none_of, std::count_if, std::find_if,
     std::for_each, std::max_element, std::min_element, std::remove_if,
     std::replace_if, std::reverse, std::transform, std::unique, std::sort,
@@ -102,11 +117,17 @@ OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
 }
 } // namespace io
-using std::cerr, std::cin, std::cout, std::endl;
+using std::cerr, std::cin, std::cout;
+auto init_io = []() {
+  std::ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+  cout << std::fixed << std::setprecision(15);
+};
 auto input = [](auto &... a) { io::in(cin, a...); };
-auto print = [](auto const &... a) { io::out(cout, " ", a...) << endl; };
+auto print = [](auto const &... a) { io::out(cout, " ", a...) << "\n"; };
 #ifdef JUMPAKU_DEBUG
-auto dump = [](auto const &... a) { io::out(cerr, " ", a...) << endl; };
+auto dump = [](auto const &... a) { io::out(cerr, " ", a...) << "\n"; };
 #else
 auto dump = [](auto const &...) {};
 #endif
@@ -215,7 +236,7 @@ struct range : seq_base<ll> {
 } // namespace ranges
 using range = ranges::range;
 range::iterator end(ll i) { return range::iterator(i); }
-range::iterator begin(ll i) { return range::iterator(i); }
+range::iterator begin(ll i = 0LL) { return range::iterator(i); }
 template <class F> auto seq(ll n, F const &f) { return ranges::seq(0LL, n, f); }
 
 bool odd(ll n) { return n & 1; }
@@ -225,11 +246,12 @@ constexpr ll MOD = 1e9 + 7;
 
 void solve();
 int main() {
+  init_io();
   ll t = 1;
   /** input(t); /**/
-  for ([[maybe_unused]] auto &&i : range(t)) {
+  while(t--)
     solve();
-  }
+  cout.flush();
 }
 
 void solve() {
