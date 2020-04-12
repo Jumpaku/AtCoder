@@ -230,7 +230,7 @@ struct range : seq_base<ll> {
   range(ll b, ll e) : seq_base<ll>(b, e) {}
   iterator begin() const { return iterator(b); }
   iterator end() const { return iterator(e); }
-  bool contains(ll x) const { return b <= x && x < e; }
+  bool has(ll x) const { return b <= x && x < e; }
   ll operator[](ll i) const { return i + b; }
 };
 } // namespace ranges
