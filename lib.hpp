@@ -126,7 +126,7 @@ ll pow(ll a, ll n, ll m) {
 }
 ll inv(ll a, ll p) { return pow(a, p - 2, p); }
 template <ll N, ll M> struct Factrial {
-  Factrial() {
+  Factrial() : fact(N + 1), finv(N + 1) {
     fact[0] = 1;
     for (int i = 1; i <= N; ++i)
       fact[i] = (fact[i - 1] * i) % M;
@@ -134,8 +134,8 @@ template <ll N, ll M> struct Factrial {
     for (int i = N; i > 0; --i)
       finv[i - 1] = (finv[i] * i) % M;
   }
-  array<ll, N + 1> fact;
-  array<ll, N + 1> finv;
+  vecl fact;
+  vecl finv;
   ll comb(ll n, ll m) const {
     if (m < 0 || n < m)
       return 0LL;
