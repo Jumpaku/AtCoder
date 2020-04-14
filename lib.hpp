@@ -152,7 +152,6 @@ using mod::pow;
  * DIJKSTRA
  */
 template <class V>
-// using V = tuple<ll, ll>;
 u_map<V, ll> dijkstra(V const start, graph<V> const &g,
                       fun<ll(V, V)> const &dist, u_set<V> const &vs,
                       ll const inf = 1e16) {
