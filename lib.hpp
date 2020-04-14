@@ -95,9 +95,9 @@ template <class T> io::OS &operator<<(io::OS &o, Pt<T> const &p) {
 }
 } // namespace geom
 using Vec_ll = geom::Vec<ll>;
-using Vec_d = geom::Vec<lf>;
+using Vec_f = geom::Vec<lf>;
 using Pt_ll = geom::Pt<ll>;
-using Pt_d = geom::Pt<lf>;
+using Pt_f = geom::Pt<lf>;
 namespace std {
 template <> struct hash<Vec_ll> {
   size_t operator()(Vec_ll const &t) const {
