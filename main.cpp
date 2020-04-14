@@ -2,6 +2,7 @@
 //#pragma GCC target("avx")
 
 #include <algorithm>
+#include <cmath>
 #include <deque>
 #include <iomanip>
 #include <iostream>
