@@ -45,8 +45,9 @@ template <typename _Signature> using fun = std::function<_Signature>;
 using std::accumulate, std::partial_sum;
 using std::all_of, std::any_of, std::none_of, std::count_if, std::find_if,
     std::for_each, std::max_element, std::min_element, std::remove_if,
-    std::replace_if, std::reverse, std::transform, std::unique, std::sort,
-    std::next_permutation, std::swap;
+    std::replace_if, std::copy, std::copy_if, std::reverse, std::transform,
+    std::unique, std::sort, std::next_permutation, std::swap;
+using std::back_inserter;
 using std::lower_bound, std::upper_bound;
 using std::max, std::min, std::clamp, std::lcm, std::gcd;
 
