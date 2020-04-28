@@ -42,7 +42,8 @@ template <class V> using graph = u_map<V, u_set<V>>;
 template <typename _Signature> using fun = std::function<_Signature>;
 
 // Algorithms
-using std::accumulate, std::partial_sum;
+using std::accumulate, std::partial_sum, std::inclusive_scan,
+    std::exclusive_scan;
 using std::all_of, std::any_of, std::none_of, std::count_if, std::find_if,
     std::for_each, std::max_element, std::min_element, std::remove_if,
     std::replace_if, std::copy, std::copy_if, std::reverse, std::transform,
@@ -243,5 +244,8 @@ template <class F> auto seq(ll n, F const &f) { return ranges::seq(0LL, n, f); }
 
 bool odd(ll n) { return n & 1; }
 bool even(ll n) { return !odd(n); }
+
+bool imply(bool p, bool q) { return !p || q; }
+bool iff(bool p, bool q) { return p == q; }
 
 constexpr ll MOD = 1e9 + 7;
