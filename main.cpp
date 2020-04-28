@@ -2,6 +2,7 @@
 //#pragma GCC target("avx")
 
 #include <algorithm>
+#include <bitset>
 #include <cmath>
 #include <deque>
 #include <iomanip>
@@ -26,6 +27,7 @@ using std::iterator_traits, std::random_access_iterator_tag;
 using std::stoll, std::stold, std::to_string, std::operator""s;
 
 // Types
+using std::bitset;
 using std::deque, std::list, std::multiset, std::unordered_multimap,
     std::unordered_multiset;
 using std::nullptr_t, std::pair, std::tuple;
