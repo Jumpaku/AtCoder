@@ -198,7 +198,7 @@ protected:
 template <class T> struct seq_base {
   ll const b;
   ll const e;
-  seq_base(ll b, ll e) : b(b), e(e) {}
+  seq_base(ll b, ll e) : b(b), e(max(b, e)) {}
   ll size() const { return e - b; }
   bool empty() const { return size() == 0; }
 };
