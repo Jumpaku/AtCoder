@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <numeric>
+#include <optional>
 #include <set>
 #include <string>
 #include <tuple>
@@ -21,9 +22,11 @@
 #include <vector>
 
 // Utility
-using std::enable_if_t, std::is_same_v, std::is_array_v, std::declval;
+using std::enable_if_t, std::is_same_v, std::is_array_v, std::is_invocable_v,
+    std::declval;
 using std::get, std::make_pair, std::make_tuple, std::apply;
 using std::iterator_traits, std::random_access_iterator_tag;
+using std::make_optional, std::nullopt;
 using std::stoll, std::stold, std::to_string, std::operator""s;
 
 // Types
@@ -39,6 +42,7 @@ template <class T> using vec = std::vector<T>;
 using vecl = vec<ll>;
 using vecf = vec<lf>;
 using vecs = vec<str>;
+template <class T> using option = std::optional<T>;
 template <class K, class V> using u_map = std::unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
 template <typename _Signature> using fun = std::function<_Signature>;
@@ -84,6 +88,9 @@ OS &out(OS &o, str const &sep, T const &a, Ts const &... as) {
 }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
   return out(o, ":", p.first, p.second);
+}
+template <class T> OS &operator<<(OS &o, option<T> const &opt) {
+  return opt.has_value() ? (o << "Some(" << opt.value() << ")") : (o << "None");
 }
 template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
   auto f = [&](auto const &... ts) -> OS & {

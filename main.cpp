@@ -11,6 +11,7 @@
 #include <list>
 #include <map>
 #include <numeric>
+#include <optional>
 #include <set>
 #include <string>
 #include <tuple>
@@ -21,9 +22,11 @@
 #include <vector>
 
 // Utility
-using std::enable_if_t, std::is_same_v, std::is_array_v, std::declval;
+using std::enable_if_t, std::is_same_v, std::is_array_v, std::is_invocable_v,
+    std::declval;
 using std::get, std::make_pair, std::make_tuple, std::apply;
 using std::iterator_traits, std::random_access_iterator_tag;
+using std::make_optional, std::nullopt;
 using std::stoll, std::stold, std::to_string, std::operator""s;
 
 // Types
@@ -39,6 +42,7 @@ template <class T> using vec = std::vector<T>;
 using vecl = vec<ll>;
 using vecf = vec<lf>;
 using vecs = vec<str>;
+template <class T> using option = std::optional<T>;
 template <class K, class V> using u_map = std::unordered_map<K, V>;
 template <class V> using graph = u_map<V, u_set<V>>;
 template <typename _Signature> using fun = std::function<_Signature>;
@@ -84,6 +88,9 @@ OS &out(OS &o, str const &sep, T const &a, Ts const &... as) {
 }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
   return out(o, ":", p.first, p.second);
+}
+template <class T> OS &operator<<(OS &o, option<T> const &opt) {
+  return opt.has_value() ? (o << "Some(" << opt.value() << ")") : (o << "None");
 }
 template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
   auto f = [&](auto const &... ts) -> OS & {
@@ -257,13 +264,83 @@ int main() {
   init_io();
   ll t = 1;
   /** input(t); /**/
-  while(t--)
+  while (t--)
     solve();
   cout.flush();
 }
 
-void solve() {
-  input();
-  print();
-}
+/**
+ * GRAPH_SEARCH
+ */
+namespace graph_search {
 
+template <class V, class F,
+          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
+void dfs_impl(graph<V> const &g, V const &v, F const &process,
+              u_set<V> &visited) {
+  for (auto const &u : g.at(v)) {
+    if (visited.find(u) == visited.end()) {
+      visited.insert(u);
+      process(option<V>{v}, u);
+      dfs_impl(g, u, process, visited);
+    }
+  }
+}
+template <class V, class F,
+          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
+void dfs(graph<V> const &g, V const &root, F const &process) {
+  u_set<V> visited{root};
+  process(nullopt, root);
+  dfs_impl(g, root, process, visited);
+}
+template <class V, class F,
+          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
+void bfs(graph<V> const &g, V const &root, F const &process) {
+  list<pair<option<V>, V>> l{{nullopt, root}};
+  u_set<V> visited{root};
+  while (!l.empty()) {
+    auto [parent, v] = l.front();
+    l.pop_front();
+    process(parent, v);
+    for (auto const &u : g.at(v)) {
+      if (visited.find(u) == visited.end()) {
+        l.push_back({{v}, u});
+        visited.insert(u);
+      }
+    }
+  }
+}
+} // namespace graph_search
+
+using graph_search::dfs, graph_search::bfs;
+/* end of GRAPH_SEARCH */
+void solve() {
+  lf N, M;
+  input(N, M);
+  graph<ll> G;
+  for (auto &&i : range(M)) {
+    ll a, b;
+    input(a, b);
+    G[a].insert(b);
+    G[b].insert(a);
+  }
+  dump(G);
+  u_map<ll, option<ll>> tree_bfs;
+  {
+    if (!G.empty())
+      bfs(G, 1LL, [&](option<ll> const &pOpt, ll const &c) {
+        dump(pOpt, c);
+        tree_bfs[c] = pOpt;
+      });
+  }
+  dump(tree_bfs);
+  u_map<ll, option<ll>> tree_dfs;
+  {
+    if (!G.empty())
+      dfs(G, 1LL, [&](option<ll> const &pOpt, ll const &c) {
+        dump(pOpt, c);
+        tree_dfs[c] = pOpt;
+      });
+  }
+  dump(tree_dfs);
+}
