@@ -44,3 +44,8 @@ debug.in
 test_sample.ans
 
 test_sample.in
+
+*.in
+*.out
+*.ans
+contest_data.txt

@@ -264,83 +264,13 @@ int main() {
   init_io();
   ll t = 1;
   /** input(t); /**/
-  while (t--)
+  while(t--)
     solve();
   cout.flush();
 }
 
-/**
- * GRAPH_SEARCH
- */
-namespace graph_search {
-
-template <class V, class F,
-          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
-void dfs_impl(graph<V> const &g, V const &v, F const &process,
-              u_set<V> &visited) {
-  for (auto const &u : g.at(v)) {
-    if (visited.find(u) == visited.end()) {
-      visited.insert(u);
-      process(option<V>{v}, u);
-      dfs_impl(g, u, process, visited);
-    }
-  }
-}
-template <class V, class F,
-          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
-void dfs(graph<V> const &g, V const &root, F const &process) {
-  u_set<V> visited{root};
-  process(nullopt, root);
-  dfs_impl(g, root, process, visited);
-}
-template <class V, class F,
-          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
-void bfs(graph<V> const &g, V const &root, F const &process) {
-  list<pair<option<V>, V>> l{{nullopt, root}};
-  u_set<V> visited{root};
-  while (!l.empty()) {
-    auto [parent, v] = l.front();
-    l.pop_front();
-    process(parent, v);
-    for (auto const &u : g.at(v)) {
-      if (visited.find(u) == visited.end()) {
-        l.push_back({{v}, u});
-        visited.insert(u);
-      }
-    }
-  }
-}
-} // namespace graph_search
-
-using graph_search::dfs, graph_search::bfs;
-/* end of GRAPH_SEARCH */
 void solve() {
-  lf N, M;
-  input(N, M);
-  graph<ll> G;
-  for (auto &&i : range(M)) {
-    ll a, b;
-    input(a, b);
-    G[a].insert(b);
-    G[b].insert(a);
-  }
-  dump(G);
-  u_map<ll, option<ll>> tree_bfs;
-  {
-    if (!G.empty())
-      bfs(G, 1LL, [&](option<ll> const &pOpt, ll const &c) {
-        dump(pOpt, c);
-        tree_bfs[c] = pOpt;
-      });
-  }
-  dump(tree_bfs);
-  u_map<ll, option<ll>> tree_dfs;
-  {
-    if (!G.empty())
-      dfs(G, 1LL, [&](option<ll> const &pOpt, ll const &c) {
-        dump(pOpt, c);
-        tree_dfs[c] = pOpt;
-      });
-  }
-  dump(tree_dfs);
+  input();
+  print();
 }
+

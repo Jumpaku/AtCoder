@@ -14,7 +14,7 @@ int main() {\n\
   init_io();\n\
   ll t = 1;\n\
   /** input(t); /**/\n\
-  while(t--)\n\
+  while (t--)\n\
     solve();\n\
   cout.flush();\n\
 }\n\
