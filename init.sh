@@ -1,8 +1,8 @@
 #!/bin/sh
 
 : >| debug.in
-: >| test_sample.in
-: >| test_sample.ans
+: >| sample.in
+: >| sample.ans
 
 cat ./template.hpp >| ./main.cpp
 : >| ./validate.cpp
