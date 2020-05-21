@@ -50,6 +50,6 @@ for task in tasks_html.find_all("div", class_="col-sm-12"):
                 sample_in.write("\n" + pre.get_text())
         if h3s and pre and "Sample Output" in h3s.get_text():
             with open("./samples/" + problem + ".ans", mode="a") as sample_out:
-                sample_out.write(pre.get_text())
+                sample_out.write("\n" + pre.get_text())
 
     problem = chr(ord(problem) + 1)

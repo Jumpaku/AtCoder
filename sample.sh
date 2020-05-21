@@ -19,14 +19,14 @@ cat $INPUT | awk 'BEGIN { RS = ""; FS = "\n" }; { for (i = 1; i <= NF; i++){ pri
 N=`cat ./tmp/N`
 : >| $OUTPUT
 
-echo "Out:"
+echo "-- Out: ----------"
 for i in `seq $N`;
 do
   $COMMAND < "./tmp/$i" | tee -a $OUTPUT
 done
 
-echo "Ans:"
+echo "-- Ans: ----------"
 cat $ANSWER
 
-echo "Diff:"
-diff $OUTPUT $ANSWER
+echo "-- Diff: ---------"
+diff -Z -B $OUTPUT $ANSWER

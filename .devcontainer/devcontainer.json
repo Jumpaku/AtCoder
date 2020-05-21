@@ -7,7 +7,8 @@
     "extensions": [
         "ms-vscode.cpptools",
         "xaver.clang-format",
-        "ms-python.python"
+        "ms-python.python",
+        "donjayamanne.githistory"
     ],
     "settings": {
         "editor.formatOnSave": true,
