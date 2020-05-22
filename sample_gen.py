@@ -1,6 +1,10 @@
 from bs4 import BeautifulSoup
 import requests
+import urllib.parse as urlparse
+from sys import stdin
+from functools import reduce
 
+""""""
 # "abc168"
 print("Contest ID?")
 contest_id = input()
@@ -14,11 +18,13 @@ print("Password?")
 password = input()
 print(password)
 
-tasks_url = "https://atcoder.jp/contests/" + contest_id + "/tasks_print"
-login_url = "https://atcoder.jp/login"
+tasks_url = "https://atcoder.jp/contests/" + contest_id + "/tasks_print?lang=en"
+login_url = "https://atcoder.jp/login?continue=" + \
+    urlparse.quote(tasks_url, "")
 
 session = requests.Session()
 
+print(login_url)
 login_res = session.get(login_url)
 login_html = BeautifulSoup(login_res.text, "html.parser")
 csrf_token = login_html.find_all(attrs={"name": "csrf_token"})[0]["value"]
@@ -27,13 +33,18 @@ login_info = {
     "password": password,
     "csrf_token": csrf_token
 }
-if not session.post(login_url, data=login_info).ok:
+tasks_res = session.post(login_url, data=login_info)
+if not tasks_res.ok:
     print("Fail login")
     print(login_info)
     exit()
+html_text = tasks_res.text
 
-tasks_res = session.get(tasks_url)
-tasks_html = BeautifulSoup(tasks_res.text, "html.parser")
+"""
+html_text = reduce(lambda t0, t1: t0+t1, stdin)
+"""
+
+tasks_html = BeautifulSoup(html_text, "html.parser")
 
 problem = "a"
 for task in tasks_html.find_all("div", class_="col-sm-12"):
