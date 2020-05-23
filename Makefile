@@ -37,28 +37,14 @@ run: main
 main: main.cpp
 	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o main main.cpp
 
+
 .PHONY: sample
 sample: sample.sh main sample.in sample.ans
 	./sample.sh "./main"
-.PHONY: sample_a
-sample_a: sample.sh main samples/a.in samples/a.ans
-	./sample.sh "./main" "./samples/a"
-.PHONY: sample_b
-sample_b: sample.sh main samples/b.in samples/b.ans
-	./sample.sh "./main" "./samples/b"
-.PHONY: sample_c
-sample_c: sample.sh main samples/c.in samples/c.ans
-	./sample.sh "./main" "./samples/c"
-.PHONY: sample_d
-sample_d: sample.sh main samples/d.in samples/d.ans
-	./sample.sh "./main" "./samples/d"
-.PHONY: sample_e
-sample_e: sample.sh main samples/e.in samples/e.ans
-	./sample.sh "./main" "./samples/e"
-.PHONY: sample_f
-sample_f: sample.sh main samples/f.in samples/f.ans
-	./sample.sh "./main" "./samples/f"
-
+.PHONY: sample_%
+sample_%: sample.sh main samples/%.in samples/%.ans
+	./sample.sh "./main" "./samples/$*"
+	
 # python
 .PHONY: debug_py
 debug_py: main.py debug.in
@@ -71,25 +57,9 @@ run_py: main.py
 .PHONY: sample_py
 sample_py: sample.sh main.py sample.in sample.ans
 	./sample.sh "pypy3 main.py"
-.PHONY: sample_a_py
-sample_a_py: sample.sh main.py samples/a.in samples/a.ans
-	./sample.sh "pypy3 main.py" "samples/a"
-.PHONY: sample_b_py
-sample_b_py: sample.sh main.py samples/b.in samples/b.ans
-	./sample.sh "pypy3 main.py" "samples/b"
-.PHONY: sample_c_py
-sample_c_py: sample.sh main.py samples/c.in sampls/c.ans
-	./sample.sh "pypy3 main.py" "samples/c"
-.PHONY: sample_d_py
-sample_d_py: sample.sh main.py samples/d.in samples/d.ans
-	./sample.sh "pypy3 main.py" "samples/d"
-.PHONY: sample_e_py
-sample_e_py: sample.sh main.py samples/e.in samples/e.ans
-	./sample.sh "pypy3 main.py" "samples/e"
-.PHONY: sample_f_py
-sample_f_py: sample.sh main.py samples/f.in samples/f.ans
-	./sample.sh "pypy3 main.py" "samples/f"
-
+.PHONY: sample_%_py
+sample_%_py: sample.sh main.py samples/%.in samples/%.ans
+	./sample.sh "pypy3 main.py" "samples/$*"
 
 # validate
 validate_main: validate.cpp
