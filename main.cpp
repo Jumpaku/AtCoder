@@ -50,13 +50,15 @@ template <typename _Signature> using fun = std::function<_Signature>;
 // Algorithms
 using std::accumulate, std::partial_sum, std::inclusive_scan,
     std::exclusive_scan;
-using std::all_of, std::any_of, std::none_of, std::count_if, std::find_if,
-    std::for_each, std::max_element, std::min_element, std::remove_if,
-    std::replace_if, std::copy, std::copy_if, std::reverse, std::transform,
-    std::unique, std::sort, std::next_permutation, std::swap;
-using std::back_inserter;
+using std::all_of, std::any_of, std::none_of, std::count_if, std::count,
+    std::find_if, std::for_each, std::max_element, std::min_element,
+    std::remove_if, std::replace_if, std::copy, std::copy_if, std::reverse,
+    std::transform, std::unique, std::sort, std::next_permutation, std::swap;
+using std::back_inserter, std::inserter;
 using std::lower_bound, std::upper_bound;
 using std::max, std::min, std::clamp, std::lcm, std::gcd;
+using std::set_intersection, std::set_difference, std::set_union,
+    std::set_symmetric_difference;
 
 namespace io {
 // Input
