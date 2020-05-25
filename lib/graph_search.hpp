@@ -6,7 +6,7 @@
 namespace graph_search {
 
 template <class V, class F,
-          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
+          enable_if_t<is_invocable_v<F, opt<V>, V>, nullptr_t> = nullptr>
 void dfs_impl(graph<V> const &g, V const &v, F const &process,
               u_set<V> &visited) {
   for (auto const &u : g.at(v)) {
@@ -18,14 +18,14 @@ void dfs_impl(graph<V> const &g, V const &v, F const &process,
   }
 }
 template <class V, class F,
-          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
+          enable_if_t<is_invocable_v<F, opt<V>, V>, nullptr_t> = nullptr>
 void dfs(graph<V> const &g, V const &root, F const &process) {
   u_set<V> visited{root};
   process(nullopt, root);
   dfs_impl(g, root, process, visited);
 }
 template <class V, class F,
-          enable_if_t<is_invocable_v<F, option<V>, V>, nullptr_t> = nullptr>
+          enable_if_t<is_invocable_v<F, opt<V>, V>, nullptr_t> = nullptr>
 void bfs(graph<V> const &g, V const &root, F const &process) {
   list<pair<option<V>, V>> l{{nullopt, root}};
   u_set<V> visited{root};

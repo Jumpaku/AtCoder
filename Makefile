@@ -12,6 +12,8 @@
 # make validate: 
 
 
+CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment -DJUMPAKU_NO_BOOST
+
 .PHONY: init
 init: clean init.sh
 	./init.sh
@@ -29,13 +31,13 @@ sample_gen:
 debug: debug_main debug.in
 	./debug_main < debug.in
 debug_main: main.cpp
-	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -DJUMPAKU_DEBUG -o debug_main main.cpp
+	g++ $(CPP_COMMON_OPTIONS) -DJUMPAKU_DEBUG -o debug_main main.cpp
 
 .PHONY: run
 run: main
 	./main
 main: main.cpp
-	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o main main.cpp
+	g++ $(CPP_COMMON_OPTIONS) -o main main.cpp
 
 
 .PHONY: sample
@@ -63,9 +65,9 @@ sample_%_py: sample.sh main.py samples/%.in samples/%.ans
 
 # validate
 validate_main: validate.cpp
-	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o validate_main validate.cpp
+	g++ $(CPP_COMMON_OPTIONS) -o validate_main validate.cpp
 validate_gen_main: validate_gen.cpp
-	g++ -std=c++17 -O2 -Wall -Wextra -Wno-comment -o validate_gen_main validate_gen.cpp
+	g++ $(CPP_COMMON_OPTIONS) -o validate_gen_main validate_gen.cpp
 .PHONY: validate
 validate: validate.sh validate_main validate_gen_main debug_main validate.py validate_gen.py main.py 
 	./validate.sh 
