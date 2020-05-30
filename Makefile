@@ -42,7 +42,7 @@ main: main.cpp
 
 .PHONY: sample
 sample: sample.sh main sample.in sample.ans
-	./sample.sh "./main"
+	./sample.sh "./main" "./sample"
 .PHONY: sample_%
 sample_%: sample.sh main samples/%.in samples/%.ans
 	./sample.sh "./main" "./samples/$*"

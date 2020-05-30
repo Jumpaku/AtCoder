@@ -19,6 +19,8 @@
 #include <utility>
 #include <vector>
 
+#define _GLIBCXX_DEBUG
+
 // Utility
 using std::enable_if_t, std::is_same_v, std::is_array_v, std::is_invocable_v,
     std::declval;
@@ -96,7 +98,7 @@ template <class T> OS &out_join(OS &o, str const &, T const &a) {
 }
 template <class T, class... Ts>
 OS &out_join(OS &o, str const &sep, T const &a, Ts const &... as) {
-  return out(o << a << sep, sep, as...);
+  return out_join(o << a << sep, sep, as...);
 }
 OS &operator<<(OS &o, __int128 const &x) { return o << (long long int)x; }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {

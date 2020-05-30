@@ -19,6 +19,8 @@
 #include <utility>
 #include <vector>
 
+#define _GLIBCXX_DEBUG
+
 // Utility
 using std::enable_if_t, std::is_same_v, std::is_array_v, std::is_invocable_v,
     std::declval;
@@ -96,7 +98,7 @@ template <class T> OS &out_join(OS &o, str const &, T const &a) {
 }
 template <class T, class... Ts>
 OS &out_join(OS &o, str const &sep, T const &a, Ts const &... as) {
-  return out(o << a << sep, sep, as...);
+  return out_join(o << a << sep, sep, as...);
 }
 OS &operator<<(OS &o, __int128 const &x) { return o << (long long int)x; }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
@@ -284,42 +286,14 @@ void solve();
 int main() {
   init_io();
   ll t = 1;
-  /**/ input(t); /**/
+  /** input(t); /**/
   while (t--)
     solve();
   cout.flush();
 }
 
-ll f(ll const n, ll const A, ll const B, ll const C, ll const D,
-     u_map<ll, ll> &dp) {
-  if (n == 0)
-    return 0;
-  if (n == 1)
-    return D;
-  if (n == 2) {
-    return min(D + f(n - 1, A, B, C, D, dp), A + f(n / 2, A, B, C, D, dp));
-  }
-  if (n < 0)
-    return 1e18;
-  if (dp.find(n) != dp.end())
-    return dp.at(n);
-  ll r2 = n % 2;
-  ll r3 = n % 3;
-  ll r5 = n % 5;
-  return dp[n] = min({
-             D * n,
-             r2 * D + A + f(n / 2, A, B, C, D, dp),
-             (2 - r2) * D + A + f((n + 2) / 2, A, B, C, D, dp),
-             r3 * D + B + f(n / 3, A, B, C, D, dp),
-             (3 - r3) * D + B + f((n + 3) / 3, A, B, C, D, dp),
-             r5 * D + C + f(n / 5, A, B, C, D, dp),
-             (5 - r5) * D + C + f((n + 5) / 5, A, B, C, D, dp),
-         });
+void solve() {
+  input();
+  print();
 }
 
-void solve() {
-  ll N, A, B, C, D;
-  input(N, A, B, C, D);
-  u_map<ll, ll> dp;
-  print(f(N, A, B, C, D, dp));
-}
