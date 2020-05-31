@@ -28,11 +28,16 @@ echo "\n\
 #include \"template.hpp\"\n\
 \n\
 int main() {\n\
+  ll in;
+  input();\n\
+  ll out;\n\
   input();\n\
   ll ans;\n\
-  input();\n\
-  if (true) return print(\"OK\"), 0;\n\
-  else return print(\"NG\"), 1;\n\
+  print();\n\
+  if (out == ans)\n\
+    return print(\"OK\"), 0;\n\
+  else\n\
+    return print(\"NG\"), 1;\n\
 }\n\
 " >> ./validate.cpp
 echo "\n\
@@ -45,7 +50,8 @@ int main(int argc, char const *argv[]) {\n\
   mt19937 e{seed};\n\
   using dist_u = uniform_int_distribution<ll>;\n\
 \n\
-  print(dist_u{0, 1}(e));\n\
+  ll N = 10;\n\
+  print(dist_u{0, N}(e));\n\
 }\n\
 " >> ./validate_gen.cpp
 

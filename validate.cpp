@@ -2,10 +2,15 @@
 #include "template.hpp"
 
 int main() {
+  ll in;
+  input();
+  ll out;
   input();
   ll ans;
-  input();
-  if (true) return print("OK"), 0;
-  else return print("NG"), 1;
+  print();
+  if (out == ans)
+    return print("OK"), 0;
+  else
+    return print("NG"), 1;
 }
 

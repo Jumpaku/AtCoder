@@ -8,6 +8,7 @@ int main(int argc, char const *argv[]) {
   mt19937 e{seed};
   using dist_u = uniform_int_distribution<ll>;
 
-  print(dist_u{0, 1}(e));
+  ll N = 10;
+  print(dist_u{0, N}(e));
 }
 
