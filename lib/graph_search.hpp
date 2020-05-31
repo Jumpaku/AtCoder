@@ -9,10 +9,12 @@ template <class V, class F,
           enable_if_t<is_invocable_v<F, opt<V>, V>, nullptr_t> = nullptr>
 void dfs_impl(graph<V> const &g, V const &v, F const &process,
               u_set<V> &visited) {
+  if (g.find(v) == g.end())
+    return;
   for (auto const &u : g.at(v)) {
     if (visited.find(u) == visited.end()) {
       visited.insert(u);
-      process(option<V>{v}, u);
+      process(opt<V>{v}, u);
       dfs_impl(g, u, process, visited);
     }
   }
@@ -27,12 +29,14 @@ void dfs(graph<V> const &g, V const &root, F const &process) {
 template <class V, class F,
           enable_if_t<is_invocable_v<F, opt<V>, V>, nullptr_t> = nullptr>
 void bfs(graph<V> const &g, V const &root, F const &process) {
-  list<pair<option<V>, V>> l{{nullopt, root}};
+  list<pair<opt<V>, V>> l{{nullopt, root}};
   u_set<V> visited{root};
   while (!l.empty()) {
     auto [parent, v] = l.front();
     l.pop_front();
     process(parent, v);
+    if (g.find(v) == g.end())
+      return;
     for (auto const &u : g.at(v)) {
       if (visited.find(u) == visited.end()) {
         l.push_back({{v}, u});
