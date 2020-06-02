@@ -37,6 +37,7 @@ tasks_res = session.post(login_url, data=login_info)
 if not tasks_res.ok:
     print("Fail login")
     print(login_info)
+    print(tasks_res)
     exit()
 html_text = tasks_res.text
 

@@ -218,7 +218,7 @@ ll hash_tuple(tuple<Ts...> const &t, std::index_sequence<I...>) {
 }
 } // namespace hashcode
 namespace std {
-#ifdef __STRICT_ANSI__
+#if __GNUC__ == 5 || defined(__STRICT_ANSI__)
 template <> struct hash<__int128> {
   size_t operator()(__int128 const &t) const {
     return hash<long long>{}((long long)((t >> 64) ^ t) & 0xffffffff);
@@ -362,7 +362,7 @@ constexpr ll MOD = 1e9 + 7;
 #endif /* TEMPLATE_HPP */
 
 void solve();
-int main() {
+int main(int, char *[]) {
   init_io();
   ll t = 1;
   /** input(t); /**/

@@ -10,7 +10,7 @@ cat ./template.hpp >| ./main.cpp
 
 echo "\n\
 void solve();
-int main() {\n\
+int main(int, char *[]) {\n\
   init_io();\n\
   ll t = 1;\n\
   /** input(t); /**/\n\

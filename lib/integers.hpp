@@ -52,5 +52,7 @@ u_map<ll, ll> primeFactorize(ll const &N) {
   return result;
 }
 } // namespace integers
-using integers::createPrimes, integers::createFactors, integers::primeFactorize;
+using integers::createFactors;
+using integers::createPrimes;
+using integers::primeFactorize;
 /* end of INTEGERS */
