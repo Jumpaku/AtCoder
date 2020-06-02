@@ -1,4 +1,7 @@
+#ifndef TEMPLATE_HPP
 #include "../template.hpp"
+#endif
+
 /**
  * GEOM
  */

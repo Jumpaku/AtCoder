@@ -4,4 +4,4 @@ services:
   atcoder:
     build: './'
     volumes: 
-      - './../:/home/'
+      - './../:/home/:delegated'

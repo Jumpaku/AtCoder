@@ -1,24 +1,31 @@
+#ifndef TEMPLATE_HPP
 #include "../template.hpp"
+#endif
 
 /**
  * INTEGERS
  */
 namespace integers {
-vecl createPrimes(ll M) {
-  vecl primes;
+// O(N*log(log(N))), log(N)
+vecl createPrimes(ll const &M) {
   vec<bool> isPrime(M + 1, true);
   isPrime[0] = isPrime[1] = false;
-  for (ll i = 2; i <= M; ++i) {
+  for (ll i = 2; i * i <= M; ++i) {
     if (isPrime[i]) {
-      primes.push_back(i);
       for (ll j = i * 2; j <= M; j += i) {
         isPrime[j] = false;
       }
     }
   }
+  vecl primes;
+  for (auto &&i : range(isPrime.size())) {
+    if (isPrime[i])
+      primes.push_back(i);
+  }
   return primes;
 }
 
+// N=1e12 => sqrt(N) -> 1e6, 2^{log_{10}(N)} -> 4e3
 vecl createFactors(ll const &N) {
   vecl factors;
   for (ll i = 1; i * i <= N; i++) {
