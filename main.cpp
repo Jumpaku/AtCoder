@@ -27,13 +27,18 @@
 
 // Utility
 using std::declval;
+using std::distance;
 using std::enable_if_t;
 using std::get;
+using std::index_sequence;
 using std::is_array;
+using std::is_pointer;
 using std::is_same;
 using std::iterator_traits;
+using std::make_index_sequence;
 using std::make_pair;
 using std::make_tuple;
+using std::make_unique;
 using std::random_access_iterator_tag;
 using std::stold;
 using std::stoll;
@@ -101,7 +106,6 @@ template <class T> T clamp(T const &v, T const &l, T const &h) {
 }
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
-
 } // namespace utils
 using utils::clamp;
 using utils::gcd;
@@ -147,11 +151,12 @@ OS &operator<<(OS &o, __int128 const &x) { return o << (long long int)x; }
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
   return o << p.first << ":" << p.second;
 }
+template <class... Ts, size_t... I>
+OS &tuple_out(OS &o, tuple<Ts...> const &t, index_sequence<I...>) {
+  return out_join(o, ",", get<I>(t)...);
+}
 template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
-  auto f = [&](auto const &... ts) -> OS & {
-    return out_join(o << "(", ",", ts...);
-  };
-  return apply(f, t) << ")";
+  return tuple_out(o << "(", t, make_index_sequence<sizeof...(Ts)>()) << ")";
 }
 template <class T> struct Joiner {
   str const pre;
@@ -179,7 +184,7 @@ auto join(Itr b, Itr e, str const &sep = ""s, str const &pre = ""s,
   return Joiner<T>(b, e, sep, pre, post);
 }
 template <class C, enable_if_t<!is_same<C, str>::value && !is_array<C>::value &&
-                                   !std::is_pointer<C>::value,
+                                   !is_pointer<C>::value,
                                nullptr_t> = nullptr>
 OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
@@ -213,7 +218,7 @@ ll hash_args(ll h, T const &t, Ts const &... ts) {
   return hash_args(((h << 19) - h) ^ hasher(t), ts...);
 }
 template <class... Ts, size_t... I>
-ll hash_tuple(tuple<Ts...> const &t, std::index_sequence<I...>) {
+ll hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
   return hash_args(17, get<I>(t)...);
 }
 } // namespace hashcode
@@ -324,15 +329,13 @@ namespace optional {
 template <class T> struct opt {
   std::unique_ptr<T> ptr;
   opt(nullptr_t ptr = nullptr) : ptr(ptr){};
-  opt(T const &val) : ptr(std::make_unique<T>(val)){};
-  opt(opt<T> &&) = default;
+  opt(T const &val) : ptr(make_unique<T>(val)){};
   opt(opt<T> const &o) : opt<T>(nullptr) {
     if (o)
-      ptr = std::make_unique<T>(*o);
+      ptr = make_unique<T>(*o);
   }
-  opt<T> &operator=(opt<T> const &o) {
-    ptr = o ? std::make_unique<T>(*o) : nullptr;
-  }
+  opt(opt<T> &&) = default;
+  opt<T> &operator=(opt<T> const &o) { ptr = o ? make_unique<T>(*o) : nullptr; }
   opt<T> &operator=(opt<T> &&) = default;
   operator bool() const { return has_value(); }
   T &operator*() { return value(); }
