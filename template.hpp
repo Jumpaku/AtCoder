@@ -363,3 +363,22 @@ constexpr lf PI = 3.141592653589793238462643383279502884L;
 constexpr ll MOD = 1e9 + 7;
 
 #endif /* TEMPLATE_HPP */
+
+/**
+// DP Definition
+using Key = tuple<>;
+using Data = struct {};
+using Cache = u_map<Key, ll>;
+ll f(Key const &key, Data const &data, Cache &dp) {
+  auto found = dp.find(key);
+  if (found != dp.end())
+    return found->second;
+  if ()
+    return Initial;
+  return dp[key] = Update;
+}
+// DP Call
+Data data{};
+Cache dp;
+f(Key{}, data, dp);
+//*/
