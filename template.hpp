@@ -366,19 +366,25 @@ constexpr ll MOD = 1e9 + 7;
 
 /**
 // DP Definition
-using Key = tuple<>;
+/**
 using Data = struct {};
-using Cache = u_map<Key, ll>;
-ll f(Key const &key, Data const &data, Cache &dp) {
-  auto found = dp.find(key);
-  if (found != dp.end())
-    return found->second;
-  if ()
-    return Initial;
-  return dp[key] = Update;
-}
+using Key = tuple<>;
+using Value = ll;
+using Cache = u_map<Key, Value>;
+struct DP {
+  Data data;
+  Cache cache;
+  DpBase(Data const &data) : data(data), cache((ll)1e6) {}
+  Value compute(Key const &key) {
+    if (IS_INITIAL)
+      return INITIAL_VALUE;
+    auto found = cache.find(key);
+    if (found != cache.end())
+      return found->second;
+    return cache[key] = RECURSION_CALL;
+  }
+};
 // DP Call
-Data data{};
-Cache dp;
-f(Key{}, data, dp);
+DP dp(D{});
+dp.compute(K{});
 //*/
