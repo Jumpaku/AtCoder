@@ -9,7 +9,7 @@
 namespace itertools {
 
 template <class Itr> struct iterator_base {
-  using difference_type = ll;
+  using difference_type = int;
   using value_type = vecl;
   using pointer = vecl *;
   using reference = vecl &;
@@ -25,12 +25,12 @@ template <class Itr> struct iterator_base {
     ++self();
     return ret;
   }
-  Itr operator+(ll const &n) const {
+  Itr operator+(int const &n) const {
     auto ret = with(values);
     return ret += n;
   }
-  Itr &operator+=(ll const &n) {
-    for (ll i = 0; i < n; ++i)
+  Itr &operator+=(int const &n) {
+    for (int i = 0; i < n; ++i)
       incr();
     return self();
   }
@@ -55,12 +55,12 @@ struct Product {
     void incr() override {
       if (isEnd)
         return;
-      ll n = values.size();
+      int n = values.size();
       if (n == 0) {
         isEnd = true;
         return;
       }
-      for (ll i = values.size() - 1; i >= 0; --i) {
+      for (int i = values.size() - 1; i >= 0; --i) {
         if (values[i] < sizes[i] - 1) {
           ++values[i];
           return;
@@ -87,7 +87,7 @@ public:
 };
 
 struct Power : Product {
-  Power(ll const &size, ll const &n) : Product(vecl(n, size)) {}
+  Power(int const &size, int const &n) : Product(vecl(n, size)) {}
 };
 
 struct Permutation {
@@ -105,9 +105,9 @@ struct Permutation {
     void incr() override {
       if (isEnd)
         return;
-      ll n = indices.size();
-      ll r = cycles.size();
-      for (ll i = r - 1; i >= 0; --i) {
+      int n = indices.size();
+      int r = cycles.size();
+      for (int i = r - 1; i >= 0; --i) {
         --cycles[i];
         if (cycles[i] == 0) {
           vecl tmp(indices.begin(), indices.begin() + i);
@@ -117,7 +117,7 @@ struct Permutation {
           indices = tmp;
           cycles[i] = n - i;
         } else {
-          ll j = cycles[i];
+          int j = cycles[i];
           swap(indices[i], indices[n - j]);
           copy(indices.begin(), indices.begin() + r, values.begin());
           return;
@@ -128,12 +128,12 @@ struct Permutation {
   };
 
 private:
-  ll size;
-  ll take;
+  int size;
+  int take;
 
 public:
-  Permutation(ll const &size, ll const &take) : size(size), take(take) {}
-  Permutation(ll const &size) : Permutation(size, size) {}
+  Permutation(int const &size, int const &take) : size(size), take(take) {}
+  Permutation(int const &size) : Permutation(size, size) {}
   iterator begin() const {
     if (take < 0 || size < take)
       return end();
@@ -151,8 +151,8 @@ public:
 
 struct Combination {
   struct iterator : iterator_base<iterator> {
-    ll size;
-    iterator(vecl const &values, ll const &size, bool isEnd)
+    int size;
+    iterator(vecl const &values, int const &size, bool isEnd)
         : iterator_base<iterator>(values, isEnd), size(size) {}
     iterator with(vecl const &values) const override {
       return iterator(values, size, isEnd);
@@ -161,12 +161,12 @@ struct Combination {
     void incr() override {
       if (isEnd)
         return;
-      ll n = size;
-      ll r = values.size();
-      for (ll i = r - 1; i >= 0; --i) {
+      int n = size;
+      int r = values.size();
+      for (int i = r - 1; i >= 0; --i) {
         if (values[i] != i + n - r) {
           ++values[i];
-          for (ll j = i + 1; j < r; j++)
+          for (int j = i + 1; j < r; j++)
             values[j] = values[j - 1] + 1;
           return;
         }
@@ -176,12 +176,12 @@ struct Combination {
   };
 
 private:
-  ll size;
-  ll take;
+  int size;
+  int take;
 
 public:
-  Combination(ll const &size, ll const &take) : size(size), take(take) {}
-  Combination(ll const &size) : Combination(size, take) {}
+  Combination(int const &size, int const &take) : size(size), take(take) {}
+  Combination(int const &size) : Combination(size, take) {}
   iterator begin() const {
     if (take < 0 || size < take)
       return end();
@@ -194,8 +194,8 @@ public:
 
 struct MultiCombination {
   struct iterator : iterator_base<iterator> {
-    ll size;
-    iterator(vecl const &values, ll const &size, bool isEnd)
+    int size;
+    iterator(vecl const &values, int const &size, bool isEnd)
         : iterator_base<iterator>(values, isEnd), size(size) {}
     iterator with(vecl const &values) const override {
       return iterator(values, size, isEnd);
@@ -204,12 +204,12 @@ struct MultiCombination {
     void incr() override {
       if (isEnd)
         return;
-      ll n = size;
-      ll r = values.size();
-      for (ll i = r - 1; i >= 0; --i) {
+      int n = size;
+      int r = values.size();
+      for (int i = r - 1; i >= 0; --i) {
         if (values[i] != n - 1) {
-          ll vi = values[i];
-          for (ll j = i; j < r; j++)
+          int vi = values[i];
+          for (int j = i; j < r; j++)
             values[j] = vi + 1;
           return;
         }
@@ -219,12 +219,12 @@ struct MultiCombination {
   };
 
 private:
-  ll size;
-  ll take;
+  int size;
+  int take;
 
 public:
-  MultiCombination(ll const &size, ll const &take) : size(size), take(take) {}
-  MultiCombination(ll const &size) : MultiCombination(size, take) {}
+  MultiCombination(int const &size, int const &take) : size(size), take(take) {}
+  MultiCombination(int const &size) : MultiCombination(size, take) {}
   iterator begin() const {
     if (take < 0 || size < take)
       return end();

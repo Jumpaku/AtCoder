@@ -69,5 +69,5 @@ validate_main: validate.cpp
 validate_gen_main: validate_gen.cpp
 	g++ $(CPP_COMMON_OPTIONS) -o validate_gen_main validate_gen.cpp
 .PHONY: validate
-validate: validate.sh validate_main validate_gen_main debug_main validate.py validate_gen.py main.py 
+validate: validate.sh validate_main validate_gen_main main validate.py validate_gen.py main.py 
 	./validate.sh 

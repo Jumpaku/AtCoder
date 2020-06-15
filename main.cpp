@@ -210,15 +210,15 @@ using io::join;
 
 // Hash
 namespace hashcode {
-template <class... Ts> ll hash_args(ll h, Ts const &... ts);
-ll hash_args(ll h) { return h; }
+template <class... Ts> size_t hash_args(size_t h, Ts const &... ts);
+size_t hash_args(size_t h) { return h; }
 template <class T, class... Ts>
-ll hash_args(ll h, T const &t, Ts const &... ts) {
+size_t hash_args(size_t h, T const &t, Ts const &... ts) {
   constexpr std::hash<T> hasher;
   return hash_args(((h << 19) - h) ^ hasher(t), ts...);
 }
 template <class... Ts, size_t... I>
-ll hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
+size_t hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
   return hash_args(17, get<I>(t)...);
 }
 } // namespace hashcode
@@ -226,19 +226,19 @@ namespace std {
 #if __GNUC__ == 5 || defined(__STRICT_ANSI__)
 template <> struct hash<__int128> {
   size_t operator()(__int128 const &t) const {
-    return hash<long long>{}((long long)((t >> 64) ^ t) & 0xffffffff);
+    return (t & 0xffffff) ^ ((t >> 63) & 0xffffff);
   }
 };
 #endif
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
-    ll h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
+    size_t h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
     return h ^ (h >> 32);
   }
 };
 template <class T> struct hash<u_set<T>> {
   size_t operator()(u_set<T> const &t) const {
-    auto hasher = std::hash<T>{};
+    constexpr std::hash<T> hasher;
     return accumulate(
         t.begin(), t.end(), (size_t)0,
         [&](auto acc, auto const &ti) { return acc + hasher(ti); });

@@ -6,7 +6,9 @@
  * MOD
  */
 namespace mod {
-ll pow(ll a, ll n, ll m) {
+using longlong = long long;
+
+longlong pow(longlong a, longlong n, longlong m) {
   if (n == 0)
     return 1;
   if (n & 1)
@@ -14,9 +16,10 @@ ll pow(ll a, ll n, ll m) {
   auto b = pow(a, n / 2, m);
   return (b * b) % m;
 }
-ll inv(ll a, ll p) { return pow(a, p - 2, p); }
-template <ll N, ll M> struct Factorial {
-  Factorial() : fact(N + 1), finv(N + 1) {
+longlong inv(longlong a, longlong p) { return pow(a, p - 2, p); }
+
+struct CombCount {
+  CombCount(int N, longlong mod) : M(mod), fact(N + 1), finv(N + 1) {
     fact[0] = 1;
     for (int i = 1; i <= N; ++i)
       fact[i] = (fact[i - 1] * i) % M;
@@ -24,16 +27,17 @@ template <ll N, ll M> struct Factorial {
     for (int i = N; i > 0; --i)
       finv[i - 1] = (finv[i] * i) % M;
   }
-  vecl fact;
-  vecl finv;
-  ll comb(ll n, ll m) const {
+  longlong const M;
+  vec<longlong> fact;
+  vec<longlong> finv;
+  longlong operator()(longlong n, longlong m) const {
     if (m < 0 || n < m)
-      return 0LL;
+      return 0;
     return (fact[n] * ((finv[m] * finv[n - m]) % M)) % M;
   }
 };
 } // namespace mod
-using mod::Factorial;
+using mod::CombCount;
 using mod::inv;
 using mod::pow;
 /* end of MOD */

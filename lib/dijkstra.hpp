@@ -10,7 +10,8 @@ template <class V, class F,
           enable_if_t<std::is_constructible<fun<ll(V, V)>, F>::value,
                       nullptr_t> = nullptr>
 u_map<V, ll> dijkstra(V const start, graph<V> const &g, F const &dist,
-                      u_set<V> const &vs, ll const inf = 1e16) {
+                      u_set<V> const &vs) {
+  ll constexpr inf = 0x7fff'ffff'ffff'ffff;
   auto d = u_map<V, ll>{};
   for (auto &&v : vs)
     d[v] = inf;
