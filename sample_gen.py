@@ -45,7 +45,7 @@ html_text = tasks_res.text
 html_text = reduce(lambda t0, t1: t0+t1, stdin)
 """
 
-tasks_html = BeautifulSoup(html_text, "html.parser")
+tasks_html = BeautifulSoup(html_text, "lxml")
 
 problem = "a"
 for task in tasks_html.find_all("div", class_="col-sm-12"):

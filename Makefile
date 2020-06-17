@@ -12,7 +12,7 @@
 # make validate: 
 
 
-CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment -DJUMPAKU_NO_BOOST
+CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment 
 
 .PHONY: init
 init: clean init.sh
