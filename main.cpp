@@ -43,6 +43,7 @@ using std::random_access_iterator_tag;
 using std::stold;
 using std::stoll;
 using std::operator""s;
+using std::abs;
 
 // Types
 using std::bitset;
@@ -164,7 +165,8 @@ template <class T> struct Joiner {
   str const sep;
   vec<T> const container;
   template <class Itr>
-  Joiner(Itr begin, Itr end, str const &sep, str const &pre, str const &post)
+  Joiner(Itr const &begin, Itr const &end, str const &sep, str const &pre,
+         str const &post)
       : pre(pre), post(post), sep(sep), container(begin, end) {}
 };
 template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
@@ -178,8 +180,8 @@ template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
   return o << joiner.post;
 }
 template <class Itr>
-auto join(Itr b, Itr e, str const &sep = ""s, str const &pre = ""s,
-          str const &post = ""s) {
+auto join(Itr const &b, Itr const &e, str const &sep = ""s,
+          str const &pre = ""s, str const &post = ""s) {
   using T = typename iterator_traits<Itr>::value_type;
   return Joiner<T>(b, e, sep, pre, post);
 }
@@ -287,6 +289,7 @@ template <class T> struct seq : seq_base<T> {
     seq<T> const &s;
     iterator(seq<T> const &s, ll const &i)
         : iterator_base<T, iterator>(i), s(s) {}
+    iterator(iterator const &) = default;
     iterator with(ll i) const override { return iterator(s, i); }
     iterator &self() override { return *this; }
     T operator*() const { return s[this->i]; }

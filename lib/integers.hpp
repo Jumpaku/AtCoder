@@ -13,7 +13,7 @@ vec<int> createPrimes(int const &M) {
   isPrime[0] = isPrime[1] = false;
   for (int i = 2; i * i <= M; ++i) {
     if (isPrime[i]) {
-      for (longlong j = i * 2; j <= M; j += i) {
+      for (int j = i * 2; j <= M; j += i) {
         isPrime[j] = false;
       }
     }
