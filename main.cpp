@@ -369,7 +369,6 @@ constexpr ll MOD = 1e9 + 7;
 
 /**
 // DP Definition
-/**
 using Data = struct {};
 using Key = tuple<>;
 using Value = ll;
@@ -377,20 +376,21 @@ using Cache = u_map<Key, Value>;
 struct DP {
   Data data;
   Cache cache;
-  DpBase(Data const &data) : data(data), cache((ll)1e6) {}
+  DP(Data const &data) : data(data), cache((ll)1e6) {}
   Value compute(Key const &key) {
     if (IS_INITIAL)
       return INITIAL_VALUE;
     auto found = cache.find(key);
     if (found != cache.end())
       return found->second;
-    return cache[key] = RECURSION_CALL;
+    return cache[key] = RECURSION_CALL(this->compute(Key{}));
   }
 };
 // DP Call
-DP dp(D{});
-dp.compute(K{});
-//*/
+/*
+  DP dp(Data{});
+  print(dp.compute(Key{}));
+*/
 
 void solve();
 int main(int, char *[]) {
