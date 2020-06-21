@@ -338,7 +338,10 @@ template <class T> struct opt {
       ptr = make_unique<T>(*o);
   }
   opt(opt<T> &&) = default;
-  opt<T> &operator=(opt<T> const &o) { ptr = o ? make_unique<T>(*o) : nullptr; }
+  opt<T> &operator=(opt<T> const &o) {
+    ptr = o ? make_unique<T>(*o) : nullptr;
+    return *this;
+  }
   opt<T> &operator=(opt<T> &&) = default;
   operator bool() const { return has_value(); }
   T &operator*() { return value(); }
@@ -351,6 +354,7 @@ template <class T> struct opt {
   bool has_value() const { return ptr != nullptr; }
 };
 template <class T> io::OS &operator<<(io::OS &o, opt<T> const &opt) {
+  using io::operator<<;
   return opt.has_value() ? (o << "Some(" << opt.value() << ")") : (o << "None");
 }
 } // namespace optional
