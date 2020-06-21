@@ -186,7 +186,8 @@ auto join(Itr const &b, Itr const &e, str const &sep = ""s,
   return Joiner<T>(b, e, sep, pre, post);
 }
 template <class C, enable_if_t<!is_same<C, str>::value && !is_array<C>::value &&
-                                   !is_pointer<C>::value,
+                                   !is_pointer<C>::value &&
+                                   !std::is_arithmetic<C>::value,
                                nullptr_t> = nullptr>
 OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
