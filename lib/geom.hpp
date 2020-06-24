@@ -19,7 +19,7 @@ template <class T> struct Vec final {
   T dot(Vec<T> const &v) const { return x * v.x + y * v.y + z * v.z; }
   T sq() const { return dot(*this); }
   lf norm2() const { return sqrt(sq()); }
-  T norm1() const { return x + y + z; }
+  T norm1() const { return abs(x) + abs(y) + abs(z); }
   Vec<T> cross(Vec<T> const &v) const {
     return Vec(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
   }
@@ -52,6 +52,7 @@ template <class T> bool operator!=(Vec<T> const &u, Vec<T> const &v) {
   return !(u == v);
 }
 template <class T> io::OS &operator<<(io::OS &o, Vec<T> const &v) {
+  using io::operator<<;
   return o << "Vec(" << v.x << "," << v.y << "," << v.z << ")";
 }
 
@@ -93,6 +94,7 @@ template <class T> bool operator!=(Pt<T> const &p, Pt<T> const &q) {
   return !(p == q);
 }
 template <class T> io::OS &operator<<(io::OS &o, Pt<T> const &p) {
+  using io::operator<<;
   return o << "Pt(" << p.x << "," << p.y << "," << p.z << ")";
 }
 } // namespace geom
