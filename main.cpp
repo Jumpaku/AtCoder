@@ -408,29 +408,7 @@ int main(int, char *[]) {
 }
 
 void solve() {
-  ll N;
-  input(N);
-  long double x = pow((long double)(2), (long double)(1000));
-  for (auto &&i : range(1000)) {
-    x /= 2;
-    print(i, x);
-  }
-
-  for (auto &&i : range(1, 1e18)) {
-    ll ai = (pow((ll)26, i) - 1) / 25;
-    ll bi = (pow((ll)26, i + 1) - 1) / 25;
-    if (!range(ai, bi).has(N))
-      continue;
-    ll n = N - ai;
-    dump(ai, bi, n);
-    str ans;
-    for (auto &&j : range(i)) {
-      ans.push_back('a' + (n > 0 ? n % 26 : 0));
-      n /= 26;
-    }
-    reverse(ans.begin(), ans.end());
-
-    print(ans);
-    return;
-  }
+  input();
+  print();
 }
+

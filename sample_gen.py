@@ -3,6 +3,7 @@ import requests
 import urllib.parse as urlparse
 from sys import stdin
 from functools import reduce
+import re
 
 """"""
 # "abc168"
@@ -45,6 +46,7 @@ html_text = tasks_res.text
 html_text = reduce(lambda t0, t1: t0+t1, stdin)
 """
 
+html_text = re.sub(r"\r\n|\r|\n", "\n", html_text)
 tasks_html = BeautifulSoup(html_text, "lxml")
 
 problem = "a"
