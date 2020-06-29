@@ -18,8 +18,8 @@ longlong pow(longlong a, longlong n, longlong m) {
 }
 longlong inv(longlong a, longlong p) { return pow(a, p - 2, p); }
 
-struct CombCount {
-  CombCount(int N, longlong mod) : M(mod), fact(N + 1), finv(N + 1) {
+struct ModCache {
+  ModCache(int N, longlong mod) : M(mod), fact(N + 1), finv(N + 1) {
     fact[0] = 1;
     for (int i = 1; i <= N; ++i)
       fact[i] = (fact[i - 1] * i) % M;
@@ -30,14 +30,19 @@ struct CombCount {
   longlong const M;
   vec<longlong> fact;
   vec<longlong> finv;
-  longlong operator()(longlong n, longlong m) const {
+  longlong comb(longlong n, longlong m) const {
     if (m < 0 || n < m)
       return 0;
     return (fact[n] * ((finv[m] * finv[n - m]) % M)) % M;
   }
+  longlong perm(longlong n, longlong m) const {
+    if (m < 0 || n < m)
+      return 0;
+    return (fact[n] * finv[n - m]) % M;
+  }
 };
 } // namespace mod
-using mod::CombCount;
 using mod::inv;
+using mod::ModCache;
 using mod::pow;
 /* end of MOD */
