@@ -55,7 +55,7 @@ using std::pair;
 using std::tuple;
 using std::unordered_multimap;
 using std::unordered_multiset;
-using ll = __int128;
+using ll = /** __int128; //*/ long long int;
 using lf = long double;
 using str = std::string;
 template <class T> using u_set = std::unordered_set<T>;
