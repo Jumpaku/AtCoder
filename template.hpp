@@ -108,6 +108,7 @@ template <class T> T clamp(T const &v, T const &l, T const &h) {
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
 } // namespace utils
+using std::to_string;
 using utils::clamp;
 using utils::gcd;
 using utils::lcm;
