@@ -33,19 +33,8 @@
 
 \.DS_Store
 
-main
-debug_main
-validate
-validate_gen
+tasks/*
 tmp/*
-
-debug.in
-
-test_sample.ans
-
-test_sample.in
-
-*.in
-*.out
-*.ans
+samples/*
+.vscode/settings.json
 contest_data.txt

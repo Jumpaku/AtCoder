@@ -41,6 +41,7 @@ if not tasks_res.ok:
     print(tasks_res)
     exit()
 html_text = tasks_res.text
+print(session.headers)
 
 """
 html_text = reduce(lambda t0, t1: t0+t1, stdin)

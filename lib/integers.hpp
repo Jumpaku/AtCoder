@@ -1,5 +1,5 @@
 #ifndef TEMPLATE_HPP
-#include "../template.hpp"
+#include "../templates/template.hpp"
 #endif
 
 /**

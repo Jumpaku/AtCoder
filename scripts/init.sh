@@ -1,12 +1,11 @@
 #!/bin/sh
 
-: >| debug.in
-: >| sample.in
-: >| sample.ans
+WORK_DIR=/home
+TEMPLATE_DIR=/home/templates
 
-cat ./template.hpp >| ./main.cpp
-: >| ./validate.cpp
-: >| ./validate_gen.cpp
+cat $TEMPLATE_DIR/template.hpp >| $TEMPLATE_DIR/main.cpp
+: >| $TEMPLATE_DIR/validate.cpp
+: >| $TEMPLATE_DIR/validate_gen.cpp
 
 echo "\n\
 void solve();
@@ -23,7 +22,7 @@ void solve() {\n\
   input();\n\
   print();\n\
 }\n\
-" >> ./main.cpp
+" >> $TEMPLATE_DIR/main.cpp
 echo "\n\
 #include \"template.hpp\"\n\
 \n\
@@ -39,7 +38,7 @@ int main() {\n\
   else\n\
     return print(\"NG\"), 1;\n\
 }\n\
-" >> ./validate.cpp
+" >> $TEMPLATE_DIR/validate.cpp
 echo "\n\
 #include \"template.hpp\"\n\
 #include <random>\n\
@@ -53,18 +52,19 @@ int main(int argc, char const *argv[]) {\n\
   ll N = 10;\n\
   print(dist_u{0, N}(e));\n\
 }\n\
-" >> ./validate_gen.cpp
+" >> $TEMPLATE_DIR/validate_gen.cpp
 
-cat ./template.py >| ./main.py
-cat ./template.py >| ./validate.py
-cat ./template.py >| ./validate_gen.py
 
+
+cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/main.py
+cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/validate.py
+cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/validate_gen.py
 
 echo "\n\
 S = input()\n\
 dump(S)\n\
 print(S)\n\
-" >> ./main.py
+" >> $TEMPLATE_DIR/main.py
 echo "\n\
 if True:\n\
     print(\"OK\")\n\
@@ -72,11 +72,11 @@ if True:\n\
 else:\n\
     print(\"NG\")\n\
     exit(1)\n\
-" >> ./validate.py
+" >> $TEMPLATE_DIR/validate.py
 echo "\n\
 if len(sys.argv) > 1:\n\
     rng.seed(int(sys.argv[1]))\n\
 \n\
 #N = 20\n\
 #K = rng.randint(1, N)\n\
-" >> ./validate_gen.py
+" >> $TEMPLATE_DIR/validate_gen.py

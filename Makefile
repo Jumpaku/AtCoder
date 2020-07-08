@@ -13,61 +13,96 @@
 
 
 CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment 
+WORK_DIR=/home
+TASKS_DIR=$(WORK_DIR)/tasks
+SCRIPTS_DIR=$(WORK_DIR)/scripts
 
-.PHONY: init
-init: clean init.sh
-	./init.sh
-
+# Clear
 .PHONY: clean
 clean:
-	rm ./debug_main ./main ./a.out ./tmp/* ./samples/* validate_main validate_gen_main ./sample.out -f
+	rm -rf $(WORK_DIR)/samples/* $(TASKS_DIR)/* $(WORK_DIR)/tmp/* 
 
-.PHONY: sample_gen
-sample_gen:
-	python3 ./sample_gen.py < ./contest_data.txt
+# Samples
+.PHONY: samples
+samples:
+	python3 $(SCRIPTS_DIR)/samples.py < $(WORK_DIR)/contest_data.txt
 
-# cpp
-.PHONY: debug
-debug: debug_main debug.in
-	./debug_main < debug.in
-debug_main: main.cpp
-	g++ $(CPP_COMMON_OPTIONS) -DJUMPAKU_DEBUG -o debug_main main.cpp
-
-.PHONY: run
-run: main
-	./main
-main: main.cpp
-	g++ $(CPP_COMMON_OPTIONS) -o main main.cpp
+# Tasks
+.PHONY: tasks
+tasks: samples
+	for TASK in `ls $(WORK_DIR)/samples | grep in | sed -e 's/.in//g'`; do echo "task_$$TASK"; $(SCRIPTS_DIR)/task.sh $$TASK; done
 
 
-.PHONY: sample
-sample: sample.sh main sample.in sample.ans
-	./sample.sh "./main" "./sample"
-.PHONY: sample_%
-sample_%: sample.sh main samples/%.in samples/%.ans
-	./sample.sh "./main" "./samples/$*"
-	
-# python
-.PHONY: debug_py
-debug_py: main.py debug.in
-	pypy3 main.py DEBUG < debug.in
+# Task
+.PHONY: task_%
+task_%: 
+	$(SCRIPTS_DIR)/task.sh "$*"
 
-.PHONY: run_py
-run_py: main.py
-	pypy3 main.py
+# C++
+## Run
+.PHONY: run_%
+run_%: main_%
+	$(TASKS_DIR)/$*/bin/main
+main_%: $(TASKS_DIR)/%/main.cpp
+	g++ $(CPP_COMMON_OPTIONS) -o $(TASKS_DIR)/$*/bin/main $(TASKS_DIR)/$*/main.cpp
 
-.PHONY: sample_py
-sample_py: sample.sh main.py sample.in sample.ans
-	./sample.sh "pypy3 main.py"
-.PHONY: sample_%_py
-sample_%_py: sample.sh main.py samples/%.in samples/%.ans
-	./sample.sh "pypy3 main.py" "samples/$*"
+## Debug
+.PHONY: debug_%
+debug_%: debug_main_% $(TASKS_DIR)/%/debug.in
+	$(TASKS_DIR)/$*/bin/debug_main < $(TASKS_DIR)/$*/debug.in
+debug_main_%: $(TASKS_DIR)/%/main.cpp
+	g++ $(CPP_COMMON_OPTIONS) -DJUMPAKU_DEBUG -o $(TASKS_DIR)/$*/bin/debug_main $(TASKS_DIR)/$*/main.cpp
 
-# validate
-validate_main: validate.cpp
-	g++ $(CPP_COMMON_OPTIONS) -o validate_main validate.cpp
-validate_gen_main: validate_gen.cpp
-	g++ $(CPP_COMMON_OPTIONS) -o validate_gen_main validate_gen.cpp
-.PHONY: validate
-validate: validate.sh validate_main validate_gen_main main validate.py validate_gen.py main.py 
-	./validate.sh 
+## Test
+.PHONY: test_%
+test_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans
+	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main"
+
+## Submit
+.PHONY: submit_%
+submit_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans
+	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" && \
+	python3 $(SCRIPTS_DIR)/submit.py $* cplusplus $(TASKS_DIR)/$*/main.cpp < $(WORK_DIR)/contest_data.txt
+.PHONY: submit_force_%
+submit_force_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans
+	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" || \
+	python3 $(SCRIPTS_DIR)/submit.py $* cplusplus $(TASKS_DIR)/$*/main.cpp < $(WORK_DIR)/contest_data.txt
+
+## Validate
+validate_main_%: $(TASKS_DIR)/%/validate.cpp
+	g++ $(CPP_COMMON_OPTIONS) -o $(TASKS_DIR)/$*/bin/validate_main $(TASKS_DIR)/$*/validate.cpp
+generate_main_%: $(TASKS_DIR)/%/generate.cpp
+	g++ $(CPP_COMMON_OPTIONS) -o $(TASKS_DIR)/$*/bin/generate_main $(TASKS_DIR)/$*/generate.cpp
+.PHONY: validate_%
+validate_%: generate_main_% main_% validate_main_%
+	$(SCRIPTS_DIR)/validate.sh "$(TASKS_DIR)/$*/bin/generate_main" "$(TASKS_DIR)/$*/bin/main" "$(TASKS_DIR)/$*/bin/validate_main"
+
+# Python3
+## Run
+.PHONY: run_%_py
+run_%_py: $(TASKS_DIR)/%/main.py
+	python3 $(TASKS_DIR)/$*/main.py
+
+## Debug
+.PHONY: debug_%_py
+debug_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/debug.in
+	python3 $(TASKS_DIR)/$*/main.py DEBUG < $(TASKS_DIR)/$*/debug.in
+
+## Test
+.PHONY: test_%_py
+test_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans
+	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py"
+
+## Submit
+.PHONY: submit_%_py
+submit_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans
+	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" && \
+	python3 $(SCRIPTS_DIR)/submit.py $* python3 $(TASKS_DIR)/$*/main.py < $(WORK_DIR)/contest_data.txt
+.PHONY: submit_force_%_py
+submit_force_%_py: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans
+	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" || \
+	python3 $(SCRIPTS_DIR)/submit.py $* python3 $(TASKS_DIR)/$*/main.py < $(WORK_DIR)/contest_data.txt
+
+## Validate
+validate_%_py: $(TASKS_DIR)/%/generate.py $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/validate.py
+	$(SCRIPTS_DIR)/validate.sh "python3 $(TASKS_DIR)/$*/generate.py" "python3 $(TASKS_DIR)/$*/main.py" "python3 $(TASKS_DIR)/$*/validate.py"
