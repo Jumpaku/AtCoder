@@ -107,11 +107,13 @@ template <class T> T clamp(T const &v, T const &l, T const &h) {
 }
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
+ll sign(ll x) { return ll{x < 0 ? -1 : x > 0 ? 1 : 0}; }
 } // namespace utils
 using std::to_string;
 using utils::clamp;
 using utils::gcd;
 using utils::lcm;
+using utils::sign;
 using utils::to_string;
 
 namespace io {
@@ -386,8 +388,7 @@ struct DP {
   Value compute(Key const &key) {
     if (IS_INITIAL)
       return INITIAL_VALUE;
-    auto found = cache.find(key);
-    if (found != cache.end())
+    if (auto found = cache.find(key); found != cache.end())
       return found->second;
     return cache[key] = RECURSION_CALL(this->compute(Key{}));
   }

@@ -1,10 +1,13 @@
 
-CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment 
 WORK_DIR=/home
 TASKS_DIR=$(WORK_DIR)/tasks
 SCRIPTS_DIR=$(WORK_DIR)/scripts
+TEMPLATES_DIR=$(WORK_DIR)/templates
+
+CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment 
 
 .DEFAULT_GOAL:=help
+
 .PHONY: help
 help:
 	@grep -E '^[a-zA-Z_%-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -12,6 +15,9 @@ help:
 .PHONY: clean
 clean: ### Clean samples, tasks, and temporary directory.
 	rm -rf $(WORK_DIR)/samples/* $(TASKS_DIR)/* $(WORK_DIR)/tmp/* 
+
+templates: $(TEMPLATES_DIR)/template.hpp $(TEMPLATES_DIR)/template.py ### Initialize template files.
+	$(SCRIPTS_DIR)/templates.sh
 
 .PHONY: samples
 samples: ### Download sample inputs and answers (outputs for them).

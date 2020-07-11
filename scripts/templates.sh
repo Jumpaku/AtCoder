@@ -1,11 +1,11 @@
 #!/bin/sh
 
 WORK_DIR=/home
-TEMPLATE_DIR=/home/templates
+TEMPLATE_DIR=$WORK_DIR/templates
 
 cat $TEMPLATE_DIR/template.hpp >| $TEMPLATE_DIR/main.cpp
 : >| $TEMPLATE_DIR/validate.cpp
-: >| $TEMPLATE_DIR/validate_gen.cpp
+: >| $TEMPLATE_DIR/generate.cpp
 
 echo "\n\
 void solve();
@@ -52,13 +52,13 @@ int main(int argc, char const *argv[]) {\n\
   ll N = 10;\n\
   print(dist_u{0, N}(e));\n\
 }\n\
-" >> $TEMPLATE_DIR/validate_gen.cpp
+" >> $TEMPLATE_DIR/generate.cpp
 
 
 
 cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/main.py
 cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/validate.py
-cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/validate_gen.py
+cat $TEMPLATE_DIR/template.py >| $TEMPLATE_DIR/generate.py
 
 echo "\n\
 S = input()\n\
@@ -79,4 +79,4 @@ if len(sys.argv) > 1:\n\
 \n\
 #N = 20\n\
 #K = rng.randint(1, N)\n\
-" >> $TEMPLATE_DIR/validate_gen.py
+" >> $TEMPLATE_DIR/generate.py

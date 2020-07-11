@@ -5,7 +5,6 @@ import heapq as hq
 import sys
 import copy as cp
 sys.setrecursionlimit(10**9)
-input = sys.stdin.readline
 
 
 def dump_impl(*objects):
