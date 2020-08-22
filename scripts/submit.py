@@ -90,24 +90,8 @@ submit_info = {
     "sourceCode": src_content
 }
 print("Submit:", submit_url)
-"""
-POST /contests/m-solutions2020/submit HTTP/2
-Host: atcoder.jp
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate, br
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 20439
-Origin: https://atcoder.jp
-Connection: keep-alive
-Referer: https://atcoder.jp/contests/m-solutions2020/submit
-Cookie: REVEL_SESSION=930ab5cbb68d10a3d2e7e63113fef37a7a0e58e1-%00csrf_token%3Aal26EQs%2BNMyqda0K2ZJ8%2BqSm8WNIZXAjKYnfAM4PFMg%3D%00%00a%3Afalse%00%00_TS%3A1611238439%00%00w%3Afalse%00%00Rating%3A0%00%00UserName%3AL64ySwL%00%00UserScreenName%3AL64ySwL%00%00SessionKey%3A00a3ab8ad671cdb19ddcf42647e0acf6a1c897b81a607638fa4c0bf85c710621fdefc74a4ebdfa-96b5740fbfa9c856026f19e934dcea98158fa7fd01f778f10f4c4ff9933e0e95%00; _ga=GA1.2.1344004464.1583114847; language=en; __pp_uid=IjuGL7O4fTdteSFRl1SIuHZafd0aGxvO; REVEL_FLASH=; timeDelta=-398; _gid=GA1.2.1053771269.1595685705
-Upgrade-Insecure-Requests: 1
-Pragma: no-cache
-Cache-Control: no-cache
-TE: Trailers
-"""
+
+
 session.headers["Host"] = "atcoder.jp"
 session.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0"
 session.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
