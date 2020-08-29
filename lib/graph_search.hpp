@@ -22,7 +22,7 @@ void dfs_impl(graph<V> const &g, V const &v, F const &process,
       dfs_impl(g, u, process, visited);
     }
   }
-} // namespace graph_search
+}
 template <class V, class F,
           enable_if_t<std::is_constructible<fun<void(opt<V>, V)>, F>::value,
                       nullptr_t> = nullptr>
