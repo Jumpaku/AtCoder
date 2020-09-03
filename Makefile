@@ -4,7 +4,7 @@ TASKS_DIR=$(WORK_DIR)/tasks
 SCRIPTS_DIR=$(WORK_DIR)/scripts
 TEMPLATES_DIR=$(WORK_DIR)/templates
 
-CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment 
+CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment -ftrapv -DJUMPAKU_LOCAL
 
 .DEFAULT_GOAL:=help
 
@@ -53,10 +53,12 @@ test_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Test a com
 .PHONY: submit_% 
 submit_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Submit a C++ source file if the test passed.
 	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" && \
+	echo "Do you submit? [Yes]" && [ "$$(cat -)" = "Yes" ] && \
 	python3 $(SCRIPTS_DIR)/submit.py $* cplusplus $(TASKS_DIR)/$*/main.cpp < $(WORK_DIR)/contest_data.txt
 .PHONY: submit_force_%
 submit_force_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Submit a C++ source file forcibly.
-	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" || \
+	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" || true && \
+	echo "Do you submit? [Yes]" && [ "$$(cat -)" = "Yes" ] && \
 	python3 $(SCRIPTS_DIR)/submit.py $* cplusplus $(TASKS_DIR)/$*/main.cpp < $(WORK_DIR)/contest_data.txt
 
 validate_main_%: $(TASKS_DIR)/%/validate.cpp ### Compile a C++ source file for validation.
@@ -83,10 +85,12 @@ test_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample
 .PHONY: submit_%_py
 submit_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Submit a Python3 script if the test passed.
 	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" && \
+	echo "Do you submit? [Yes]"&& [ "$$(cat -)" = "Yes" ] && \
 	python3 $(SCRIPTS_DIR)/submit.py $* python3 $(TASKS_DIR)/$*/main.py < $(WORK_DIR)/contest_data.txt
 .PHONY: submit_force_%_py
 submit_force_%_py: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans  ### Submit a Python3 script forcibly.
-	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" || \
+	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" || true && \
+	echo "Do you submit? [Yes]"&& [ "$$(cat -)" = "Yes" ] && \
 	python3 $(SCRIPTS_DIR)/submit.py $* python3 $(TASKS_DIR)/$*/main.py < $(WORK_DIR)/contest_data.txt
 
 validate_%_py: $(TASKS_DIR)/%/generate.py $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/validate.py ### Validate Python3 script with generate sample input.

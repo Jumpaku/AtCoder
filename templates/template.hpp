@@ -1,6 +1,9 @@
-
 #ifndef TEMPLATE_HPP
 #define TEMPLATE_HPP
+
+#ifdef JUMPAKU_LOCAL
+#define _GLIBCXX_DEBUG
+#endif
 
 #include <algorithm>
 #include <bitset>
@@ -14,6 +17,7 @@
 #include <map>
 #include <memory>
 #include <numeric>
+#include <queue>
 #include <set>
 #include <string>
 #include <tuple>
@@ -23,23 +27,11 @@
 #include <utility>
 #include <vector>
 
-#define _GLIBCXX_DEBUG
-
 // Utility
-using std::declval;
-using std::distance;
-using std::enable_if_t;
 using std::get;
-using std::index_sequence;
-using std::is_array;
-using std::is_pointer;
-using std::is_same;
-using std::iterator_traits;
-using std::make_index_sequence;
 using std::make_pair;
 using std::make_tuple;
 using std::make_unique;
-using std::random_access_iterator_tag;
 using std::stold;
 using std::stoll;
 using std::operator""s;
@@ -50,21 +42,28 @@ using std::bitset;
 using std::deque;
 using std::list;
 using std::multiset;
-using std::nullptr_t;
 using std::pair;
 using std::tuple;
-using std::unordered_multimap;
-using std::unordered_multiset;
+template <class T> using opt = std::optional<T>;
 using ll = /** __int128; //*/ long long int;
 using lf = long double;
 using str = std::string;
-template <class T> using u_set = std::unordered_set<T>;
+template <class V, class H = std::hash<V>>
+using u_multiset = std::unordered_multiset<V, H>;
+template <class V, class H = std::hash<V>>
+using u_set = std::unordered_set<V, H>;
+template <class K, class V, class H = std::hash<K>>
+using u_multimap = std::unordered_multimap<K, V, H>;
+template <class K, class V, class H = std::hash<K>>
+using u_map = std::unordered_map<K, V, H>;
 template <class T> using vec = std::vector<T>;
+template <class V, class C = std::less<V>>
+using priority_queue = std::priority_queue<V, vec<V>, C>;
 using vecl = vec<ll>;
 using vecf = vec<lf>;
 using vecs = vec<str>;
-template <class K, class V> using u_map = std::unordered_map<K, V>;
-template <class V> using graph = u_map<V, u_set<V>>;
+template <class V> using u_graph = u_map<V, u_set<V>>;
+using v_graph = vec<vec<int>>;
 template <typename _Signature> using fun = std::function<_Signature>;
 
 // Algorithms
@@ -108,11 +107,19 @@ template <class T> T clamp(T const &v, T const &l, T const &h) {
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
 ll sign(ll x) { return ll{x < 0 ? -1 : x > 0 ? 1 : 0}; }
+bool odd(ll n) { return n & 1; }
+bool even(ll n) { return !odd(n); }
+bool imply(bool p, bool q) { return !p || q; }
+bool iff(bool p, bool q) { return p == q; }
 } // namespace utils
 using std::to_string;
 using utils::clamp;
+using utils::even;
 using utils::gcd;
+using utils::iff;
+using utils::imply;
 using utils::lcm;
+using utils::odd;
 using utils::sign;
 using utils::to_string;
 
@@ -156,11 +163,12 @@ template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
   return o << p.first << ":" << p.second;
 }
 template <class... Ts, size_t... I>
-OS &tuple_out(OS &o, tuple<Ts...> const &t, index_sequence<I...>) {
+OS &tuple_out(OS &o, tuple<Ts...> const &t, std::index_sequence<I...>) {
   return out_join(o, ",", get<I>(t)...);
 }
 template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
-  return tuple_out(o << "(", t, make_index_sequence<sizeof...(Ts)>()) << ")";
+  return tuple_out(o << "(", t, std::make_index_sequence<sizeof...(Ts)>())
+         << ")";
 }
 template <class T> struct Joiner {
   str const pre;
@@ -185,13 +193,16 @@ template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
 template <class Itr>
 auto join(Itr const &b, Itr const &e, str const &sep = ""s,
           str const &pre = ""s, str const &post = ""s) {
-  using T = typename iterator_traits<Itr>::value_type;
+  using T = typename std::iterator_traits<Itr>::value_type;
   return Joiner<T>(b, e, sep, pre, post);
 }
-template <class C, enable_if_t<!is_same<C, str>::value && !is_array<C>::value &&
-                                   !is_pointer<C>::value &&
-                                   !std::is_arithmetic<C>::value,
-                               nullptr_t> = nullptr>
+template <class T> io::OS &operator<<(io::OS &o, opt<T> const &opt) {
+  return opt.has_value() ? (o << "Some(" << opt.value() << ")") : (o << "None");
+}
+template <class C, std::enable_if_t<
+                       !std::is_same_v<C, str> && !std::is_array_v<C> &&
+                           !std::is_pointer_v<C> && !std::is_arithmetic_v<C>,
+                       std::nullptr_t> = nullptr>
 OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
 }
@@ -221,15 +232,15 @@ size_t hash_args(size_t h) { return h; }
 template <class T, class... Ts>
 size_t hash_args(size_t h, T const &t, Ts const &... ts) {
   constexpr std::hash<T> hasher;
-  return hash_args(((h << 19) - h) ^ hasher(t), ts...);
+  return hash_args(((h << 10) - h) ^ hasher(t), ts...);
 }
 template <class... Ts, size_t... I>
-size_t hash_tuple(tuple<Ts...> const &t, index_sequence<I...>) {
+size_t hash_tuple(tuple<Ts...> const &t, std::index_sequence<I...>) {
   return hash_args(17, get<I>(t)...);
 }
 } // namespace hashcode
 namespace std {
-#if __GNUC__ == 5 || defined(__STRICT_ANSI__)
+#if __GNUC__ != 9 || defined(__STRICT_ANSI__)
 template <> struct hash<__int128> {
   size_t operator()(__int128 const &t) const {
     return (t & 0xffffff) ^ ((t >> 63) & 0xffffff);
@@ -238,7 +249,7 @@ template <> struct hash<__int128> {
 #endif
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
-    size_t h = hashcode::hash_tuple(t, index_sequence_for<Ts...>());
+    size_t h = hashcode::hash_tuple(t, std::index_sequence_for<Ts...>());
     return h ^ (h >> 32);
   }
 };
@@ -259,7 +270,7 @@ template <class T, class Itr> struct iterator_base {
   using value_type = T;
   using pointer = T *;
   using reference = T &;
-  using iterator_category = random_access_iterator_tag;
+  using iterator_category = std::random_access_iterator_tag;
   ll i;
   iterator_base(ll const &i) : i(i) {}
   bool operator==(Itr const &itr) const { return i == itr.i; }
@@ -328,47 +339,9 @@ using range = ranges::range;
 range::iterator end(ll i) { return range::iterator(i); }
 range::iterator begin(ll i = 0) { return range::iterator(i); }
 template <class F> auto seq(ll n, F const &f) {
-  using T = decltype(f(declval<ll>()));
+  using T = decltype(f(std::declval<ll>()));
   return ranges::seq<T>(0LL, n, f);
 }
-
-namespace optional {
-template <class T> struct opt {
-  std::unique_ptr<T> ptr;
-  opt(nullptr_t ptr = nullptr) : ptr(ptr){};
-  opt(T const &val) : ptr(make_unique<T>(val)){};
-  opt(opt<T> const &o) : opt<T>(nullptr) {
-    if (o)
-      ptr = make_unique<T>(*o);
-  }
-  opt(opt<T> &&) = default;
-  opt<T> &operator=(opt<T> const &o) {
-    ptr = o ? make_unique<T>(*o) : nullptr;
-    return *this;
-  }
-  opt<T> &operator=(opt<T> &&) = default;
-  operator bool() const { return has_value(); }
-  T &operator*() { return value(); }
-  T const &operator*() const { return value(); }
-  T *operator->() { return &(*ptr); }
-  T const *operator->() const { return &(*ptr); }
-  T &value() { return *ptr; }
-  T const &value() const { return *ptr; }
-  T value_or(T const &val) const { return (ptr) ? value() : val; }
-  bool has_value() const { return ptr != nullptr; }
-};
-template <class T> io::OS &operator<<(io::OS &o, opt<T> const &opt) {
-  using io::operator<<;
-  return opt.has_value() ? (o << "Some(" << opt.value() << ")") : (o << "None");
-}
-} // namespace optional
-using optional::opt;
-
-bool odd(ll n) { return n & 1; }
-bool even(ll n) { return !odd(n); }
-
-bool imply(bool p, bool q) { return !p || q; }
-bool iff(bool p, bool q) { return p == q; }
 
 constexpr lf PI = 3.141592653589793238462643383279502884L;
 constexpr ll MOD = 1e9 + 7;
