@@ -17,7 +17,7 @@ print(username)
 # "hPzeX9BhRAQNRpAGGXjwQWp73YMcgvhC"
 print("Password?")
 password = input()
-print(password)
+print("****")
 
 tasks_url = "https://atcoder.jp/contests/" + contest_id + "/tasks_print?lang=en"
 login_url = "https://atcoder.jp/login?continue=" + \

@@ -25,7 +25,7 @@ print("Username:", username)
 # "hPzeX9BhRAQNRpAGGXjwQWp73YMcgvhC"
 print("Password?")
 password = input()
-print("Password:", password)
+print("Password:****")
 
 print(sys.argv)
 probrem = sys.argv[1]
