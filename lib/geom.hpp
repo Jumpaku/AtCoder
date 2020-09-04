@@ -1,10 +1,11 @@
+/**
+ * GEOM
+ */
+
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
 #endif
 
-/**
- * GEOM
- */
 namespace geom {
 template <class T> struct Vec final {
   T x;

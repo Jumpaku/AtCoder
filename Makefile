@@ -28,7 +28,6 @@ samples: ### Download sample inputs and answers (outputs for them).
 tasks: samples ### Initialize all tasks based on samples.
 	for TASK in `ls $(WORK_DIR)/samples | grep in | sed -e 's/.in//g'`; do echo "task_$$TASK"; $(SCRIPTS_DIR)/task.sh $$TASK; done
 
-
 .PHONY: task_%
 task_%: ### Initialize a specified task.
 	$(SCRIPTS_DIR)/task.sh "$*"

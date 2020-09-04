@@ -1,11 +1,11 @@
+/**
+ * ITERTOOLS
+ */
 
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
 #endif
 
-/**
- * ITERTOOLS
- */
 namespace itertools {
 
 template <class Itr> struct iterator_base {

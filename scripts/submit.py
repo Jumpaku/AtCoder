@@ -79,10 +79,16 @@ if not login_res.ok:
 html_text = re.sub(r"\r\n|\r|\n", "\n", login_res.text)
 submit_html = BeautifulSoup(html_text, "lxml")
 csrf_token = submit_html.find_all(attrs={"name": "csrf_token"})[0]["value"]
-# if "value" in opt and opt["value"].endswith("_"+probrem)][0]["value"]
 select_task = submit_html.find("select", attrs={"id": "select-task"})
-screen_task_name = [opt["value"] for opt in select_task.find_all("option")
-                    if opt["value"].endswith("_"+probrem)][0]
+
+screen_task_name_candidates = list(select_task.find_all("option"))
+print("screen_task_names: ")
+for candidate in screen_task_name_candidates:
+    print("\t", candidate)
+
+screen_task_name = [opt["value"]
+                    for opt in screen_task_name_candidates
+                    if opt.get_text(strip=True).lower().startswith(probrem)][0]
 submit_info = {
     "csrf_token": csrf_token,
     "data.TaskScreenName": screen_task_name,

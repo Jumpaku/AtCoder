@@ -1,10 +1,11 @@
+/**
+ * MOD
+ */
+
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
 #endif
 
-/**
- * MOD
- */
 namespace mod {
 using longlong = long long;
 

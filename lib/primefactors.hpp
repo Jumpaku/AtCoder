@@ -1,12 +1,12 @@
+/**
+ * INTEGERS
+ */
+
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
 #endif
 
-/**
- * INTEGERS
- */
 namespace integers {
-using longlong = long long;
 // O(N*log(log(N))), log(N)
 vec<int> createPrimes(int const &M) {
   vec<bool> isPrime(M + 1, true);
@@ -19,12 +19,12 @@ vec<int> createPrimes(int const &M) {
     }
   }
   vec<int> primes;
-  for (int i = 0; i < isPrime.size(); ++i) {
-    if (isPrime[i])
-      primes.push_back(i);
-  }
+  copy_if(begin(2), end(M + 1), back_inserter(primes),
+          [&](auto const &i) { return isPrime[i]; });
   return primes;
 }
+
+using longlong = long long;
 
 // N=1e12 => sqrt(N) -> 1e6, 2^{log_{10}(N)} -> 4e3
 vec<longlong> createFactors(longlong const &N) {
