@@ -207,7 +207,6 @@ OS &operator<<(OS &o, C const &a) {
   return o << join(a.begin(), a.end(), ",", "[", "]");
 }
 } // namespace io
-using std::cerr;
 using std::cin;
 using std::cout;
 auto init_io = []() {
@@ -219,7 +218,9 @@ auto init_io = []() {
 auto input = [](auto &... a) { io::in(cin, a...); };
 auto print = [](auto const &... a) { io::out_join(cout, " ", a...) << "\n"; };
 #ifdef JUMPAKU_DEBUG
-auto dump = [](auto const &... a) { io::out_join(cerr, " "s, a...) << "\n"; };
+auto dump = [](auto const &... a) {
+  io::out_join(std::cerr, " "s, a...) << "\n";
+};
 #else
 auto dump = [](auto const &...) {};
 #endif
@@ -342,6 +343,69 @@ template <class F> auto seq(ll n, F const &f) {
   using T = decltype(f(std::declval<ll>()));
   return ranges::seq<T>(0LL, n, f);
 }
+
+#include <chrono>
+class stopwatch {
+#ifdef JUMPAKU_DEBUG
+  using Clock = std::chrono::high_resolution_clock;
+  using Duration = Clock::duration;
+  using TimePoint = Clock::time_point;
+  bool isRunning;
+  Duration total_duration;
+  TimePoint last_lap;
+  double castToSeconds(Duration const &d) const {
+    return 1e-9 *
+           std::chrono::duration_cast<std::chrono::nanoseconds>(d).count();
+  }
+
+public:
+  stopwatch() : isRunning(false), total_duration(std::chrono::nanoseconds{0}){};
+  void reset() {
+    isRunning = false;
+    total_duration = std::chrono::nanoseconds{0};
+    std::cerr << "=DEBUG= Stopwatch::reset()\n";
+  }
+  void start() {
+    auto current = Clock::now();
+    if (isRunning)
+      return;
+    isRunning = true;
+    last_lap = current;
+    std::cerr << "=DEBUG= Stopwatch::start()\n";
+  }
+  void restart() {
+    last_lap = Clock::now();
+    total_duration = std::chrono::nanoseconds{0};
+    isRunning = true;
+    std::cerr << "=DEBUG= Stopwatch::restart()\n";
+  }
+  void stop() {
+    auto current = Clock::now();
+    if (!isRunning)
+      return;
+    isRunning = false;
+    total_duration += current - last_lap;
+    std::cerr << "=DEBUG= Stopwatch::stop()\n";
+  }
+  double lap() {
+    auto current = Clock::now();
+    if (isRunning) {
+      total_duration += current - last_lap;
+      last_lap = current;
+    }
+    auto seconds = castToSeconds(total_duration);
+    std::cerr << "=DEBUG= Stopwatch::lap()  : " << seconds << "[s]\n";
+    return seconds;
+  }
+#else
+public:
+  void start() {}
+  void reset() {}
+  void restart() {}
+  void stop() {}
+  double lap() { return 0.0; }
+#endif
+};
 
 constexpr lf PI = 3.141592653589793238462643383279502884L;
 constexpr ll MOD = 1e9 + 7;
