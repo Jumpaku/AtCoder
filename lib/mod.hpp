@@ -168,8 +168,8 @@ bool constexpr are_operatable_v = std::conditional_t<
         (std::is_convertible_v<U, int> && std::is_same_v<U, V>),
     std::true_type, std::true_type>::value;
 
-template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_llm {
-  using This = static_llm;
+template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_modint {
+  using This = static_modint;
   static int constexpr mod() { return M; }
   static This &timesAsign(This &x, int const &rhs, int const &mod) {
     unsigned long long int &&prod = static_cast<unsigned long long int>(x.m_v) *
@@ -178,9 +178,9 @@ template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_llm {
         mod_helper::reduce(prod, static_cast<unsigned long long int>(mod)));
     return x;
   }
-  static_llm(int const &v = 0) : m_v(mod_helper::reduce(v, mod())) {}
-  static_llm(This const &v) = default;
-  static_llm(This &&v) = default;
+  static_modint(int const &v = 0) : m_v(mod_helper::reduce(v, mod())) {}
+  static_modint(This const &v) = default;
+  static_modint(This &&v) = default;
   This &operator=(This const &v) = default;
   This &operator=(This &&v) = default;
   This &operator=(int const &v) { return mod_helper::asign(*this, v, mod()); }
@@ -262,8 +262,8 @@ private:
   int m_v;
 };
 
-struct dynamic_llm {
-  using This = dynamic_llm;
+struct dynamic_modint {
+  using This = dynamic_modint;
   static void require_positive_mod(int const &x) {
     if (x <= 0)
       throw std::invalid_argument("mod must be positive");
@@ -278,12 +278,12 @@ struct dynamic_llm {
   static unsigned long long int barrett(int const &m) {
     return ((unsigned long long int)(-1)) / m + 1;
   }
-  explicit dynamic_llm(int const &m, int const &v)
+  explicit dynamic_modint(int const &m, int const &v)
       : m_v(mod_helper::reduce(v, m)), m_m(m), m_im(barrett(m)) {
     require_positive_mod(m);
   }
-  dynamic_llm(This const &v) = default;
-  dynamic_llm(This &&v) = default;
+  dynamic_modint(This const &v) = default;
+  dynamic_modint(This &&v) = default;
   This &operator=(This const &v) = default;
   This &operator=(This &&v) = default;
   This &operator=(int const &v) { return mod_helper::asign(*this, v, mod()); }
@@ -372,10 +372,10 @@ private:
 //  return pow_mod_constexpr(a, P - 2, P);
 //}
 template <int P, std::enable_if_t<is_prime_v<P>, std::nullptr_t> = nullptr>
-static_llm<P> inv(static_llm<P> const &a) {
+static_modint<P> inv(static_modint<P> const &a) {
   return a.pow(P - 2);
 }
-dynamic_llm inv(dynamic_llm const &a) {
+dynamic_modint inv(dynamic_modint const &a) {
   if (!is_prime_constexpr(a.mod()))
     throw std::logic_error("inv with non prime!");
   return a.pow(a.mod() - 2);
@@ -415,29 +415,30 @@ std::pair<int, int> gcd_inv(int a, int const &mod) {
     m0 += mod / s;
   return {s, m0};
 }
-template <int M> std::pair<int, static_llm<M>> gcd_inv(static_llm<M> const &a) {
+template <int M>
+std::pair<int, static_modint<M>> gcd_inv(static_modint<M> const &a) {
   auto &&[gcd, inv] = gcd_inv(a.val(), a.val());
-  return {gcd, static_llm<M>(inv)};
+  return {gcd, static_modint<M>(inv)};
 }
-std::pair<int, dynamic_llm> gcd_inv(dynamic_llm const &a) {
+std::pair<int, dynamic_modint> gcd_inv(dynamic_modint const &a) {
   auto &&[gcd, inv] = gcd_inv(a.val(), a.val());
-  return {gcd, dynamic_llm(inv, a.mod())};
+  return {gcd, dynamic_modint(inv, a.mod())};
 }
 } // namespace mod
 
-template <int M> struct std::hash<mod::static_llm<M>> {
-  size_t operator()(mod::static_llm<M> const &t) const { return t.val(); }
+template <int M> struct std::hash<mod::static_modint<M>> {
+  size_t operator()(mod::static_modint<M> const &t) const { return t.val(); }
 };
-template <> struct std::hash<mod::dynamic_llm> {
-  size_t operator()(mod::dynamic_llm const &t) const {
+template <> struct std::hash<mod::dynamic_modint> {
+  size_t operator()(mod::dynamic_modint const &t) const {
     return ((t.mod() << 10) - t.mod()) | t.val();
   }
 };
-using mod::dynamic_llm;
+using mod::dynamic_modint;
 using mod::gcd_inv;
 using mod::inv;
 using mod::ModCache;
 using mod::pow;
-using mod::static_llm;
+using mod::static_modint;
 #endif
 /* end of MOD */
