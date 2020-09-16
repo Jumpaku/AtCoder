@@ -244,7 +244,7 @@ namespace std {
 #if __GNUC__ != 9 || defined(__STRICT_ANSI__)
 template <> struct hash<__int128> {
   size_t operator()(__int128 const &t) const {
-    return (t & 0xffffff) ^ ((t >> 63) & 0xffffff);
+    return (t & 0xffffffff) ^ ((t >> 63) & 0xffffffff);
   }
 };
 #endif
