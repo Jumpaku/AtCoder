@@ -114,26 +114,26 @@ struct mod_helper {
     x.m_v = reduce(std::move(v), mod);
     return x;
   }
-  template <class T> static T &pre_incl(T &x, int const &mod) {
+  template <class T> static T &pre_inc(T &x, int const &mod) {
     ++x.m_v;
     if (x.m_v == mod)
       x.m_v = 0;
     return x;
   }
-  template <class T> static T &pre_decl(T &x, int const &mod) {
+  template <class T> static T &pre_dec(T &x, int const &mod) {
     if (x.m_v == 0)
       x.m_v = mod;
     x.m_v--;
     return x;
   }
-  template <class T> static T post_incl(T &x, int const &mod) {
+  template <class T> static T post_inc(T &x, int const &mod) {
     T result = x;
-    pre_incl(x, mod);
+    pre_inc(x, mod);
     return result;
   }
-  template <class T> static T post_decl(T &x, int const &mod) {
+  template <class T> static T post_dec(T &x, int const &mod) {
     T result = x;
-    pre_decl(x, mod);
+    pre_dec(x, mod);
     return result;
   }
   template <class T> static T &plusAsign(T &x, int const &v, int const &mod) {
@@ -189,10 +189,10 @@ template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_modint {
   }
   explicit operator int() const { return m_v; }
   friend class mod_helper;
-  This &operator++() { return mod_helper::pre_incl(*this, mod()); }
-  This &operator--() { return mod_helper::pre_decl(*this, mod()); }
-  This operator++(int) { return mod_helper::post_incl(*this, mod()); }
-  This operator--(int) { return mod_helper::post_decl(*this, mod()); }
+  This &operator++() { return mod_helper::pre_inc(*this, mod()); }
+  This &operator--() { return mod_helper::pre_dec(*this, mod()); }
+  This operator++(int) { return mod_helper::post_inc(*this, mod()); }
+  This operator--(int) { return mod_helper::post_dec(*this, mod()); }
   This &operator+=(const This &rhs) {
     return mod_helper::plusAsign(*this, rhs.m_v, mod());
   }
@@ -292,10 +292,10 @@ struct dynamic_modint {
   }
   explicit operator int() const { return m_v; }
   friend class mod_helper;
-  This &operator++() { return mod_helper::pre_incl(*this, mod()); }
-  This &operator--() { return mod_helper::pre_decl(*this, mod()); }
-  This operator++(int) { return mod_helper::post_incl(*this, mod()); }
-  This operator--(int) { return mod_helper::post_decl(*this, mod()); }
+  This &operator++() { return mod_helper::pre_inc(*this, mod()); }
+  This &operator--() { return mod_helper::pre_dec(*this, mod()); }
+  This operator++(int) { return mod_helper::post_inc(*this, mod()); }
+  This operator--(int) { return mod_helper::post_dec(*this, mod()); }
 
   This &operator+=(const This &rhs) {
     require_same_mod(*this, rhs);
