@@ -100,65 +100,63 @@ constexpr bool is_prime_constexpr(int const &n) {
 template <int n> constexpr bool is_prime_v = is_prime_constexpr(n);
 
 struct mod_helper {
-  template <class T> static constexpr T reduce(T const &v, T const &m) {
+  template <class T,
+            std::enable_if_t<std::is_integral_v<T>, std::nullptr_t> = nullptr>
+  static constexpr T reduce(T const &v, T const &m) {
     if (0 <= v && v < m)
       return v;
     T u = v % m;
     return (u >= 0) ? u : (m + u);
   }
-  template <class T> static T &asign(T &x, int const &v, int const &mod) {
-    x.m_v = reduce(v, mod);
+  template <class T> static T &asign(T &x, int const &v) {
+    x.m_v = reduce(v, x.mod());
     return x;
   }
-  template <class T> static T &asign(T &x, int &&v, int const &mod) {
-    x.m_v = reduce(std::move(v), mod);
+  template <class T> static T &asign(T &x, int &&v) {
+    x.m_v = reduce(std::move(v), x.mod());
     return x;
   }
-  template <class T> static T &pre_inc(T &x, int const &mod) {
+  template <class T> static T &pre_inc(T &x) {
     ++x.m_v;
-    if (x.m_v == mod)
+    if (x.m_v == x.mod())
       x.m_v = 0;
     return x;
   }
-  template <class T> static T &pre_dec(T &x, int const &mod) {
+  template <class T> static T &pre_dec(T &x) {
     if (x.m_v == 0)
-      x.m_v = mod;
+      x.m_v = x.mod();
     x.m_v--;
     return x;
   }
-  template <class T> static T post_inc(T &x, int const &mod) {
+  template <class T> static T post_inc(T &x) {
     T result = x;
-    pre_inc(x, mod);
+    pre_inc(x);
     return result;
   }
-  template <class T> static T post_dec(T &x, int const &mod) {
+  template <class T> static T post_dec(T &x) {
     T result = x;
-    pre_dec(x, mod);
+    pre_dec(x);
     return result;
   }
-  template <class T> static T &plusAsign(T &x, int const &v, int const &mod) {
+  template <class T> static T &plusAsign(T &x, int const &v) {
     x.m_v += v;
-    if (x.m_v >= mod)
-      x.m_v -= mod;
+    if (x.m_v >= x.mod())
+      x.m_v -= x.mod();
     return x;
   }
-  template <class T> static T &minusAsign(T &x, int const &v, int const &mod) {
+  template <class T> static T &minusAsign(T &x, int const &v) {
     x.m_v -= v;
     if (x.m_v < 0)
-      x.m_v += mod;
+      x.m_v += x.mod();
     return x;
   }
-  template <class T> static T const &unaryPlus(T const &x, int const &) {
-    return x;
-  }
-  template <class T> static T unaryMinus(T const &x, int const &mod) {
-    return T(mod - x.m_v, mod);
-  }
-  template <class T> static bool equals(T const &x, T const &y) {
-    return x.m_v == y.m_v;
+  template <class T> static T unaryMinus(T const &x) {
+    T r = x;
+    r.m_v = reduce(x.mod() - r.m_v, x.mod());
+    return r;
   }
   template <class T> static io::OS &out(io::OS &o, T const &x) {
-    return o << x.val() << " (mod " << x.mod() << ")";
+    return o << x.val() << "(%" << x.mod() << ")";
   }
 };
 template <class T, class U, class V>
@@ -171,11 +169,11 @@ bool constexpr are_operatable_v = std::conditional_t<
 template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_modint {
   using This = static_modint;
   static int constexpr mod() { return M; }
-  static This &timesAsign(This &x, int const &rhs, int const &mod) {
+  static This &timesAsign(This &x, int const &rhs) {
     unsigned long long int &&prod = static_cast<unsigned long long int>(x.m_v) *
                                     static_cast<unsigned long long int>(rhs);
     x.m_v = static_cast<int>(
-        mod_helper::reduce(prod, static_cast<unsigned long long int>(mod)));
+        mod_helper::reduce(prod, static_cast<unsigned long long int>(x.mod())));
     return x;
   }
   static_modint(int const &v = 0) : m_v(mod_helper::reduce(v, mod())) {}
@@ -183,36 +181,32 @@ template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_modint {
   static_modint(This &&v) = default;
   This &operator=(This const &v) = default;
   This &operator=(This &&v) = default;
-  This &operator=(int const &v) { return mod_helper::asign(*this, v, mod()); }
-  This &operator=(int &&v) {
-    return mod_helper::asign(*this, std::move(v), mod());
-  }
+  This &operator=(int const &v) { return mod_helper::asign(*this, v); }
+  This &operator=(int &&v) { return mod_helper::asign(*this, std::move(v)); }
   explicit operator int() const { return m_v; }
   friend class mod_helper;
-  This &operator++() { return mod_helper::pre_inc(*this, mod()); }
-  This &operator--() { return mod_helper::pre_dec(*this, mod()); }
-  This operator++(int) { return mod_helper::post_inc(*this, mod()); }
-  This operator--(int) { return mod_helper::post_dec(*this, mod()); }
+  This &operator++() { return mod_helper::pre_inc(*this); }
+  This &operator--() { return mod_helper::pre_dec(*this); }
+  This operator++(int) { return mod_helper::post_inc(*this); }
+  This operator--(int) { return mod_helper::post_dec(*this); }
   This &operator+=(const This &rhs) {
-    return mod_helper::plusAsign(*this, rhs.m_v, mod());
+    return mod_helper::plusAsign(*this, rhs.m_v);
   }
   This &operator-=(const This &rhs) {
-    return mod_helper::minusAsign(*this, rhs.m_v, mod());
+    return mod_helper::minusAsign(*this, rhs.m_v);
   }
-  This &operator*=(const This &rhs) {
-    return timesAsign(*this, rhs.m_v, mod());
-  }
+  This &operator*=(const This &rhs) { return timesAsign(*this, rhs.m_v); }
   This &operator+=(const int &rhs) {
-    return mod_helper::plusAsign(*this, mod_helper::reduce(rhs, mod()), mod());
+    return mod_helper::plusAsign(*this, mod_helper::reduce(rhs, mod()));
   }
   This &operator-=(const int &rhs) {
-    return mod_helper::minusAsign(*this, mod_helper::reduce(rhs, mod()), mod());
+    return mod_helper::minusAsign(*this, mod_helper::reduce(rhs, mod()));
   }
   This &operator*=(const int &rhs) {
-    return timesAsign(*this, mod_helper::reduce(rhs, mod()), mod());
+    return timesAsign(*this, mod_helper::reduce(rhs, mod()));
   }
-  This operator+() const { return mod_helper::unaryPlus(*this, mod()); }
-  This operator-() const { return mod_helper::unaryMinus(*this, mod()); }
+  This operator+() const { return *this; }
+  This operator-() const { return mod_helper::unaryMinus(*this); }
   template <
       class T, class U,
       std::enable_if_t<are_operatable_v<T, U, This>, std::nullptr_t> = nullptr>
@@ -235,7 +229,7 @@ template <int M, std::enable_if_t<(M > 0)> * = nullptr> struct static_modint {
       class T, class U,
       std::enable_if_t<are_operatable_v<T, U, This>, std::nullptr_t> = nullptr>
   friend bool operator==(const T &lhs, const U &rhs) {
-    return mod_helper::equals(This(lhs), This(rhs));
+    return This(lhs).val() == This(rhs).val();
   }
   template <
       class T, class U,
@@ -273,12 +267,23 @@ struct dynamic_modint {
   }
   static void require_same_mod(int const &xMod, int const &yMod) {
     if (xMod != yMod)
-      throw std::logic_error("mod minmatch!");
+      throw std::logic_error("mod mismatch!");
   }
   static unsigned long long int barrett(int const &m) {
     return ((unsigned long long int)(-1)) / m + 1;
   }
-  explicit dynamic_modint(int const &m, int const &v)
+  static This &timesAsign(This &x, int const &rhs) {
+    unsigned long long int z = x.m_v;
+    z *= rhs;
+    unsigned long long int y =
+        (unsigned long long int)(((unsigned __int128)(z)*x.m_im) >> 64);
+    unsigned int v = (unsigned int)(z - y * x.m_m);
+    if ((unsigned int)(x.m_m) <= v)
+      v += x.m_m;
+    x.m_v = v;
+    return x;
+  }
+  dynamic_modint(int const &v, int const &m)
       : m_v(mod_helper::reduce(v, m)), m_m(m), m_im(barrett(m)) {
     require_positive_mod(m);
   }
@@ -286,63 +291,84 @@ struct dynamic_modint {
   dynamic_modint(This &&v) = default;
   This &operator=(This const &v) = default;
   This &operator=(This &&v) = default;
-  This &operator=(int const &v) { return mod_helper::asign(*this, v, mod()); }
-  This &operator=(int &&v) {
-    return mod_helper::asign(*this, std::move(v), mod());
-  }
+  This &operator=(int const &v) { return mod_helper::asign(*this, v); }
+  This &operator=(int &&v) { return mod_helper::asign(*this, std::move(v)); }
   explicit operator int() const { return m_v; }
   friend class mod_helper;
-  This &operator++() { return mod_helper::pre_inc(*this, mod()); }
-  This &operator--() { return mod_helper::pre_dec(*this, mod()); }
-  This operator++(int) { return mod_helper::post_inc(*this, mod()); }
-  This operator--(int) { return mod_helper::post_dec(*this, mod()); }
+  This &operator++() { return mod_helper::pre_inc(*this); }
+  This &operator--() { return mod_helper::pre_dec(*this); }
+  This operator++(int) { return mod_helper::post_inc(*this); }
+  This operator--(int) { return mod_helper::post_dec(*this); }
 
   This &operator+=(const This &rhs) {
     require_same_mod(*this, rhs);
-    return mod_helper::plusAsign(*this, rhs.m_v, mod());
+    return mod_helper::plusAsign(*this, rhs.m_v);
+  }
+  This &operator+=(const int &rhs) {
+    return mod_helper::plusAsign(*this, mod_helper::reduce(rhs, mod()));
   }
   This &operator-=(const This &rhs) {
     require_same_mod(*this, rhs);
-    return mod_helper::minusAsign(*this, rhs.m_v, mod());
+    return mod_helper::minusAsign(*this, rhs.m_v);
+  }
+  This &operator-=(const int &rhs) {
+    return mod_helper::minusAsign(*this, mod_helper::reduce(rhs, mod()));
   }
   This &operator*=(const This &rhs) {
     require_same_mod(*this, rhs);
-    unsigned long long int z = m_v;
-    z *= rhs.m_v;
-    unsigned long long int x =
-        (unsigned long long int)(((unsigned __int128)(z)*m_im) >> 64);
-    unsigned int v = (unsigned int)(z - x * m_m);
-    if ((unsigned int)(m_m) <= v)
-      v += m_m;
-    m_v = v;
-    return *this;
+    return timesAsign(*this, rhs.m_v);
   }
-  This const &operator+() const { return mod_helper::unaryPlus(*this, mod()); }
-  This operator-() const { return mod_helper::unaryMinus(*this, mod()); }
-
-  friend This operator+(const This &lhs, const This &rhs) {
+  This &operator*=(const int &rhs) {
+    return timesAsign(*this, mod_helper::reduce(rhs, mod()));
+  }
+  This const &operator+() const { return *this; }
+  This operator-() const { return mod_helper::unaryMinus(*this); }
+  template <class U, std::enable_if_t<are_operatable_v<This, U, This>,
+                                      std::nullptr_t> = nullptr>
+  friend This operator+(const This &lhs, const U &rhs) {
     return This(lhs) += rhs;
   }
-  friend This operator-(const This &lhs, const This &rhs) {
+  friend This operator+(const int &lhs, const This &rhs) {
+    return This(lhs, rhs.mod()) += rhs;
+  }
+  template <class U, std::enable_if_t<are_operatable_v<This, U, This>,
+                                      std::nullptr_t> = nullptr>
+  friend This operator-(const This &lhs, const U &rhs) {
     return This(lhs) -= rhs;
   }
-  friend This operator*(const This &lhs, const This &rhs) {
+  friend This operator-(const int &lhs, const This &rhs) {
+    return This(lhs, rhs.mod()) -= rhs;
+  }
+  template <class U, std::enable_if_t<are_operatable_v<This, U, This>,
+                                      std::nullptr_t> = nullptr>
+  friend This operator*(const This &lhs, const U &rhs) {
     return This(lhs) *= rhs;
+  }
+  friend This operator*(const int &lhs, const This &rhs) {
+    return This(lhs, rhs.mod()) *= rhs;
   }
   friend bool operator==(const This &lhs, const This &rhs) {
     require_same_mod(lhs, rhs);
-    return mod_helper::equals(lhs, rhs);
+    return lhs.val() == rhs.val();
   }
-  friend bool operator!=(const This &lhs, const This &rhs) {
-    require_same_mod(lhs, rhs);
-    return !(lhs.m_v == rhs.m_v);
+  friend bool operator==(const This &lhs, const int &rhs) {
+    return lhs.val() == mod_helper::reduce(rhs, lhs.mod());
+  }
+  friend bool operator==(const int &lhs, const This &rhs) {
+    return mod_helper::reduce(lhs, rhs.mod()) == rhs.val();
+  }
+  template <
+      class T, class U,
+      std::enable_if_t<are_operatable_v<T, U, This>, std::nullptr_t> = nullptr>
+  friend bool operator!=(const T &lhs, const U &rhs) {
+    return !(lhs == rhs);
   }
   friend io::OS &operator<<(io::OS &o, const This &x) {
     return mod_helper::out(o, x);
   }
 
   This pow(ll n) const {
-    This y = *this, r = This(mod(), 1);
+    This y = *this, r = This(1, mod());
     dump(y, r);
     while (n) {
       if (n & 1)
@@ -353,7 +379,7 @@ struct dynamic_modint {
     return r;
   }
   int val() const { return m_v; }
-  int const &mod() const { return m_m; }
+  int mod() const { return m_m; }
   This &with_mod(int const &m) {
     require_positive_mod(m);
     m_m = m;
@@ -367,10 +393,6 @@ private:
   unsigned long long m_im;
 };
 
-// template <int P, std::enable_if_t<is_prime_v<P>, std::nullptr_t> = nullptr>
-// constexpr Int inv(int const &a) {
-//  return pow_mod_constexpr(a, P - 2, P);
-//}
 template <int P, std::enable_if_t<is_prime_v<P>, std::nullptr_t> = nullptr>
 static_modint<P> inv(static_modint<P> const &a) {
   return a.pow(P - 2);
