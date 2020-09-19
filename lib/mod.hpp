@@ -464,14 +464,11 @@ std::pair<int, int> gcd_inv(int a, int const &mod) {
     m0 += mod / s;
   return {s, m0};
 }
-template <int M>
-std::pair<int, static_modint<M>> gcd_inv(static_modint<M> const &a) {
-  auto &&[gcd, inv] = gcd_inv(a.val(), a.val());
-  return {gcd, static_modint<M>(inv)};
-}
-std::pair<int, dynamic_modint> gcd_inv(dynamic_modint const &a) {
-  auto &&[gcd, inv] = gcd_inv(a.val(), a.val());
-  return {gcd, dynamic_modint(inv, a.mod())};
+template <class Modint> std::pair<int, Modint> gcd_inv(Modint const &a) {
+  Modint r = a;
+  auto &&[gcd, inv] = gcd_inv(a.val(), a.mod());
+  r = inv;
+  return {gcd, r};
 }
 } // namespace mod
 
