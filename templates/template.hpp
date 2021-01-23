@@ -1,3 +1,5 @@
+
+
 #ifndef TEMPLATE_HPP
 #define TEMPLATE_HPP
 
@@ -45,7 +47,7 @@ using std::multiset;
 using std::pair;
 using std::tuple;
 template <class T> using opt = std::optional<T>;
-using ll = /** __int128; //*/ long long int;
+using ll = /** __int128; //*/ std::int_fast64_t;
 using lf = long double;
 using str = std::string;
 template <class V, class H = std::hash<V>>

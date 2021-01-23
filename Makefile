@@ -14,7 +14,7 @@ help:
 
 .PHONY: clean
 clean: ### Clean samples, tasks, and temporary directory.
-	rm -rf $(WORK_DIR)/samples/* $(TASKS_DIR)/* $(WORK_DIR)/tmp/* 
+	rm -rf $(WORK_DIR)/samples/* $(WORK_DIR)/limits/* $(TASKS_DIR)/* $(WORK_DIR)/tmp/* 
 
 templates: $(TEMPLATES_DIR)/template.hpp $(TEMPLATES_DIR)/template.py ### Initialize template files.
 	$(SCRIPTS_DIR)/templates.sh
@@ -22,7 +22,7 @@ templates: $(TEMPLATES_DIR)/template.hpp $(TEMPLATES_DIR)/template.py ### Initia
 .PHONY: samples
 samples: ### Download sample inputs and answers (outputs for them).
 	rm -f $(WORK_DIR)/samples/*
-	python3 $(SCRIPTS_DIR)/samples.py < $(WORK_DIR)/contest_data.txt
+	python3 $(SCRIPTS_DIR)/samples.py $(WORK_DIR)/contest_data.txt
 
 .PHONY: tasks
 tasks: samples ### Initialize all tasks based on samples.
@@ -52,13 +52,11 @@ test_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Test a com
 .PHONY: submit_% 
 submit_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Submit a C++ source file if the test passed.
 	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" && \
-	echo "Do you submit? [Yes]" && [ "$$(cat -)" = "Yes" ] && \
-	python3 $(SCRIPTS_DIR)/submit.py $* cplusplus $(TASKS_DIR)/$*/main.cpp < $(WORK_DIR)/contest_data.txt
+	python3 $(SCRIPTS_DIR)/submit.py $(WORK_DIR)/contest_data.txt $* cplusplus $(TASKS_DIR)/$*/main.cpp
 .PHONY: submit_force_%
 submit_force_%: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Submit a C++ source file forcibly.
 	$(SCRIPTS_DIR)/test.sh "$*" "$(TASKS_DIR)/$*/bin/main" || true && \
-	echo "Do you submit? [Yes]" && [ "$$(cat -)" = "Yes" ] && \
-	python3 $(SCRIPTS_DIR)/submit.py $* cplusplus $(TASKS_DIR)/$*/main.cpp < $(WORK_DIR)/contest_data.txt
+	python3 $(SCRIPTS_DIR)/submit.py $(WORK_DIR)/contest_data.txt $* cplusplus $(TASKS_DIR)/$*/main.cpp
 
 validate_main_%: $(TASKS_DIR)/%/validate.cpp ### Compile a C++ source file for validation.
 	g++ $(CPP_COMMON_OPTIONS) -o $(TASKS_DIR)/$*/bin/validate_main $(TASKS_DIR)/$*/validate.cpp
@@ -84,13 +82,11 @@ test_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample
 .PHONY: submit_%_py
 submit_%_py: $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans ### Submit a Python3 script if the test passed.
 	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" && \
-	echo "Do you submit? [Yes]"&& [ "$$(cat -)" = "Yes" ] && \
-	python3 $(SCRIPTS_DIR)/submit.py $* python3 $(TASKS_DIR)/$*/main.py < $(WORK_DIR)/contest_data.txt
+	python3 $(SCRIPTS_DIR)/submit.py $(WORK_DIR)/contest_data.txt $* python3 $(TASKS_DIR)/$*/main.py
 .PHONY: submit_force_%_py
 submit_force_%_py: main_% $(TASKS_DIR)/%/sample.in $(TASKS_DIR)/%/sample.ans  ### Submit a Python3 script forcibly.
 	$(SCRIPTS_DIR)/test.sh "$*" "python3 $(TASKS_DIR)/$*/main.py" || true && \
-	echo "Do you submit? [Yes]"&& [ "$$(cat -)" = "Yes" ] && \
-	python3 $(SCRIPTS_DIR)/submit.py $* python3 $(TASKS_DIR)/$*/main.py < $(WORK_DIR)/contest_data.txt
+	python3 $(SCRIPTS_DIR)/submit.py $(WORK_DIR)/contest_data.txt $* python3 $(TASKS_DIR)/$*/main.py
 
 validate_%_py: $(TASKS_DIR)/%/generate.py $(TASKS_DIR)/%/main.py $(TASKS_DIR)/%/validate.py ### Validate Python3 script with generate sample input.
 	$(SCRIPTS_DIR)/validate.sh "python3 $(TASKS_DIR)/$*/generate.py" "python3 $(TASKS_DIR)/$*/main.py" "python3 $(TASKS_DIR)/$*/validate.py"

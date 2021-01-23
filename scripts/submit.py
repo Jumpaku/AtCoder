@@ -8,27 +8,19 @@ import re
 from cachecontrol import CacheControl
 
 """
-python3 /home/scripts/submit.py probrem language src_file_name
+python3 /home/scripts/submit.py contest_data_file probrem language src_file_name
 """
 
-# requests_cache.install_cache('demo_cache')
+contest_data = sys.argv[1]
+with open(contest_data, "r") as f:
+    (contest_id, username, password) = f.read().split()[:3]
+""""""
 
-
-# "abc168"
-print("Contest ID?")
-contest_id = input()
 print("Contest ID:", contest_id)
-# "L64ySwL"
-print("Username?")
-username = input()
 print("Username:", username)
-# "hPzeX9BhRAQNRpAGGXjwQWp73YMcgvhC"
-print("Password?")
-password = input()
 print("Password:****")
 
-print(sys.argv)
-probrem = sys.argv[1]
+probrem = sys.argv[2]
 print("Probrem:", probrem)
 language_id = {
     "cplusplus": 4003,
@@ -40,12 +32,12 @@ language_extension = {
     "python3": "py",
     "pypy3": "py"
 }
-language = sys.argv[2]
+language = sys.argv[3]
 if language not in language_id:
     print("Language ({}) not found in {}".format(language, language_id))
     exit()
 print("Language:", language)
-src_file = sys.argv[3]
+src_file = sys.argv[4]
 if not os.path.exists(src_file):
     print("File ({}) not found".format(src_file))
     exit()
@@ -61,7 +53,6 @@ login_url = "https://atcoder.jp/login?continue=" + \
 
 session = CacheControl(requests.Session())
 
-print("Login:", login_url)
 login_res = session.get(login_url)
 login_html = BeautifulSoup(login_res.text, "html.parser")
 csrf_token = login_html.find_all(attrs={"name": "csrf_token"})[0]["value"]
@@ -82,9 +73,6 @@ csrf_token = submit_html.find_all(attrs={"name": "csrf_token"})[0]["value"]
 select_task = submit_html.find("select", attrs={"id": "select-task"})
 
 screen_task_name_candidates = list(select_task.find_all("option"))
-print("screen_task_names: ")
-for candidate in screen_task_name_candidates:
-    print("\t", candidate)
 
 screen_task_name = [opt["value"]
                     for opt in screen_task_name_candidates
@@ -96,20 +84,18 @@ submit_info = {
     "sourceCode": src_content
 }
 print("Submit:", submit_url)
-
-
-session.headers["Host"] = "atcoder.jp"
-session.headers["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0) Gecko/20100101 Firefox/78.0"
-session.headers["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
-session.headers["Accept-Language"] = "en-US,en;q=0.5"
-session.headers["Accept-Encoding"] = "gzip, deflate, br"
-session.headers["Content-Type"] = "application/x-www-form-urlencoded"
-session.headers["Origin"] = "https://atcoder.jp"
-session.headers["Connection"] = "keep-alive"
-session.headers["Upgrade-Insecure-Requests"] = "1"
-session.headers["Pragma"] = "no-cache"
-session.headers["Cache-Control"] = "no-cache"
-session.headers["TE"] = "Trailers"
+with open("/home/tasks/" + probrem + "/limit.txt", "r") as f:
+    limits = [it.strip() for it in f.read().split("/")]
+    print("")
+    if limits[0] != "Time Limit: 2 sec":
+        print("  "+limits[0]+" !!")
+    if limits[1] != "Memory Limit: 1024 MB":
+        print("  "+limits[1]+" !!")
+    print("")
+submitYes = ("Yes" == input("Do you submit? [Yes]"))
+if not submitYes:
+    print("Submit canceled")
+    exit()
 
 submit_res = session.post(submit_url, data=submit_info)
 """

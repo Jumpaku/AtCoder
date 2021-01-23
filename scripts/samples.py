@@ -2,22 +2,18 @@ from bs4 import BeautifulSoup
 import requests
 import urllib.parse as urlparse
 from sys import stdin
+import sys
 from functools import reduce
 import re
 
+contest_data = sys.argv[1]
+with open(contest_data, "r") as f:
+    (contest_id, username, password) = f.read().split()[:3]
 """"""
-# "abc168"
-print("Contest ID?")
-contest_id = input()
-print(contest_id)
-# "L64ySwL"
-print("Username?")
-username = input()
-print(username)
-# "hPzeX9BhRAQNRpAGGXjwQWp73YMcgvhC"
-print("Password?")
-password = input()
-print("****")
+
+print("Contest ID:", contest_id)
+print("Username:", username)
+print("Password:****")
 
 tasks_url = "https://atcoder.jp/contests/" + contest_id + "/tasks_print?lang=en"
 login_url = "https://atcoder.jp/login?continue=" + \
@@ -41,7 +37,6 @@ if not tasks_res.ok:
     print(tasks_res)
     exit()
 html_text = tasks_res.text
-print(session.headers)
 
 """
 html_text = reduce(lambda t0, t1: t0+t1, stdin)
@@ -56,7 +51,11 @@ for task in tasks_html.find_all("div", class_="col-sm-12"):
     statement = task.find("span", class_="lang-en")
     if (not title) or (not statement):
         continue
-    print(title.get_text())
+    limits = task.p.get_text()
+    print(title.get_text(), "--", limits)
+    if limits:
+        with open("/home/limits/" + problem + ".limit", "w") as f:
+            f.write(limits)
     for section in statement.find_all("section"):
         h3s = section.find("h3")
         pre = section.find("pre")

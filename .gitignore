@@ -39,3 +39,4 @@ samples/*
 .vscode/settings.json
 contest_data.txt
 ignore_dir
+share
