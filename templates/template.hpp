@@ -109,6 +109,14 @@ template <class T> T clamp(T const &v, T const &l, T const &h) {
 ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
 ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
 ll sign(ll x) { return ll{x < 0 ? -1 : x > 0 ? 1 : 0}; }
+ll pow(ll x, ll n) {
+  if (n == 0)
+    return 1;
+  if (n & 1)
+    return x * pow(x, n - 1);
+  auto b = pow(x, n / 2);
+  return b * b;
+}
 bool odd(ll n) { return n & 1; }
 bool even(ll n) { return !odd(n); }
 bool imply(bool p, bool q) { return !p || q; }
