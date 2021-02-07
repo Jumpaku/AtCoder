@@ -4,7 +4,7 @@
 #define TEMPLATE_HPP
 
 #ifdef JUMPAKU_LOCAL
-#define _GLIBCXX_DEBUG
+//#define _GLIBCXX_DEBUG
 #endif
 
 #include <algorithm>
