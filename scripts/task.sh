@@ -26,7 +26,7 @@ fi
 if [ -e $LIMIT_TXT ]; then
   cat $LIMIT_TXT >> $TASK_DIR/limit.txt
 else
-  : >| $LIMIT_TXT/limit.txt
+  : >| $TASK_DIR/limit.txt
 fi
 
 cat $TASK_DIR/sample.in >| $TASK_DIR/debug.in
