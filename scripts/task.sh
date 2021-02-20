@@ -10,6 +10,7 @@ LIMIT_TXT="$WORK_DIR/limits/$1.limit"
 mkdir -p $TASK_DIR
 rm -rf $TASK_DIR
 cp -r $TEMPLATE $TASK_DIR
+mkdir -p $TASK_DIR/bin
 
 if [ -e $SAMPLE_IN ]; then
   cat $SAMPLE_IN >> $TASK_DIR/sample.in
