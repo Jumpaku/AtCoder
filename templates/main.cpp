@@ -46,7 +46,6 @@ using std::list;
 using std::multiset;
 using std::pair;
 using std::tuple;
-template <class T> using opt = std::optional<T>;
 using ll = /** __int128; //*/ std::int_fast64_t;
 using lf = long double;
 using str = std::string;
@@ -77,6 +76,7 @@ using std::copy;
 using std::copy_if;
 using std::count;
 using std::count_if;
+using std::fill;
 using std::find_if;
 using std::for_each;
 using std::inserter;
@@ -180,6 +180,7 @@ template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t) {
   return tuple_out(o << "(", t, std::make_index_sequence<sizeof...(Ts)>())
          << ")";
 }
+
 template <class T> struct Joiner {
   str const pre;
   str const post;
@@ -206,20 +207,18 @@ auto join(Itr const &b, Itr const &e, str const &sep = ""s,
   using T = typename std::iterator_traits<Itr>::value_type;
   return Joiner<T>(b, e, sep, pre, post);
 }
-template <class T> io::OS &operator<<(io::OS &o, opt<T> const &opt) {
-  return opt.has_value() ? (o << "Some(" << opt.value() << ")") : (o << "None");
-}
-template <class C, std::enable_if_t<
-                       !std::is_same_v<C, str> && !std::is_array_v<C> &&
-                           !std::is_pointer_v<C> && !std::is_arithmetic_v<C>,
-                       std::nullptr_t> = nullptr>
+template <class C, std::enable_if_t<!std::is_same_v<C, str> &&
+                                        (decltype(std::begin(std::declval<C>()),
+                                                  std::end(std::declval<C>()),
+                                                  std::true_type{})::value),
+                                    std::nullptr_t> = nullptr>
 OS &operator<<(OS &o, C const &a) {
-  return o << join(a.begin(), a.end(), ",", "[", "]");
+  return o << join(std::begin(a), std::end(a), ",", "[", "]");
 }
 } // namespace io
 using std::cin;
 using std::cout;
-auto init_io = []() {
+void init_io() {
   std::ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
   cout.tie(nullptr);
