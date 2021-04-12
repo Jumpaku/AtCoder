@@ -1,8 +1,8 @@
 /**
- * MOD
+ * FRAC
  */
-#ifndef JUMPAKU_MOD_HPP
-#define JUMPAKU_MOD_HPP
+#ifndef JUMPAKU_FRAC_HPP
+#define JUMPAKU_FRAC_HPP
 
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
@@ -104,4 +104,4 @@ template <> struct hash<Frac> {
 } // namespace std
 
 #endif
-/* end of MOD */
+/* end of FRAC */
