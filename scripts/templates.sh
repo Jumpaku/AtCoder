@@ -15,7 +15,7 @@ int main(int, char *[]) {\n\
   /** input(t); /**/\n\
   while (t--)\n\
     solve();\n\
-  cout.flush();\n\
+  std::cout.flush();\n\
 }\n\
 \n\
 void solve() {\n\

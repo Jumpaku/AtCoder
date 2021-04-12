@@ -216,16 +216,16 @@ OS &operator<<(OS &o, C const &a) {
   return o << join(std::begin(a), std::end(a), ",", "[", "]");
 }
 } // namespace io
-using std::cin;
-using std::cout;
 void init_io() {
   std::ios_base::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-  cout << std::fixed << std::setprecision(15);
+  std::cin.tie(nullptr);
+  std::cout.tie(nullptr);
+  std::cout << std::fixed << std::setprecision(15);
 };
-auto input = [](auto &... a) { io::in(cin, a...); };
-auto print = [](auto const &... a) { io::out_join(cout, " ", a...) << "\n"; };
+auto input = [](auto &... a) { io::in(std::cin, a...); };
+auto print = [](auto const &... a) {
+  io::out_join(std::cout, " ", a...) << "\n";
+};
 #ifdef JUMPAKU_DEBUG
 auto dump = [](auto const &... a) {
   io::out_join(std::cerr, " "s, a...) << "\n";
@@ -234,6 +234,7 @@ auto dump = [](auto const &... a) {
 auto dump = [](auto const &...) {};
 #endif
 using io::join;
+using io::operator<<;
 
 // Hash
 namespace hashcode {
