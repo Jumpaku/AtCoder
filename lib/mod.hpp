@@ -47,17 +47,6 @@ struct ModCache {
 };
 } // namespace mod
 
-template <int M> struct std::hash<atcoder::static_modint<M>> {
-  size_t operator()(atcoder::static_modint<M> const &t) const {
-    return t.val();
-  }
-};
-template <int id> struct std::hash<atcoder::dynamic_modint<id>> {
-  size_t operator()(atcoder::dynamic_modint<id> const &t) const {
-    return t.val();
-  }
-};
-
 using mod::inv;
 using mod::ModCache;
 using mod::pow;
