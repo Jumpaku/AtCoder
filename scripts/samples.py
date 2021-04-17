@@ -1,3 +1,4 @@
+import os
 from bs4 import BeautifulSoup
 import requests
 import urllib.parse as urlparse
@@ -46,6 +47,7 @@ html_text = re.sub(r"\r\n|\r|\n", "\n", html_text)
 tasks_html = BeautifulSoup(html_text, "lxml")
 
 problem = "a"
+os.makedirs("/home/limits/", exist_ok=True)
 for task in tasks_html.find_all("div", class_="col-sm-12"):
     title = task.find("span", class_="h2")
     statement = task.find("span", class_="lang-en")

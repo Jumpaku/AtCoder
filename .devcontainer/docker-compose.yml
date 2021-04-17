@@ -12,5 +12,6 @@ services:
       - './../templates:/home/templates:delegated'
       - '/home/tasks'
       - '/home/samples'
+      - '/home/limits'
       - '/home/tmp'
       - '/home/ignore_dir'
