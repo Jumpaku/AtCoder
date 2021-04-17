@@ -130,6 +130,7 @@ using utils::iff;
 using utils::imply;
 using utils::lcm;
 using utils::odd;
+using utils::pow;
 using utils::sign;
 using utils::to_string;
 
@@ -453,7 +454,7 @@ int main(int, char *[]) {
   /** input(t); /**/
   while (t--)
     solve();
-  cout.flush();
+  std::cout.flush();
 }
 
 void solve() {

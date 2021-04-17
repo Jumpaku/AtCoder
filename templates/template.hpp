@@ -130,6 +130,7 @@ using utils::iff;
 using utils::imply;
 using utils::lcm;
 using utils::odd;
+using utils::pow;
 using utils::sign;
 using utils::to_string;
 
