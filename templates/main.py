@@ -4,6 +4,8 @@ import collections as col
 import heapq as hq
 import sys
 import copy as cp
+import functools as ft
+import math
 sys.setrecursionlimit(10**9)
 
 
@@ -22,6 +24,10 @@ def odd(n): return n & 1
 
 
 def even(n): return not odd(n)
+
+
+def joinToString(iterable, sep: str = "", prefix: str = "", postfix: str = "") -> str:
+    return prefix + sep.join(map(str, iterable)) + postfix
 
 S = input()
 dump(S)
