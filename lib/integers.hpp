@@ -25,6 +25,31 @@ ll f(ll l, ll r, ll K) {
  */
 ll countMultiples(ll b, ll e, ll K) { return f(b, e - 1, K); }
 
+/**
+ * nCkの計算
+ */
+ll countCombinations(ll const n, ll const k) {
+  if (k < 0 || k > n)
+    return 0;
+  if (k > n - k)
+    return countCombinations(n, n - k);
+  ll ans = n - k + 1;
+  for (ll i = 1; i < k; ++i)
+    ans *= (n - k + 1 + i) / (i + 1);
+  return ans;
+}
+/**
+ * nPkの計算
+ */
+ll countPermutations(ll const n, ll const k) {
+  if (k < 0 || k > n)
+    return 0;
+  ll ans = n;
+  for (ll i = 0; i < k; ++i)
+    ans *= n - i;
+  return ans;
+}
+
 // O(N*log(log(N))), log(N)
 vec<int> createPrimes(int const &M) {
   vec<bool> isPrime(M + 1, true);
