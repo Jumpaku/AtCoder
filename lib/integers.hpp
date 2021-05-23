@@ -31,11 +31,16 @@ ll countMultiples(ll b, ll e, ll K) { return f(b, e - 1, K); }
 ll countCombinations(ll const n, ll const k) {
   if (k < 0 || k > n)
     return 0;
+  if (k == n || k == 0)
+    return 1;
+  if (n == 1)
+    return 1;
   if (k > n - k)
     return countCombinations(n, n - k);
   ll ans = n - k + 1;
-  for (ll i = 1; i < k; ++i)
-    ans *= (n - k + 1 + i) / (i + 1);
+  for (ll i = 1; i < k; ++i) {
+    ans = ans * (n - k + 1 + i) / (i + 1);
+  }
   return ans;
 }
 /**
