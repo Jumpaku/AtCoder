@@ -234,6 +234,10 @@ template <class T> struct Vec final {
   Vec<T> cross(Vec<T> const &v) const {
     return Vec(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
   }
+  lf angle(Vec<T> const &v) const {
+    auto const &u = *this;
+    return acos(clamp(u.dot(v) / (u.norm2() * v.norm2()), lf(-1.0), lf(1.0)));
+  }
   Vec<T> &operator=(Vec<T> const &v) = default;
   Vec<T> &operator=(Vec<T> &&v) = default;
   Vec<T> operator*(T const &a) const { return Vec<T>(a * x, a * y, a * z); }
@@ -308,11 +312,6 @@ template <class T> io::OS &operator<<(io::OS &o, Pt<T> const &p) {
   using io::operator<<;
   return o << "Pt(" << p.x << ", " << p.y << ", " << p.z << ")";
 }
-using Vec_ll = Vec<ll>;
-using Vec_lf = Vec<lf>;
-using Pt_ll = Pt<ll>;
-using Pt_lf = Pt<lf>;
-
 enum class Axis { X, Y, Z };
 template <class T> struct Transform;
 namespace transform {
@@ -384,6 +383,8 @@ Transform<T> rotate(Axis const &axis, unsigned const &quarters) {
 template <class T> Transform<T> rotate(Vec<T> const &axis, lf const &radians) {
   auto c = cos(radians);
   auto s = sin(radians);
+  if (!std::isfinite(1.0 / axis.norm2()))
+    throw "undefined rotation axis"s;
   auto n = axis / axis.norm2();
   auto x = n.x;
   auto y = n.y;
@@ -407,17 +408,22 @@ template <class T> Transform<T> rotate(Vec<T> const &axis, lf const &radians) {
       {T(0), T(0), T(0), T(1)},
   }));
 }
+
+template <class T>
+Transform<T> rotate(Vec<T> const &from, Vec<T> const &to, lf const &radians) {
+  auto axis = from.cross(to);
+  if (!std::isfinite(1.0 / from.cross(to).norm2())) {
+    if (from.dot(to) >= 0)
+      return identity<T>();
+  }
+  return rotate(axis / axis.norm2(), radians);
+}
 template <class T> Transform<T> scale(T const &a) {
   return Transform<T>(matrix::matrix::diagonal<4, T>({a, a, a, T(1)}));
 }
 } // namespace transform
 } // namespace geom
 } // namespace linalg
-
-using namespace linalg::matrix;
-using namespace linalg::geom;
-using linalg::geom::Pt;
-using linalg::geom::Vec;
 
 namespace std {
 template <> struct hash<linalg::geom::Vec<ll>> {
@@ -431,5 +437,8 @@ template <> struct hash<linalg::geom::Pt<ll>> {
   }
 };
 } // namespace std
+
+using namespace linalg::matrix;
+using namespace linalg::geom;
 
 /* end of GEOM */
