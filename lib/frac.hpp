@@ -23,8 +23,8 @@ public:
     if (s[0] == '-' || s[0] == '+')
       s[0] = '0';
     auto pos_point = s.find('.');
-    auto exp =
-        pos_point == str::npos ? ll(1) : ::pow(10, s.size() - 1 - pos_point);
+    auto exp = pos_point == str::npos ? ll(1)
+                                      : ::pow(ll(10), s.size() - 1 - pos_point);
     auto integer = stoll(pos_point == str::npos ? s : s.substr(0, pos_point));
     auto precision = stoll(
         pos_point == str::npos ? "0"s : s.substr(pos_point + 1, s.size()));
