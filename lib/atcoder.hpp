@@ -1,3 +1,12 @@
+/**
+ * JUMPAKU_ATCODER_HPP
+ */
+#ifndef JUMPAKU_ATCODER_HPP
+#define JUMPAKU_ATCODER_HPP
+
+#ifndef TEMPLATE_HPP
+#include "../templates/template.hpp"
+#endif
 
 #include <algorithm>
 #include <array>
@@ -450,6 +459,9 @@ public:
   friend bool operator!=(const mint &lhs, const mint &rhs) {
     return lhs._v != rhs._v;
   }
+  friend io::OS &operator<<(io::OS &o, mint const &p) {
+    return o << "mod(" << p.val() << ")";
+  }
 
 private:
   unsigned int _v;
@@ -566,6 +578,9 @@ public:
   }
   friend bool operator!=(const mint &lhs, const mint &rhs) {
     return lhs._v != rhs._v;
+  }
+  friend io::OS &operator<<(io::OS &o, mint const &p) {
+    return o << p.val() << "(mod " << mint::mod() << ")";
   }
 
 private:
@@ -2149,3 +2164,14 @@ private:
 };
 
 } // namespace atcoder
+
+namespace std {
+template <int MOD> struct hash<atcoder::static_modint<MOD>> {
+  size_t operator()(atcoder::static_modint<MOD> const &t) const {
+    return std::hash<unsigned int>{}(t.val());
+  }
+};
+} // namespace std
+
+#endif
+/* end of JUMPAKU_ATCODER_HPP */
