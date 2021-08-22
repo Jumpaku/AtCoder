@@ -231,8 +231,50 @@ auto print = [](auto const &... a) {
 auto dump = [](auto const &... a) {
   io::out_join(std::cerr, " "s, a...) << "\n";
 };
+auto dump_undecorated = [](auto const &... a) {
+  io::out_join(std::cerr, ""s, a...);
+};
+#define JUMPAKU_QUOTE(A) #A
+#define JUMPAKU_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, F, ...) F
+#define dump_vars(...)                                                         \
+  JUMPAKU_GET_MACRO(__VA_ARGS__, JUMPAKU_DUMP_8, JUMPAKU_DUMP_7,               \
+                    JUMPAKU_DUMP_6, JUMPAKU_DUMP_5, JUMPAKU_DUMP_4,            \
+                    JUMPAKU_DUMP_3, JUMPAKU_DUMP_2, JUMPAKU_DUMP_1)            \
+  (__VA_ARGS__)
+#define JUMPAKU_DUMP_1(A1)                                                     \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, "\n");
+#define JUMPAKU_DUMP_2(A1, A2)                                                 \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, "=", A2, "\n")
+#define JUMPAKU_DUMP_3(A1, A2, A3)                                             \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, "\n")
+#define JUMPAKU_DUMP_4(A1, A2, A3, A4)                                         \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
+                   A4, "\n")
+#define JUMPAKU_DUMP_5(A1, A2, A3, A4, A5)                                     \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
+                   A4, #A5, "=", A5, "\n")
+#define JUMPAKU_DUMP_6(A1, A2, A3, A4, A5, A6)                                 \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
+                   A4, #A5, "=", A5, ", ", #A6, "=", A6, "\n")
+#define JUMPAKU_DUMP_7(A1, A2, A3, A4, A5, A6, A7)                             \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
+                   A4, #A5, "=", A5, ", ", #A6, "=", A6, ", ", #A7, "=", A7,   \
+                   "\n")
+#define JUMPAKU_DUMP_8(A1, A2, A3, A4, A5, A6, A7, A8)                         \
+  dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
+                   A1, ", ", #A2, A2, ", ", #A3, "=", A3, ", ", #A4, "=", A4,  \
+                   ", ", #A5, "=", A5, ", ", #A6, "=", A6, ", ", #A7, "=", A7, \
+                   ", ", #A8, "=", A8, "\n")
 #else
 auto dump = [](auto const &...) {};
+#define dump_vars(...)
 #endif
 using io::join;
 using io::operator<<;
