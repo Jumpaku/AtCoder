@@ -87,18 +87,27 @@ vec<longlong> createFactors(longlong const &N) {
   return factors;
 }
 
-u_map<longlong, longlong> primeFactorize(longlong const &N) {
-  longlong n = N;
-  u_map<longlong, longlong> result;
-  for (longlong i = 2; i <= n; i++) {
-    while (n % i == 0) {
-      ++result[i];
-      n /= i;
+u_map<longlong, longlong> primeFactorize(longlong N) {
+  u_map<longlong, longlong> res;
+  for (long long a = 2; a * a <= N; ++a) {
+    if (N % a != 0)
+      continue;
+    long long ex = 0; // 指数
+
+    // 割れる限り割り続ける
+    while (N % a == 0) {
+      ++ex;
+      N /= a;
     }
+
+    // その結果を push
+    res[a] = ex;
   }
-  if (n != 1)
-    result[n]++;
-  return result;
+
+  // 最後に残った数について
+  if (N != 1)
+    res[N] = 1;
+  return res;
 }
 
 uint16_t bases[] = {
