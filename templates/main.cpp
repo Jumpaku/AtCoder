@@ -121,10 +121,32 @@ bool odd(ll n) { return n & 1; }
 bool even(ll n) { return !odd(n); }
 bool imply(bool p, bool q) { return !p || q; }
 bool iff(bool p, bool q) { return p == q; }
+ll floor_div(ll a, ll b);
+ll ceil_div(ll a, ll b);
+ll floor_div(ll a, ll b) {
+  if (b == 0)
+    throw std::invalid_argument("Division by 0");
+  if (b < 0)
+    return floor_div(-a, -b);
+  if (a < 0)
+    return -ceil_div(-a, b);
+  return a / b;
+}
+ll ceil_div(ll a, ll b) {
+  if (b == 0)
+    throw std::invalid_argument("Division by 0");
+  if (b < 0)
+    return ceil_div(-a, -b);
+  if (a < 0)
+    return -floor_div(-a, b);
+  return (a + b - 1) / b;
+}
 } // namespace utils
 using std::to_string;
+using utils::ceil_div;
 using utils::clamp;
 using utils::even;
+using utils::floor_div;
 using utils::gcd;
 using utils::iff;
 using utils::imply;
