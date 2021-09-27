@@ -8,7 +8,7 @@ cat $TEMPLATE_DIR/template.hpp >| $TEMPLATE_DIR/main.cpp
 : >| $TEMPLATE_DIR/generate.cpp
 
 echo "\n\
-void solve();
+void solve();\n\
 int main(int, char *[]) {\n\
   init_io();\n\
   ll t = 1;\n\
@@ -18,6 +18,7 @@ int main(int, char *[]) {\n\
   std::cout.flush();\n\
 }\n\
 \n\
+constexpr ll MOD = 1e9 + 7;\n\
 void solve() {\n\
   input();\n\
   print();\n\
