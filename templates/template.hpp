@@ -274,21 +274,21 @@ auto dump_undecorated = [](auto const &... a) {
                    A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, "\n")
 #define JUMPAKU_DUMP_4(A1, A2, A3, A4)                                         \
   dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
-                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ", ", #A4, "=", \
                    A4, "\n")
 #define JUMPAKU_DUMP_5(A1, A2, A3, A4, A5)                                     \
   dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
-                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
-                   A4, #A5, "=", A5, "\n")
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ", ", #A4, "=", \
+                   A4, ", ", #A5, "=", A5, "\n")
 #define JUMPAKU_DUMP_6(A1, A2, A3, A4, A5, A6)                                 \
   dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
-                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
-                   A4, #A5, "=", A5, ", ", #A6, "=", A6, "\n")
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ", ", #A4, "=", \
+                   A4, ", ", #A5, "=", A5, ", ", #A6, "=", A6, "\n")
 #define JUMPAKU_DUMP_7(A1, A2, A3, A4, A5, A6, A7)                             \
   dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
-                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ",", #A4, "=",  \
-                   A4, #A5, "=", A5, ", ", #A6, "=", A6, ", ", #A7, "=", A7,   \
-                   "\n")
+                   A1, ", ", #A2, "=", A2, ", ", #A3, "=", A3, ", ", #A4, "=", \
+                   A4, ", ", #A5, "=", A5, ", ", #A6, "=", A6, ", ", #A7, "=", \
+                   A7, "\n")
 #define JUMPAKU_DUMP_8(A1, A2, A3, A4, A5, A6, A7, A8)                         \
   dump_undecorated("dump_vars at ", __FILE__, ":", __LINE__, " : ", #A1, "=",  \
                    A1, ", ", #A2, A2, ", ", #A3, "=", A3, ", ", #A4, "=", A4,  \
