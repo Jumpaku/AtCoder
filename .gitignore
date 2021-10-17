@@ -38,5 +38,6 @@ tmp/*
 samples/*
 .vscode/settings.json
 contest_data.txt
+accouts.secret
 ignore_dir
 share
