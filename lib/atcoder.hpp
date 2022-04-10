@@ -1731,33 +1731,33 @@ public:
   segtree(int n) : segtree(std::vector<S>(n, e())) {}
   segtree(const std::vector<S> &v) : _n(int(v.size())) {
     log = internal::ceil_pow2(_n);
-    size = 1 << log;
-    d = std::vector<S>(2 * size, e());
+    _size = 1 << log;
+    d = std::vector<S>(2 * _size, e());
     for (int i = 0; i < _n; i++)
-      d[size + i] = v[i];
-    for (int i = size - 1; i >= 1; i--) {
+      d[_size + i] = v[i];
+    for (int i = _size - 1; i >= 1; i--) {
       update(i);
     }
   }
 
   void set(int p, S x) {
     assert(0 <= p && p < _n);
-    p += size;
+    p += _size;
     d[p] = x;
     for (int i = 1; i <= log; i++)
       update(p >> i);
   }
 
-  S get(int p) {
+  S get(int p) const {
     assert(0 <= p && p < _n);
-    return d[p + size];
+    return d[p + _size];
   }
 
   S prod(int l, int r) {
     assert(0 <= l && l <= r && r <= _n);
     S sml = e(), smr = e();
-    l += size;
-    r += size;
+    l += _size;
+    r += _size;
 
     while (l < r) {
       if (l & 1)
@@ -1780,20 +1780,20 @@ public:
     assert(f(e()));
     if (l == _n)
       return _n;
-    l += size;
+    l += _size;
     S sm = e();
     do {
       while (l % 2 == 0)
         l >>= 1;
       if (!f(op(sm, d[l]))) {
-        while (l < size) {
+        while (l < _size) {
           l = (2 * l);
           if (f(op(sm, d[l]))) {
             sm = op(sm, d[l]);
             l++;
           }
         }
-        return l - size;
+        return l - _size;
       }
       sm = op(sm, d[l]);
       l++;
@@ -1809,21 +1809,21 @@ public:
     assert(f(e()));
     if (r == 0)
       return 0;
-    r += size;
+    r += _size;
     S sm = e();
     do {
       r--;
       while (r > 1 && (r % 2))
         r >>= 1;
       if (!f(op(d[r], sm))) {
-        while (r < size) {
+        while (r < _size) {
           r = (2 * r + 1);
           if (f(op(d[r], sm))) {
             sm = op(d[r], sm);
             r--;
           }
         }
-        return r + 1 - size;
+        return r + 1 - _size;
       }
       sm = op(d[r], sm);
     } while ((r & -r) != r);
@@ -1831,10 +1831,26 @@ public:
   }
 
 private:
-  int _n, size, log;
+  int _n, _size, log;
   std::vector<S> d;
 
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+
+public:
+  struct iterator : ranges::iterator_base<S, iterator> {
+    segtree<S, op, e> const &s;
+    iterator(segtree<S, op, e> const &s, ll const &i)
+        : ranges::iterator_base<S, iterator>(i), s(s) {}
+    iterator(iterator const &) = default;
+    iterator with(ll i) const override { return iterator(s, i); }
+    iterator &self() override { return *this; }
+    S operator*() const { return s.get(this->i); }
+  };
+  template <class Itr>
+  segtree(Itr begin, Itr end) : segtree(std::vector<S>(begin, end)) {}
+  size_t size() const { return _n; }
+  iterator begin() const { return iterator(*this, 0); }
+  iterator end() const { return iterator(*this, size()); }
 };
 
 } // namespace atcoder
