@@ -105,8 +105,8 @@ str to_string(__int128 const &x) { return std::to_string((long long)x); }
 template <class T> T clamp(T const &v, T const &l, T const &h) {
   return min(h, max(l, v));
 }
-ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
-ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
+ll gcd_Olog(ll p, ll q) { return (q == 0) ? p : gcd_Olog(q, p % q); }
+ll lcm_Olog(ll p, ll q) { return p / gcd_Olog(q, p) * q; }
 ll sign(ll x) { return ll{x < 0 ? -1 : x > 0 ? 1 : 0}; }
 ll pow(ll x, ll n) {
   if (n == 0)
@@ -146,10 +146,10 @@ using utils::ceil_div;
 using utils::clamp;
 using utils::even;
 using utils::floor_div;
-using utils::gcd;
+using utils::gcd_Olog;
 using utils::iff;
 using utils::imply;
-using utils::lcm;
+using utils::lcm_Olog;
 using utils::odd;
 using utils::pow;
 using utils::sign;

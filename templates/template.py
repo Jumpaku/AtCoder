@@ -26,5 +26,13 @@ def odd(n): return n & 1
 def even(n): return not odd(n)
 
 
+def gcd_Olog(p, q):
+    return p if (q == 0) else gcd_Olog(q, p % q)
+
+
+def lcm_Olog(p,  q):
+    return p / gcd_Olog(q, p) * q
+
+
 def joinToString(iterable, sep: str = "", prefix: str = "", postfix: str = "") -> str:
     return prefix + sep.join(map(str, iterable)) + postfix
