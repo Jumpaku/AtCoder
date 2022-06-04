@@ -39,7 +39,6 @@ using std::operator""s;
 using std::abs;
 
 // Types
-using std::bitset;
 using std::deque;
 using std::list;
 using std::multiset;

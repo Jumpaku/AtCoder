@@ -15,9 +15,8 @@ template <class F>
 vecl dijkstra(ll const start, vec<vecl> const &G, F const &dist) {
   ll constexpr inf = 1e18;
   vecl out(G.size(), inf);
-  auto cmp = [](auto &t0, auto &t1) { return get<0>(t0) > get<0>(t1); };
 
-  auto q = priority_queue<tuple<ll, ll>, decltype(cmp)>(cmp);
+  auto q = priority_queue<tuple<ll, ll>, std::grater<tuple<ll, ll>>>();
   q.emplace(out[start] = 0, start);
   while (!q.empty()) {
     auto [d, u] = q.top();

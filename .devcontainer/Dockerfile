@@ -8,4 +8,10 @@ RUN apt update -y && apt install -y make git curl \
 RUN pip3 install requests bs4 lxml CacheControl
 WORKDIR /home/
 
+RUN mkdir -p '/home/tasks' && \
+    mkdir -p  '/home/tmp' && \
+    mkdir -p  '/home/samples' && \
+    mkdir -p  '/home/limits' && \
+    mkdir -p  '/home/ignore_dir'
+
 CMD [ "sleep", "infinity" ]

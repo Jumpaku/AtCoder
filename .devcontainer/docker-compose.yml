@@ -10,8 +10,3 @@ services:
       - './../lib:/home/lib:delegated'
       - './../scripts:/home/scripts:delegated'
       - './../templates:/home/templates:delegated'
-      - '/home/tasks'
-      - '/home/samples'
-      - '/home/limits'
-      - '/home/tmp'
-      - '/home/ignore_dir'
