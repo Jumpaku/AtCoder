@@ -36,6 +36,7 @@
 tasks/*
 tmp/*
 samples/*
+limits/*
 .vscode/settings.json
 contest_data.txt
 accouts.secret
