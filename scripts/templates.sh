@@ -18,7 +18,6 @@ int main(int, char *[]) {\n\
   std::cout.flush();\n\
 }\n\
 \n\
-constexpr ll MOD = 1e9 + 7;\n\
 void solve() {\n\
   input();\n\
   print();\n\

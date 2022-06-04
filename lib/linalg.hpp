@@ -238,6 +238,9 @@ template <class T> struct Vec final {
     auto const &u = *this;
     return acos(clamp(u.dot(v) / (u.norm2() * v.norm2()), lf(-1.0), lf(1.0)));
   }
+  bool parallel(Vec<T> const &v, T const &tolerance = T(0)) const {
+    return cross(v).norm2() <= tolerance;
+  }
   Vec<T> &operator=(Vec<T> const &v) = default;
   Vec<T> &operator=(Vec<T> &&v) = default;
   Vec<T> operator*(T const &a) const { return Vec<T>(a * x, a * y, a * z); }

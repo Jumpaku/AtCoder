@@ -39,7 +39,6 @@ using std::operator""s;
 using std::abs;
 
 // Types
-using std::bitset;
 using std::deque;
 using std::list;
 using std::multiset;
@@ -105,8 +104,8 @@ str to_string(__int128 const &x) { return std::to_string((long long)x); }
 template <class T> T clamp(T const &v, T const &l, T const &h) {
   return min(h, max(l, v));
 }
-ll gcd(ll p, ll q) { return (q == 0) ? p : gcd(q, p % q); }
-ll lcm(ll p, ll q) { return p / gcd(q, p) * q; }
+ll gcd_Olog(ll p, ll q) { return (q == 0) ? p : gcd_Olog(q, p % q); }
+ll lcm_Olog(ll p, ll q) { return p / gcd_Olog(q, p) * q; }
 ll sign(ll x) { return ll{x < 0 ? -1 : x > 0 ? 1 : 0}; }
 ll pow(ll x, ll n) {
   if (n == 0)
@@ -146,10 +145,10 @@ using utils::ceil_div;
 using utils::clamp;
 using utils::even;
 using utils::floor_div;
-using utils::gcd;
+using utils::gcd_Olog;
 using utils::iff;
 using utils::imply;
-using utils::lcm;
+using utils::lcm_Olog;
 using utils::odd;
 using utils::pow;
 using utils::sign;
@@ -255,7 +254,6 @@ auto dump = [](auto const &... a) {
 auto dump_undecorated = [](auto const &... a) {
   io::out_join(std::cerr, ""s, a...);
 };
-#define JUMPAKU_QUOTE(A) #A
 #define JUMPAKU_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, F, ...) F
 #define dump_vars(...)                                                         \
   JUMPAKU_GET_MACRO(__VA_ARGS__, JUMPAKU_DUMP_8, JUMPAKU_DUMP_7,               \
@@ -334,6 +332,15 @@ template <class T> struct hash<u_set<T>> {
     return accumulate(
         t.begin(), t.end(), (size_t)0,
         [&](auto acc, auto const &ti) { return acc + hasher(ti); });
+  }
+};
+template <class T> struct hash<vec<T>> {
+  size_t operator()(vec<T> const &t) const {
+    constexpr std::hash<T> hasher;
+    return accumulate(t.begin(), t.end(), (size_t)17,
+                      [&](auto acc, auto const &ti) {
+                        return hashcode::hash_args(acc, hasher(ti));
+                      });
   }
 };
 } // namespace std
@@ -481,6 +488,48 @@ public:
 #endif
 };
 
+/*
+void f(int x){
+  if ( x <= 0) return;
+  static rec_dump_t rec_dump;
+  rec_dump_raii raii(rec_dump);
+  rec_dump(x);
+  f(--x);
+}
+*/
+struct rec_dump_t {
+  str indent = "|";
+  template <class... Ts> void operator()(Ts const &... a) {
+#ifdef JUMPAKU_DEBUG
+    std::cerr << indent;
+    io::out_join(std::cerr, " "s, a...) << "\n";
+#endif
+  }
+  template <class... Ts> void dump(Ts const &... a) {
+#ifdef JUMPAKU_DEBUG
+    std::cerr << indent;
+    io::out_join(std::cerr, " "s, a...) << "\n";
+#endif
+  }
+};
+struct rec_dump_raii {
+  rec_dump_t &obj;
+  rec_dump_raii(rec_dump_t &obj) : obj(obj) {
+#ifdef JUMPAKU_DEBUG
+    obj.indent.back() = '-';
+    obj.indent.push_back('|');
+    obj("entry");
+#endif
+  }
+  ~rec_dump_raii() {
+#ifdef JUMPAKU_DEBUG
+    obj("return");
+    obj.indent.pop_back();
+    obj.indent.back() = '|';
+#endif
+  }
+};
+
 constexpr lf PI = 3.141592653589793238462643383279502884L;
 
 #endif /* TEMPLATE_HPP */
@@ -495,7 +544,6 @@ int main(int, char *[]) {
   std::cout.flush();
 }
 
-constexpr ll MOD = 1e9 + 7;
 void solve() {
   input();
   print();

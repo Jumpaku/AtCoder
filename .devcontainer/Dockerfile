@@ -9,4 +9,10 @@ RUN pip3 install requests bs4 lxml CacheControl
 RUN pip3 install atcoder-tools
 WORKDIR /home/
 
+RUN mkdir -p '/home/tasks' && \
+    mkdir -p  '/home/tmp' && \
+    mkdir -p  '/home/samples' && \
+    mkdir -p  '/home/limits' && \
+    mkdir -p  '/home/ignore_dir'
+
 CMD [ "sleep", "infinity" ]
