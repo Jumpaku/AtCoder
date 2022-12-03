@@ -4,9 +4,10 @@ services:
   atcoder:
     build: './'
     volumes: 
-      - './../share:/home/share:delegated'
-      - './../Makefile:/home/Makefile:delegated'
-      - './../contest_data.txt:/home/contest_data.txt:delegated'
-      - './../lib:/home/lib:delegated'
-      - './../scripts:/home/scripts:delegated'
-      - './../templates:/home/templates:delegated'
+      - './../:/home/:delegated'
+#      - './../share:/home/share:delegated'
+#      - './../Makefile:/home/Makefile:delegated'
+#      - './../contest_data.txt:/home/contest_data.txt:delegated'
+#      - './../lib:/home/lib:delegated'
+#      - './../scripts:/home/scripts:delegated'
+#      - './../templates:/home/templates:delegated'
