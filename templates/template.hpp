@@ -425,6 +425,17 @@ template <class F> auto seq(ll n, F const &f) {
   return ranges::seq<T>(0LL, n, f);
 }
 
+void exitRE(ll code = 1) { exit(code); }
+void exitTLE(ll n = 1e18) {
+  for (auto &&i : range(n)) {
+    ll x = 0;
+    input(x);
+    if (x == 1089) {
+      return;
+    }
+  }
+}
+
 #include <chrono>
 class stopwatch {
 #ifdef JUMPAKU_DEBUG
