@@ -16,28 +16,42 @@ struct bitset {
   Buf buf;
   static bitset one() { return bitset(uint64_t(1)); }
   static bitset zero() { return bitset(uint64_t(0)); }
+  static bitset from(uint64_t n) { return bitset(n); }
+  static bitset fill_l(size_t n) {
+    Buf buf;
+    for (auto &&i : range(n))
+      buf[Size - i - 1] = 1;
+    return {buf};
+  }
+  static bitset fill_r(size_t n) {
+    Buf buf;
+    for (auto &&i : range(n))
+      buf[i] = 1;
+    return {buf};
+  }
+  static bitset fill(vec<size_t> const &digits) {
+    Buf buf;
+    for (auto &&i : digits)
+      buf[i] = 1;
+    return {buf};
+  }
+  static bitset fill() {
+    Buf buf;
+    for (auto &&i : range(Size))
+      buf[i] = 1;
+    return {buf};
+  }
   bitset(Buf const &buffer = Buf()) : buf(buffer) {}
   bitset(bitset const &) = default;
   bitset(bitset &&) = default;
   Self &operator=(bitset const &) = default;
   Self &operator=(bitset &&) = default;
   Self set(int digit, bool val) const { return {Buf(buf).set(digit, val)}; }
-  Self fill_l(size_t n, bool val) const {
-    auto out = buf;
-    for (auto &&i : range(n))
-      out[Size - i - 1] = val;
-    return out;
-  }
-  Self fill_r(size_t n, bool val) const {
-    auto out = buf;
-    for (auto &&i : range(n))
-      out[i] = val;
-    return out;
-  }
+
   bool get(int digit) const { return buf.test(digit); }
   size_t size() const { return Size; }
   int cnt(bool val) const { return val ? buf.count() : (Size - buf.count()); }
-  int cnt_l(bool val) const {
+  int cnt_leading(bool val) const {
     int out = 0;
     for (size_t i = Size - 1; i >= 0; --i) {
       if (get(i) == val)
@@ -47,7 +61,7 @@ struct bitset {
     }
     return out;
   }
-  int cnt_r(bool val) const {
+  int cnt_trailing(bool val) const {
     int out = 0;
     for (size_t i = 0; i < Size; ++i) {
       if (get(i) == val)
@@ -65,12 +79,12 @@ struct bitset {
   Self rot_l(int n) const {
     if (n < 0)
       return rot_r(-n);
-    return {buf << (n % Size) | buf >> (Size - (n % Size))};
+    return {(buf << (n % Size)) | (buf >> (Size - (n % Size)))};
   }
   Self rot_r(int n) const {
     if (n < 0)
       return rot_l(-n);
-    return {buf >> (n % Size) | buf << (Size - (n % Size))};
+    return {(buf >> (n % Size)) | (buf << (Size - (n % Size)))};
   }
   Self rev() const {
     Buf out;
@@ -78,8 +92,8 @@ struct bitset {
       out[i] = buf[Size - i - 1];
     return {out};
   }
-  size_t left(bool val) const { return Size - 1 - cnt_l(!val); }
-  size_t right(bool val) const { return cnt_r(!val); }
+  size_t find_l(bool val) const { return Size - 1 - cnt_leading(!val); }
+  size_t find_r(bool val) const { return cnt_trailing(!val); }
   Self operator<<(size_t n) const { return {buf << n}; }
   Self operator>>(size_t n) const { return {buf >> n}; }
   Self operator~() const { return {~buf}; }
