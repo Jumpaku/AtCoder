@@ -8,67 +8,65 @@
 #include "../templates/template.hpp"
 #endif
 
+#include <memory>
 namespace dp {
 
+template <class Val> using Ptr = std::shared_ptr<Val>;
+template <class Val> using GetReturn = tuple<Ptr<Val>, bool>;
 template <class Key, class Val> struct ICache {
-  virtual tuple<Val const &, bool> get(Key const &key) const = 0;
+  virtual GetReturn<Val> get(Key const &key) const = 0;
   virtual void set(Key const &key, Val const &val) = 0;
 };
 template <class Key, class Val> struct CacheU : ICache<Key, Val> {
-  u_map<Key, Val> cache;
+  u_map<Key, Ptr<Val>> cache;
   CacheU() : cache(2e6) {}
-  tuple<Val const &, bool> get(Key const &key) const override {
+  GetReturn<Val> get(Key const &key) const override {
     auto found = this->cache.find(key);
-    return found != cache.end() ? tuple<Val const &, bool>(found->second, true)
-                                : tuple<Val const &, bool>(Val{}, false);
+    return found != cache.end() ? GetReturn<Val>(found->second, true)
+                                : GetReturn<Val>(nullptr, false);
   }
-  void set(Key const &key, Val const &val) override { this->cache[key] = val; }
+  void set(Key const &key, Val const &val) override {
+    this->cache[key] = std::make_shared<Val>(val);
+  }
 };
 template <class Val> struct CacheV1 : ICache<tuple<ll>, Val> {
   using Key = tuple<ll>;
-  CacheV1(ll n) : cache(n), cached(n) {}
-  vec<Val> cache;
-  vec<bool> cached;
-  tuple<Val const &, bool> get(Key const &key) const override {
+  CacheV1(ll n) : cache(n) {}
+  vec<Ptr<Val>> cache;
+  GetReturn<Val> get(Key const &key) const override {
     auto const &[i] = key;
-    return tuple<Val const &, bool>(cached[i], cache[i]);
+    return GetReturn<Val>(cache[i], cache[i] != nullptr);
   }
   void set(Key const &key, Val const &val) override {
     auto const &[i] = key;
-    this->cache[i] = val;
-    this->cached[i] = true;
+    this->cache[i] = std::make_shared<Val>(val);
   }
 };
 template <class Val> struct CacheV2 : ICache<tuple<ll, ll>, Val> {
   using Key = tuple<ll, ll>;
-  CacheV2(ll n0, ll n1) : cache(n0, vec<Val>(n1)), cached(n0, vec<bool>(n1)) {}
-  vec<vec<Val>> cache;
-  vec<vec<bool>> cached;
-  tuple<Val const &, bool> get(Key const &key) const override {
+  CacheV2(ll n0, ll n1) : cache(n0, vec<Ptr<Val>>(n1)) {}
+  vec<vec<Ptr<Val>>> cache;
+  GetReturn<Val> get(Key const &key) const override {
     auto const &[i, j] = key;
-    return tuple<Val const &, bool>(cached[i][j], cache[i][j]);
+    return GetReturn<Val>(cache[i][j], cache[i][j] != nullptr);
   }
   void set(Key const &key, Val const &val) override {
     auto const &[i, j] = key;
-    this->cache[i][j] = val;
-    this->cached[i][j] = true;
+    this->cache[i][j] = std::make_shared<Val>(val);
   }
 }; // namespace dp
 template <class Val> struct CacheV3 : ICache<tuple<ll, ll, ll>, Val> {
   using Key = tuple<ll, ll, ll>;
   CacheV3(ll n0, ll n1, ll n2)
-      : cache(n0, vec<vec<Val>>(n1, vec<Val>(n2))),
-        cached(n0, vec<vec<bool>>(n1, vec<bool>(n2))) {}
-  vec<vec<vec<Val>>> cache;
-  vec<vec<vec<bool>>> cached;
-  tuple<Val const &, bool> get(Key const &key) const override {
+      : cache(n0, vec<vec<Ptr<Val>>>(n1, vec<Ptr<Val>>(n2))) {}
+  vec<vec<vec<Ptr<Val>>>> cache;
+  GetReturn<Val> get(Key const &key) const override {
     auto const &[i, j, k] = key;
-    return tuple<Val const &, bool>(cached[i][j][k], cache[i][j][k]);
+    return GetReturn<Val>(cache[i][j][k], cache[i][j][k] != nullptr);
   }
   void set(Key const &key, Val const &val) override {
     auto const &[i, j, k] = key;
-    this->cache[i][j][k] = val;
-    this->cached[i][j][k] = true;
+    this->cache[i][j][k] = std::make_shared<Val>(val);
   }
 };
 
@@ -82,10 +80,10 @@ using dp::CacheV3;
 /* end of DP */
 
 /**
-using Key;
-using Val;
-using Cache;
-using Data;
+using Key = tuple<ll>;
+using Val = ll;
+using Cache = CacheU<Key, Val>;
+using Data = struct {};
 struct DP {
   DP(Data data, Cache cache) : data(data), cache(cache) {}
   Data data;
@@ -96,7 +94,7 @@ struct DP {
     return Val();
     // use cached ans
     if (auto const &[ans, ok] = cache.get(key); ok) {
-      return ans;
+      return *ans;
     }
     // compute recursively
     Val ans;
