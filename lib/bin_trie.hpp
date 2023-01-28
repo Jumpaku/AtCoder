@@ -1,8 +1,8 @@
 /**
- * BINBRIE
+ * BIN_TRIE
  */
-#ifndef JUMPAKU_BINBRIE_HPP
-#define JUMPAKU_BINBRIE_HPP
+#ifndef JUMPAKU_BIN_TRIE_HPP
+#define JUMPAKU_BIN_TRIE_HPP
 
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
@@ -89,4 +89,4 @@ public:
 };
 
 #endif
-/* end of BINBRIE */
+/* end of BIN_TRIE */
