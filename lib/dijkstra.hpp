@@ -16,7 +16,7 @@ vecl dijkstra(ll const start, vec<vecl> const &G, F const &dist) {
   ll constexpr inf = 1e18;
   vecl out(G.size(), inf);
 
-  auto q = priority_queue<tuple<ll, ll>, std::grater<tuple<ll, ll>>>();
+  auto q = priority_queue<tuple<ll, ll>, std::greater<tuple<ll, ll>>>();
   q.emplace(out[start] = 0, start);
   while (!q.empty()) {
     auto [d, u] = q.top();
