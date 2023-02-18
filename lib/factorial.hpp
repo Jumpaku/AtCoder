@@ -11,6 +11,7 @@
 
 namespace factorial {
 
+// Factorial<atcoder::modint_static<>> f(1e6);
 template <class ModInt> struct Factorial {
   Factorial(int N) : fact(N + 1), finv(N + 1) {
     fact[0] = 1;
@@ -27,6 +28,7 @@ template <class ModInt> struct Factorial {
       return 0;
     return (fact[n] * finv[m] * finv[n - m]).val();
   }
+  int comb_with_repetition(int n, int m) const { return comb(n + m - 1, m); }
   int perm(int n, int m) const {
     if (m < 0 || n < m)
       return 0;
