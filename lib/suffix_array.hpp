@@ -1,8 +1,8 @@
 /**
- * JUMPAKU_ATCODER_HPP
+ * JUMPAKU_SUFFIX_ARRAY_HPP
  */
-#ifndef JUMPAKU_ATCODER_HPP
-#define JUMPAKU_ATCODER_HPP
+#ifndef JUMPAKU_SUFFIX_ARRAY_HPP
+#define JUMPAKU_SUFFIX_ARRAY_HPP
 
 #ifndef TEMPLATE_HPP
 #include "../templates/template.hpp"
@@ -74,4 +74,4 @@ vecl suffix_array_construction(str s) {
 }
 
 #endif
-/* end of JUMPAKU_ATCODER_HPP */
+/* end of JUMPAKU_SUFFIX_ARRAY_HPP */
