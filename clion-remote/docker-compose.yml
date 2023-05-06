@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  atcoder:
+    build: './'
+    volumes:
+      - './../:/work/:delegated'
+#      - './../share:/home/share:delegated'
+#      - './../Makefile:/home/Makefile:delegated'
+#      - './../contest_data.txt:/home/contest_data.txt:delegated'
+#      - './../lib:/home/lib:delegated'
+#      - './../scripts:/home/scripts:delegated'
+#      - './../templates:/home/templates:delegated'
+    ports:
+      - '127.0.0.1:2222:22'
+    cap_add:
+      - 'SYS_PTRACE'

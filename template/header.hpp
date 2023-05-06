@@ -1,8 +1,4 @@
 
-
-#ifndef TEMPLATE_HPP
-#define TEMPLATE_HPP
-
 #ifdef JUMPAKU_LOCAL
 //#define _GLIBCXX_DEBUG
 #endif
@@ -542,5 +538,3 @@ struct rec_dump_raii {
 };
 
 constexpr lf PI = 3.141592653589793238462643383279502884L;
-
-#endif /* TEMPLATE_HPP */
