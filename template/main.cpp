@@ -10,27 +10,27 @@
 void solve();
 
 int main(int, char *[]) {
-    init_io();
-    ll t = 1;
-    /** input(t); /**/
-    while (t--)
-        solve();
-    std::cout.flush();
+  init_io();
+  ll t = 1;
+  /** input(t); /**/
+  while (t--)
+    solve();
+  std::cout.flush();
 }
 
 void validate() {
 #ifdef JUMPAKU_DEBUG
-    dump("---------- Valitdate ----------");
-    ll expected = 0;
-    dump_vars(actual, expected);
-    if (!true) {
-        exitRE(1);
-    }
+  dump("---------- Valitdate ----------");
+  ll expected = 0;
+  dump_vars(expected);
+  if (!true) {
+    exitRE(1);
+  }
 #endif
 }
 
 void solve() {
-    input();
-    validate();
-    print();
+  input();
+  validate();
+  print();
 }

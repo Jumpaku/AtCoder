@@ -5,12 +5,7 @@ services:
     build: './'
     volumes:
       - './../:/work/:delegated'
-#      - './../share:/home/share:delegated'
-#      - './../Makefile:/home/Makefile:delegated'
-#      - './../contest_data.txt:/home/contest_data.txt:delegated'
-#      - './../lib:/home/lib:delegated'
-#      - './../scripts:/home/scripts:delegated'
-#      - './../templates:/home/templates:delegated'
+    working_dir: "/work"
     ports:
       - '127.0.0.1:2222:22'
     cap_add:

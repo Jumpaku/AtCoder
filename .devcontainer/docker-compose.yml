@@ -5,5 +5,5 @@ services:
     build: './'
     volumes: 
       - './../:/work/:delegated'
-    work_dir: "/work"
+    working_dir: "/work"
     command: ["sleep", "infinity"]

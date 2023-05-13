@@ -5,8 +5,7 @@
 #define JUMPAKU_BITSET_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
-#include "atcoder.hpp"
+#include "./../template/header.hpp"
 #endif
 
 struct bitset {
@@ -17,28 +16,16 @@ struct bitset {
   static bitset one() { return bitset(uint64_t(1)); }
   static bitset zero() { return bitset(uint64_t(0)); }
   static bitset from(uint64_t n) { return bitset(n); }
-  static bitset fill_l(size_t n) {
+  static bitset fill_l(size_t n, bool val) {
     Buf buf;
     for (auto &&i : range(n))
-      buf[Size - i - 1] = 1;
+      buf[Size - i - 1] = val;
     return {buf};
   }
-  static bitset fill_r(size_t n) {
+  static bitset fill_r(size_t n, bool val) {
     Buf buf;
     for (auto &&i : range(n))
-      buf[i] = 1;
-    return {buf};
-  }
-  static bitset fill(vec<size_t> const &digits) {
-    Buf buf;
-    for (auto &&i : digits)
-      buf[i] = 1;
-    return {buf};
-  }
-  static bitset fill() {
-    Buf buf;
-    for (auto &&i : range(Size))
-      buf[i] = 1;
+      buf[i] = val;
     return {buf};
   }
   bitset(Buf const &buffer = Buf()) : buf(buffer) {}
@@ -86,7 +73,7 @@ struct bitset {
       return rot_l(-n);
     return {(buf >> (n % Size)) | (buf << (Size - (n % Size)))};
   }
-  Self rev() const {
+  Self rev_ord() const {
     Buf out;
     for (auto &&i : range(Size))
       out[i] = buf[Size - i - 1];
@@ -104,4 +91,5 @@ struct bitset {
 io::OS &operator<<(io::OS &o, bitset const &b) { return o << b.str(); }
 
 #endif
+
 /* end of BITSET */
