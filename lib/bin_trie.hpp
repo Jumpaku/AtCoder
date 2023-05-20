@@ -5,8 +5,7 @@
 #define JUMPAKU_BIN_TRIE_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
-#include "atcoder.hpp"
+#include "../template/header.hpp"
 #endif
 
 class bin_trie {
