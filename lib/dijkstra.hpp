@@ -3,7 +3,7 @@
  */
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
+#include "../template/header.hpp"
 #endif
 
 namespace graphs {

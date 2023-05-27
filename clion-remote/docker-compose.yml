@@ -1,9 +1,12 @@
 version: '3'
 
-services: 
+services:
   atcoder:
     build: './'
-    volumes: 
+    volumes:
       - './../:/work/:delegated'
     working_dir: "/work"
-    command: ["sleep", "infinity"]
+    ports:
+      - '127.0.0.1:2222:22'
+    cap_add:
+      - 'SYS_PTRACE'

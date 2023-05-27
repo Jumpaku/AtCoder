@@ -5,7 +5,7 @@
 #define JUMPAKU_ATCODER_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
+#include "../template/header.hpp"
 #endif
 
 #include <algorithm>

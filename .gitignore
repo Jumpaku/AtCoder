@@ -33,12 +33,9 @@
 
 \.DS_Store
 
+# 
+.idea/
+.credential.json
 tasks/*
-tmp/*
-samples/*
-limits/*
 .vscode/settings.json
-contest_data.txt
-accouts.secret
-ignore_dir
-share
+ignore_dir/
