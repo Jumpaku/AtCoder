@@ -7,10 +7,12 @@
 
 #endif /* TEMPLATE_HPP */
 
+void presolve();
 void solve();
 
 int main(int, char *[]) {
   init_io();
+  presolve();
   ll t = 1;
   /** input(t); /**/
   while (t--)
@@ -18,19 +20,8 @@ int main(int, char *[]) {
   std::cout.flush();
 }
 
-void validate() {
-#ifdef JUMPAKU_DEBUG
-  dump("---------- Valitdate ----------");
-  ll expected = 0;
-  dump_vars(expected);
-  if (!true) {
-    exitRE(1);
-  }
-#endif
-}
+void presolve() {}
 
 void solve() {
-  input();
-  validate();
-  print();
+  //
 }

@@ -2,12 +2,12 @@ BasedOnStyle: LLVM
 AccessModifierOffset: 0
 AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Left
-AlignConsecutiveAssignments: AcrossComments
-AlignConsecutiveBitFields: AcrossComments
-AlignConsecutiveDeclarations: AcrossComments
-AlignConsecutiveMacros: AcrossComments
+#AlignConsecutiveAssignments: AcrossComments
+#AlignConsecutiveBitFields: AcrossComments
+#AlignConsecutiveDeclarations: AcrossComments
+#AlignConsecutiveMacros: AcrossComments
 AlignEscapedNewlines: Left
-AlignOperands: Align
+#AlignOperands: Align
 AlignTrailingComments: true
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -38,14 +38,14 @@ Cpp11BracedListStyle: false
 DeriveLineEnding: false
 DerivePointerAlignment: true
 DisableFormat: false
-EmptyLineAfterAccessModifier: Never
+#EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Never
 FixNamespaceComments: true
 IncludeBlocks: Regroup
 IndentAccessModifiers: false
 IndentCaseBlocks: true
 IndentCaseLabels: false
-IndentExternBlock: AfterExternBlock
+#IndentExternBlock: AfterExternBlock
 IndentGotoLabels: false
 IndentPPDirectives: None
 IndentRequires: true
@@ -61,7 +61,7 @@ PackConstructorInitializers: NextLine
 PointerAlignment: Right
 ReferenceAlignment: Right
 ReflowComments: false
-SortIncludes: CaseSensitive
+#SortIncludes: CaseSensitive
 SortUsingDeclarations: true
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: true
@@ -78,7 +78,7 @@ SpaceBeforeSquareBrackets: false
 SpaceInEmptyBlock: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
-SpacesInAngles: Always
+#SpacesInAngles: Always
 SpacesInCStyleCastParentheses: false
 SpacesInConditionalStatement: true
 SpacesInParentheses: false
@@ -99,6 +99,6 @@ BraceWrapping:
   AfterExternBlock: true
   BeforeCatch: false
   BeforeElse: false
-  BeforeLambdaBody: false
-  BeforeWhile: false
+  #BeforeLambdaBody: false
+  #BeforeWhile: false
   IndentBraces: false

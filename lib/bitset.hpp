@@ -33,8 +33,7 @@ struct bitset {
   bitset(bitset &&) = default;
   Self &operator=(bitset const &) = default;
   Self &operator=(bitset &&) = default;
-  Self set(int digit, bool val) const { return {Buf(buf).set(digit, val)}; }
-
+  Self with(int digit, bool val) const { return {Buf(buf).set(digit, val)}; }
   bool get(int digit) const { return buf.test(digit); }
   size_t size() const { return Size; }
   int cnt(bool val) const { return val ? buf.count() : (Size - buf.count()); }
