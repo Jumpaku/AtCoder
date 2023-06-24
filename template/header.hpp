@@ -96,7 +96,10 @@ using std::unique;
 using std::upper_bound;
 
 namespace utils {
-str to_string(__int128 const &x) { return std::to_string((long long)x); }
+str to_string(__int128 const &x) {
+  return (x < 0) ? std::to_string((long long int)x)
+                 : std::to_string((unsigned long long int)x);
+}
 template <class T> T clamp(T const &v, T const &l, T const &h) {
   return min(h, max(l, v));
 }
@@ -185,7 +188,9 @@ template <class T, class... Ts>
 OS &out_join(OS &o, str const &sep, T const &a, Ts const &... as) {
   return out_join(o << a << sep, sep, as...);
 }
-OS &operator<<(OS &o, __int128 const &x) { return o << (long long int)x; }
+OS &operator<<(OS &o, __int128 const &x) {
+  return (x < 0) ? (o << (long long int)x) : (o << (unsigned long long int)x);
+}
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p) {
   return o << p.first << ":" << p.second;
 }
