@@ -5,7 +5,7 @@
 #define JUMPAKU_SUFFIX_ARRAY_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
+#include "../template/header.hpp"
 #endif
 
 vecl sort_cyclic_shifts(str const &s) {
