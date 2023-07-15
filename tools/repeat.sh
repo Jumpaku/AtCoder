@@ -14,5 +14,5 @@ JOB_COMMAND=$2
 
 for LOOP_NUMBER in $(seq "${COUNT}"); do
     export LOOP_NUMBER="${LOOP_NUMBER}"
-    sh -c "${JOB_COMMAND}"
+    sh -c "set -eux; ${JOB_COMMAND}"
 done
