@@ -1,6 +1,6 @@
 
 #ifdef JUMPAKU_LOCAL
-//#define _GLIBCXX_DEBUG
+// #define _GLIBCXX_DEBUG
 #endif
 
 #include <algorithm>
@@ -157,10 +157,7 @@ namespace io {
 // Input
 using IS = std::istream;
 IS &in(IS &);
-IS &in(IS &i) { return i; }
-template <class T, class... Ts> IS &in(IS &i, T &a, Ts &... as) {
-  return in(i >> a, as...);
-}
+
 IS &operator>>(IS &i, __int128 &x) {
   long long int xx;
   i >> xx;
@@ -176,7 +173,12 @@ template <class F, class S> IS &operator>>(IS &i, pair<F, S> &p) {
   return i >> p.first >> p.second;
 }
 template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t) {
-  return apply([&](auto &... ts) -> IS & { return in(i, ts...); }, t);
+  return apply([&](auto &...ts) -> IS & { return in(i, ts...); }, t);
+}
+
+IS &in(IS &i) { return i; }
+template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as) {
+  return in(i >> a, as...);
 }
 // Output
 using OS = std::ostream;
@@ -185,7 +187,7 @@ template <class T> OS &out_join(OS &o, str const &, T const &a) {
   return o << a;
 }
 template <class T, class... Ts>
-OS &out_join(OS &o, str const &sep, T const &a, Ts const &... as) {
+OS &out_join(OS &o, str const &sep, T const &a, Ts const &...as) {
   return out_join(o << a << sep, sep, as...);
 }
 OS &operator<<(OS &o, __int128 const &x) {
@@ -244,15 +246,15 @@ void init_io() {
   std::cout.tie(nullptr);
   std::cout << std::fixed << std::setprecision(15);
 };
-auto input = [](auto &... a) { io::in(std::cin, a...); };
-auto print = [](auto const &... a) {
+auto input = [](auto &...a) { io::in(std::cin, a...); };
+auto print = [](auto const &...a) {
   io::out_join(std::cout, " ", a...) << "\n";
 };
 #ifdef JUMPAKU_DEBUG
-auto dump = [](auto const &... a) {
+auto dump = [](auto const &...a) {
   io::out_join(std::cerr, " "s, a...) << "\n";
 };
-auto dump_undecorated = [](auto const &... a) {
+auto dump_undecorated = [](auto const &...a) {
   io::out_join(std::cerr, ""s, a...);
 };
 #define JUMPAKU_GET_MACRO(_1, _2, _3, _4, _5, _6, _7, _8, F, ...) F
@@ -301,10 +303,10 @@ using io::operator<<;
 
 // Hash
 namespace hashcode {
-template <class... Ts> size_t hash_args(size_t h, Ts const &... ts);
+template <class... Ts> size_t hash_args(size_t h, Ts const &...ts);
 size_t hash_args(size_t h) { return h; }
 template <class T, class... Ts>
-size_t hash_args(size_t h, T const &t, Ts const &... ts) {
+size_t hash_args(size_t h, T const &t, Ts const &...ts) {
   constexpr std::hash<T> hasher;
   return hash_args(((h << 10) - h) ^ hasher(t), ts...);
 }
@@ -314,13 +316,6 @@ size_t hash_tuple(tuple<Ts...> const &t, std::index_sequence<I...>) {
 }
 } // namespace hashcode
 namespace std {
-#if __GNUC__ != 9 || defined(__STRICT_ANSI__)
-template <> struct hash<__int128> {
-  size_t operator()(__int128 const &t) const {
-    return (t & 0xffffffff) ^ ((t >> 63) & 0xffffffff);
-  }
-};
-#endif
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
     size_t h = hashcode::hash_tuple(t, std::index_sequence_for<Ts...>());
@@ -511,13 +506,13 @@ void f(int x){
 */
 struct rec_dump_t {
   str indent = "|";
-  template <class... Ts> void operator()(Ts const &... a) {
+  template <class... Ts> void operator()(Ts const &...a) {
 #ifdef JUMPAKU_DEBUG
     std::cerr << indent;
     io::out_join(std::cerr, " "s, a...) << "\n";
 #endif
   }
-  template <class... Ts> void dump(Ts const &... a) {
+  template <class... Ts> void dump(Ts const &...a) {
 #ifdef JUMPAKU_DEBUG
     std::cerr << indent;
     io::out_join(std::cerr, " "s, a...) << "\n";

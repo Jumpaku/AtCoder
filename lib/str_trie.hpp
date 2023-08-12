@@ -5,7 +5,7 @@
 #define JUMPAKU_STR_TRIE_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
+#include "../template/header.hpp"
 #include "atcoder.hpp"
 #endif
 

@@ -5,7 +5,7 @@
 #define JUMPAKU_TOPOLOGICAL_SORT_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
+#include "../template/header.hpp"
 #endif
 
 vecl topologicalSort(const vec<std::set<ll>> &graph) {

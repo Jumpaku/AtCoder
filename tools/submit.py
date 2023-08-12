@@ -23,8 +23,8 @@ def get_user_password(cred_path) -> typing.Dict[str, str]:
 
 def language_id(lang: str) -> str:
     return {
-        "cpp": "4003",
-        "py": "4006",
+        "cpp": "5028",
+        "py": "5055",
     }[lang]
 
 

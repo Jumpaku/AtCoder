@@ -5,7 +5,7 @@
 #define JUMPAKU_FRAC_HPP
 
 #ifndef TEMPLATE_HPP
-#include "../templates/template.hpp"
+#include "../template/header.hpp"
 #include "atcoder.hpp"
 #endif
 
@@ -20,15 +20,18 @@ public:
    */
   static Frac parse(str s) {
     ll sign = s[0] == '-' ? -1 : 1;
-    if (s[0] == '-' || s[0] == '+')
-      s[0] = '0';
+    if (s[0] == '-' || s[0] == '+') {
+      s = s.substr(1, s.size());
+    }
     auto pos_point = s.find('.');
-    auto exp = pos_point == str::npos ? ll(1)
-                                      : ::pow(ll(10), s.size() - 1 - pos_point);
-    auto integer = stoll(pos_point == str::npos ? s : s.substr(0, pos_point));
-    auto precision = stoll(
-        pos_point == str::npos ? "0"s : s.substr(pos_point + 1, s.size()));
-    return (Frac(integer) + Frac(precision, exp)) * sign;
+    if (pos_point == str::npos) {
+      return Frac(stoll(s)) * Frac(sign);
+    }
+    str a = s.substr(0, pos_point);
+    str b = s.substr(pos_point + 1, s.size());
+
+    return Frac(sign) *
+           (Frac(stoll(a)) + Frac(stoll(b), ::pow(ll(10), b.size())));
   }
   ll const &numerator() const { return num; }
   ll const &denominator() const { return den; }
@@ -41,7 +44,7 @@ public:
     ll s = ::sign(n) * ::sign(d);
     ll a = ::abs(n);
     ll b = ::abs(d);
-    ll g = gcd(a, b);
+    ll g = gcd_Olog(a, b);
     num = s * a / g;
     den = b / g;
   }
@@ -60,7 +63,12 @@ public:
   Frac operator+() const { return *this; }
   Frac operator-() const { return -1 * *this; }
   Frac inv() const { return Frac(den, num); }
-  Frac pow(ll n) const { return Frac(::pow(den, n), ::pow(num, n)); }
+  Frac pow(ll n) const {
+    if (n < 0) {
+      return pow(-n).inv();
+    }
+    return Frac(::pow(num, n), ::pow(den, n));
+  }
   Frac abs() const { return Frac(::abs(num), den); }
   ll sign() const { return ::sign(num); }
   ll floor() const {
@@ -93,15 +101,15 @@ public:
 };
 } // namespace frac
 
-using Frac = frac::Frac;
-
 namespace std {
-template <> struct hash<Frac> {
+template <> struct hash<frac::Frac> {
   size_t operator()(Frac const &r) const {
     return hashcode::hash_args(17, r.numerator(), r.denominator());
   }
 };
 } // namespace std
+
+using Frac = frac::Frac;
 
 #endif
 /* end of FRAC */
