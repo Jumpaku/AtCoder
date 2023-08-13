@@ -83,6 +83,13 @@ template <class T> struct Pt final {
   Pt<T> lerp(T const &t, Pt<T> const &p) const {
     return Pt((1 - t) * vec() + t * p.vec());
   }
+  Pt<T> affineCombination(std::vector<std::pair<T, Pt<T>>> const &pairs) const {
+    auto c = *this;
+    for (auto &&[t, p] : pairs) {
+      c += t * (p - *this);
+    }
+    return c;
+  }
   Pt<T> &operator=(Pt<T> const &v) = default;
   Pt<T> &operator=(Pt<T> &&v) = default;
   Pt<T> operator+(Vec<T> const &v) const { return Pt(vec() + v); }

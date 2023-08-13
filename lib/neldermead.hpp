@@ -21,9 +21,11 @@ X minimize(vec<X> const &init, ll repeat, F const &f) {
     lf f1 = f(x1);
     X x2 = x[x.size() - 1];
     lf f2 = f(x2);
-    dump_vars(i, f0, f1, f2);
 
-    X xO = x0.lerp(0.5, x1);
+    vec<std::pair<lf, X>> y;
+    transform(x.begin() + 1, x.end() - 1, back_inserter(y),
+              [&](auto xi) { return make_pair(1.0 / (x.size() - 1), xi); });
+    X xO = x0.affineCombination(y);
     lf fO = f(xO);
 
     X xR = xO.lerp(-1, x2);
