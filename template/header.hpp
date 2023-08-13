@@ -182,14 +182,8 @@ template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as) {
 }
 // Output
 using OS = std::ostream;
-OS &out_join(OS &o, str const &) { return o; }
-template <class T> OS &out_join(OS &o, str const &, T const &a) {
-  return o << a;
-}
-template <class T, class... Ts>
-OS &out_join(OS &o, str const &sep, T const &a, Ts const &...as) {
-  return out_join(o << a << sep, sep, as...);
-}
+OS &out_join(OS &o, str const &);
+
 OS &operator<<(OS &o, __int128 const &x) {
   return (x < 0) ? (o << (long long int)x) : (o << (unsigned long long int)x);
 }
@@ -238,6 +232,15 @@ template <class C, std::enable_if_t<!std::is_same_v<C, str> &&
                                     std::nullptr_t> = nullptr>
 OS &operator<<(OS &o, C const &a) {
   return o << join(std::begin(a), std::end(a), ",", "[", "]");
+}
+
+OS &out_join(OS &o, str const &) { return o; }
+template <class T> OS &out_join(OS &o, str const &, T const &a) {
+  return o << a;
+}
+template <class T, class... Ts>
+OS &out_join(OS &o, str const &sep, T const &a, Ts const &...as) {
+  return out_join(o << a << sep, sep, as...);
 }
 } // namespace io
 void init_io() {
