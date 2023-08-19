@@ -1,4 +1,5 @@
 
+
 #ifdef JUMPAKU_LOCAL
 // #define _GLIBCXX_DEBUG
 #endif
@@ -157,6 +158,16 @@ namespace io {
 // Input
 using IS = std::istream;
 IS &in(IS &);
+template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as);
+IS &operator>>(IS &i, __int128 &x);
+template <class V> IS &operator>>(IS &i, vec<V> &a);
+template <class F, class S> IS &operator>>(IS &i, pair<F, S> &p);
+template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t);
+
+IS &in(IS &i) { return i; }
+template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as) {
+  return in(i >> a, as...);
+}
 
 IS &operator>>(IS &i, __int128 &x) {
   long long int xx;
@@ -176,13 +187,30 @@ template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t) {
   return apply([&](auto &...ts) -> IS & { return in(i, ts...); }, t);
 }
 
-IS &in(IS &i) { return i; }
-template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as) {
-  return in(i >> a, as...);
-}
 // Output
 using OS = std::ostream;
 OS &out_join(OS &o, str const &);
+OS &operator<<(OS &o, __int128 const &x);
+template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p);
+template <class... Ts, size_t... I>
+OS &tuple_out(OS &o, tuple<Ts...> const &t, std::index_sequence<I...>);
+template <class... Ts> OS &operator<<(OS &o, tuple<Ts...> const &t);
+template <class T> struct Joiner;
+template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner);
+template <class Itr>
+Joiner<typename std::iterator_traits<Itr>::value_type>
+join(Itr const &b, Itr const &e, str const &sep = ""s, str const &pre = ""s,
+     str const &post = ""s);
+template <class C, std::enable_if_t<!std::is_same_v<C, str> &&
+                                        (decltype(std::begin(std::declval<C>()),
+                                                  std::end(std::declval<C>()),
+                                                  std::true_type{})::value),
+                                    std::nullptr_t> = nullptr>
+OS &operator<<(OS &o, C const &a);
+OS &out_join(OS &o, str const &);
+template <class T> OS &out_join(OS &o, str const &, T const &a);
+template <class T, class... Ts>
+OS &out_join(OS &o, str const &sep, T const &a, Ts const &...as);
 
 OS &operator<<(OS &o, __int128 const &x) {
   return (x < 0) ? (o << (long long int)x) : (o << (unsigned long long int)x);
@@ -220,16 +248,17 @@ template <class T> OS &operator<<(OS &o, Joiner<T> const &joiner) {
   return o << joiner.post;
 }
 template <class Itr>
-auto join(Itr const &b, Itr const &e, str const &sep = ""s,
-          str const &pre = ""s, str const &post = ""s) {
-  using T = typename std::iterator_traits<Itr>::value_type;
-  return Joiner<T>(b, e, sep, pre, post);
+Joiner<typename std::iterator_traits<Itr>::value_type>
+join(Itr const &b, Itr const &e, str const &sep, str const &pre,
+     str const &post) {
+  return Joiner<typename std::iterator_traits<Itr>::value_type>(b, e, sep, pre,
+                                                                post);
 }
 template <class C, std::enable_if_t<!std::is_same_v<C, str> &&
                                         (decltype(std::begin(std::declval<C>()),
                                                   std::end(std::declval<C>()),
                                                   std::true_type{})::value),
-                                    std::nullptr_t> = nullptr>
+                                    std::nullptr_t>>
 OS &operator<<(OS &o, C const &a) {
   return o << join(std::begin(a), std::end(a), ",", "[", "]");
 }
@@ -426,8 +455,7 @@ template <class F> auto seq(ll n, F const &f) {
 
 void exitRE(ll code = 1) { exit(code); }
 void exitTLE(ll n = 1e18) {
-  for (auto &&i : range(n)) {
-    ll x = 0;
+  for (auto x : range(n)) {
     input(x);
     if (x == 1089) {
       return;
