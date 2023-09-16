@@ -39,7 +39,7 @@ struct bitset {
   int cnt(bool val) const { return val ? buf.count() : (Size - buf.count()); }
   int cnt_leading(bool val) const {
     int out = 0;
-    for (size_t i = Size - 1; i >= 0; --i) {
+    for (int i = Size - 1; i >= 0; --i) {
       if (get(i) == val)
         ++out;
       else
