@@ -4,26 +4,8 @@
     "service": "atcoder",
     "workspaceFolder": "/work/",
     "shutdownAction": "stopCompose",
-    "extensions": [
-        "ms-vscode.cpptools",
-        "xaver.clang-format",
-        "ms-python.python",
-        "donjayamanne.githistory"
-    ],
     "settings": {
-        "editor.formatOnSave": true,
-        "C_Cpp.clang_format_style": "Visual Studio",
-        "python.pythonPath": "/bin/python3",
-        "C_Cpp.default.cppStandard": "gnu++23",
-        "C_Cpp.default.cStandard": "c11",
-        "C_Cpp.default.intelliSenseMode": "gcc-x64",
         "C_Cpp.workspaceSymbols": "All",
         "C_Cpp.updateChannel": "Insiders",
-        "C_Cpp.default.includePath": [
-            "/usr/include/c++/9"
-        ],
-        "[cpp]": {
-            "editor.defaultFormatter": "xaver.clang-format"
-        }
     }
 }

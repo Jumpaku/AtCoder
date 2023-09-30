@@ -7,20 +7,22 @@
 
 #endif /* TEMPLATE_HPP */
 
-void presolve();
 void solve();
 
 int main(int, char *[]) {
   init_io();
-  presolve();
   ll t = 1;
   /** input(t); /**/
-  while (t--)
-    solve();
+  while (t--) {
+    try {
+      solve();
+    } catch (const std::exception &e) {
+      std::cerr << "exception " << e.what() << std::endl;
+      exit(1);
+    }
+  }
   std::cout.flush();
 }
-
-void presolve() {}
 
 void solve() {
   //

@@ -37,5 +37,4 @@
 .idea/
 .credential.json
 tasks/*
-.vscode/settings.json
 ignore_dir/

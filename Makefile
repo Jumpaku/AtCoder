@@ -1,6 +1,6 @@
 .DEFAULT_GOAL:=help
 
-CPP_COMMON_OPTIONS=-std=gnu++17 -O2 -Wall -Wextra -Wno-comment -ftrapv
+CPP_COMMON_OPTIONS=-std=gnu++23 -O2 -Wall -Wextra -Wno-comment -ftrapv -I/usr/include/boost -L/usr/include/boost
 
 .PHONY: help
 help: ## Show this help.

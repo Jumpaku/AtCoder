@@ -97,6 +97,10 @@ using std::unique;
 using std::upper_bound;
 
 namespace utils {
+str to_string(__int128 const &x) {
+  return (x < 0) ? std::to_string((long long int)x)
+                 : std::to_string((unsigned long long int)x);
+}
 template <class T> T clamp(T const &v, T const &l, T const &h) {
   return min(h, max(l, v));
 }
@@ -148,13 +152,32 @@ using utils::lcm_Olog;
 using utils::odd;
 using utils::pow;
 using utils::sign;
+using utils::to_string;
+
+// Input
+template <class T> T read(std::istream &is);
+template <class... Ts> tuple<Ts...> read_t(std::istream &is);
+template <class E> vec<E> read_v(std::istream &is, int n0);
+template <class E> vec<vec<E>> read_v(std::istream &is, int n0, int n1);
+template <class E>
+vec<vec<vec<E>>> read_v(std::istream &is, int n0, int n1, int n2);
+
+// Scanners
+std::istream &operator>>(std::istream &is, __int128 &v);
+template <class E> std::istream &operator>>(std::istream &is, vec<E> &v);
+template <class T1, class T2>
+std::istream &operator>>(std::istream &i, pair<T1, T2> &v);
+template <class... Ts>
+std::istream &operator>>(std::istream &i, tuple<Ts...> &v);
+
+void init_io();
 
 namespace io {
 // Input
 using IS = std::istream;
 IS &in(IS &);
 template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as);
-IS &operator>>(IS &i, __int128_t &x);
+IS &operator>>(IS &i, __int128 &x);
 template <class V> IS &operator>>(IS &i, vec<V> &a);
 template <class F, class S> IS &operator>>(IS &i, pair<F, S> &p);
 template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t);
@@ -164,7 +187,7 @@ template <class T, class... Ts> IS &in(IS &i, T &a, Ts &...as) {
   return in(i >> a, as...);
 }
 
-IS &operator>>(IS &i, __int128_t &x) {
+IS &operator>>(IS &i, __int128 &x) {
   long long int xx;
   i >> xx;
   x = xx;
@@ -185,7 +208,7 @@ template <class... Ts> IS &operator>>(IS &i, tuple<Ts...> &t) {
 // Output
 using OS = std::ostream;
 OS &out_join(OS &o, str const &);
-OS &operator<<(OS &o, __int128_t const &x);
+OS &operator<<(OS &o, __int128 const &x);
 template <class F, class S> OS &operator<<(OS &o, pair<F, S> const &p);
 template <class... Ts, size_t... I>
 OS &tuple_out(OS &o, tuple<Ts...> const &t, std::index_sequence<I...>);
@@ -207,7 +230,12 @@ template <class T> OS &out_join(OS &o, str const &, T const &a);
 template <class T, class... Ts>
 OS &out_join(OS &o, str const &sep, T const &a, Ts const &...as);
 
-OS &operator<<(OS &os, const __int128_t &t) {
+OS &operator<<(OS &os, const __int128 &v) {
+  auto t = v;
+  if (t < 0) {
+    os << "-";
+    t = -t;
+  }
   if (t >= 1000000000000000000) {
     os << (long long)(t / 1000000000000000000)
        << (long long)(t % 1000000000000000000);
