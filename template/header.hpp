@@ -410,6 +410,17 @@ template <class... Ts> void dump(Ts const &...vs) {
 }
 
 // Utils
+template <class T> str to_string(T n) {
+  std::stringstream ss;
+  ss << n;
+  return ss.str();
+}
+template <class T> T from_string(str s) {
+  T v;
+  std::stringstream ss(s);
+  ss >> v;
+  return v;
+}
 ll sign(ll x) { return (x < 0) ? -1 : (x > 0) ? 1 : 0; }
 ll pow(ll x, ll n) {
   if (n == 0)
