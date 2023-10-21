@@ -631,14 +631,12 @@ struct rec_dump_t {
   str indent = "|";
   template <class... Ts> void operator()(Ts const &...a) {
 #ifdef JUMPAKU_DEBUG
-    std::cerr << indent;
-    io::out_join(std::cerr, " "s, a...) << "\n";
+    print_impl(std::cerr, indent, a...);
 #endif
   }
   template <class... Ts> void dump(Ts const &...a) {
 #ifdef JUMPAKU_DEBUG
-    std::cerr << indent;
-    io::out_join(std::cerr, " "s, a...) << "\n";
+    print_impl(std::cerr, indent, a...);
 #endif
   }
 };
