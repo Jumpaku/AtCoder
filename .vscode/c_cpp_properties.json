@@ -7,7 +7,7 @@
                 "/usr/include/boost"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/usr/bin/g++",
             "cppStandard": "gnu++23",
             "intelliSenseMode": "gcc-x64"
         }

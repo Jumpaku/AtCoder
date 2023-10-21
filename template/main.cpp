@@ -10,14 +10,20 @@
 void solve();
 
 int main(int, char *[]) {
-  init_io();
-  ll t = 1;
+  {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    std::cout.tie(nullptr);
+    std::cout << std::fixed << std::setprecision(15);
+  }
+
+  int t = 1;
   /** input(t); /**/
   while (t--) {
     try {
       solve();
     } catch (const std::exception &e) {
-      std::cerr << "exception " << e.what() << std::endl;
+      std::cerr << "\nexception:\n" << e.what() << std::endl;
       exit(1);
     }
   }

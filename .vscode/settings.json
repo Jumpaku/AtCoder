@@ -82,14 +82,16 @@
         "stacktrace": "cpp",
         "semaphore": "cpp",
         "stop_token": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "ranges": "cpp",
+        "span": "cpp"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.python", // "ms-python.autopep8",
     },
     "C_Cpp.clang_format_style": "Visual Studio",
     "C_Cpp.default.includePath": [
-        "/usr/include/c++/9",
+        "/usr/include/c++/12",
         "/usr/include/boost"
     ],
     "[cpp]": {
