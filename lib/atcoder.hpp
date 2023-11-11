@@ -459,9 +459,6 @@ public:
   friend bool operator!=(const mint &lhs, const mint &rhs) {
     return lhs._v != rhs._v;
   }
-  friend io::OS &operator<<(io::OS &o, mint const &p) {
-    return o << "mod(" << p.val() << ")";
-  }
 
 private:
   unsigned int _v;
@@ -578,9 +575,6 @@ public:
   }
   friend bool operator!=(const mint &lhs, const mint &rhs) {
     return lhs._v != rhs._v;
-  }
-  friend io::OS &operator<<(io::OS &o, mint const &p) {
-    return o << p.val() << "(mod " << mint::mod() << ")";
   }
 
 private:
@@ -1835,22 +1829,6 @@ private:
   std::vector<S> d;
 
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
-
-public:
-  struct iterator : ranges::iterator_base<S, iterator> {
-    segtree<S, op, e> const &s;
-    iterator(segtree<S, op, e> const &s, ll const &i)
-        : ranges::iterator_base<S, iterator>(i), s(s) {}
-    iterator(iterator const &) = default;
-    iterator with(ll i) const override { return iterator(s, i); }
-    iterator &self() override { return *this; }
-    S operator*() const { return s.get(this->i); }
-  };
-  template <class Itr>
-  segtree(Itr begin, Itr end) : segtree(std::vector<S>(begin, end)) {}
-  size_t size() const { return _n; }
-  iterator begin() const { return iterator(*this, 0); }
-  iterator end() const { return iterator(*this, size()); }
 };
 
 } // namespace atcoder

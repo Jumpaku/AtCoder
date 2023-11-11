@@ -160,7 +160,9 @@ std::vector<std::vector<std::vector<E>>> read_vec(int n0, int n1, int n2,
                                                   std::istream &is = std::cin);
 
 // Print Declarations
-template <class... Ts> void print_impl(std::ostream &os, Ts... vs);
+void print_impl(std::ostream &os);
+template <class T, class... Ts>
+void print_impl(std::ostream &os, T v, Ts... vs);
 template <class... Ts> void print(Ts... vs);
 template <class... Ts> void dump(Ts const &...vs);
 
@@ -392,10 +394,13 @@ std::vector<std::vector<std::vector<E>>> read_vec(int n0, int n1, int n2,
 }
 
 // Print
-template <class... Ts> void print_impl(std::ostream &os, Ts... vs) {
+void print_impl(std::ostream &os) {}
+template <class T, class... Ts>
+void print_impl(std::ostream &os, T v, Ts... vs) {
+  os << v;
   using swallow = std::initializer_list<int>;
-  (void)swallow{(void(os << vs << " "), 0)...};
-  std::cerr << std::endl;
+  (void)swallow{(void(os << " " << vs), 0)...};
+  os << "\n";
 }
 template <class... Ts> void print(Ts... vs) {
 #ifdef JUMPAKU_DEBUG
