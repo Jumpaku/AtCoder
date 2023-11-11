@@ -394,7 +394,7 @@ std::vector<std::vector<std::vector<E>>> read_vec(int n0, int n1, int n2,
 }
 
 // Print
-void print_impl(std::ostream &os) {}
+void print_impl(std::ostream &) {}
 template <class T, class... Ts>
 void print_impl(std::ostream &os, T v, Ts... vs) {
   os << v;
@@ -408,11 +408,14 @@ template <class... Ts> void print(Ts... vs) {
 #endif
   print_impl(std::cout, vs...);
 }
-template <class... Ts> void dump(Ts const &...vs) {
 #ifdef JUMPAKU_DEBUG
+template <class... Ts> void dump(Ts const &...vs) {
   print_impl(std::cerr, "\ndump:\n\t", vs...);
-#endif
 }
+#else
+template <class... Ts> void dump(Ts const &...) {}
+#endif
+
 
 // Utils
 template <class T> str to_string(T n) {
