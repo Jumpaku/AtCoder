@@ -24,7 +24,7 @@ template <class T> struct Accumulate {
   }
   T accumulate(int endExclusive) const {
     throw_if(endExclusive < 0, "invalid Accumurate::accumulate range");
-    throw_if(endExclusive > acc.size(), "invalid Accumurate::sum range");
+    throw_if(endExclusive > acc.size(), "invalid Accumurate::accumulate range");
     return endExclusive == 0 ? T{} : acc[endExclusive - 1];
   }
   size_t size() const { return acc.size(); }
