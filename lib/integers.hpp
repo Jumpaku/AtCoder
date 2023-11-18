@@ -67,7 +67,8 @@ vec<int> createPrimes(int const &M) {
     }
   }
   vec<int> primes;
-  copy_if(begin(2), end(M + 1), back_inserter(primes),
+  auto r = range(2, M + 1);
+  copy_if(r.begin(), r.end(), back_inserter(primes),
           [&](auto const &i) { return isPrime[i]; });
   return primes;
 }

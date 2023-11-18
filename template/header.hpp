@@ -1,6 +1,7 @@
 
 // std
 #include <algorithm>
+#include <bitset>
 #include <deque>
 #include <iomanip>
 #include <iostream>
@@ -66,7 +67,6 @@ using std::swap;
 
 // Algorithms
 using std::accumulate;
-using std::partial_sum;
 using std::ranges::all_of;
 using std::ranges::any_of;
 using std::ranges::copy_if;
@@ -85,10 +85,10 @@ using std::ranges::upper_bound;
 // Exception
 #define throw_if(ng_expr, msg)                                                 \
   throw_if_impl(ng_expr, __FILE__, __LINE__, msg, #ng_expr)
+#ifdef JUMPAKU_DEBUG
 template <class Expr, class File, class Line>
 void throw_if_impl(Expr const &ng_expr, File const &file, Line const &line,
                    std::string const &msg, std::string const &ng_expr_str) {
-#ifdef JUMPAKU_DEBUG
   if (ng_expr) {
     std::stringstream ss;
     ss << "\nthrow_if:\n\t" << file << ":" << line << ":\n\t" << msg << ": "
@@ -97,8 +97,10 @@ void throw_if_impl(Expr const &ng_expr, File const &file, Line const &line,
 
     throw std::runtime_error(ss.str());
   }
-#endif
 }
+#else
+template <class... Ts> void throw_if_impl(Ts...) {}
+#endif
 
 // Scanner Decralations
 template <class E>
@@ -415,7 +417,6 @@ template <class... Ts> void dump(Ts const &...vs) {
 #else
 template <class... Ts> void dump(Ts const &...) {}
 #endif
-
 
 // Utils
 template <class T> str to_string(T n) {

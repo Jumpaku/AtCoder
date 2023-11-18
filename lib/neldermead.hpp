@@ -9,7 +9,7 @@
 #endif
 
 namespace neldermead {
-template <class X, class F = lf (*)(X)>
+template <class X, class F = f64 (*)(X)>
 X minimize(vec<X> const &init, ll repeat, F const &f) {
   auto x = init;
   for (auto &&i : range(repeat)) {

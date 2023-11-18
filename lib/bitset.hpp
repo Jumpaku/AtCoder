@@ -87,7 +87,15 @@ struct bitset {
   Self operator&(Self const &other) const { return {buf & other.buf}; }
   Self operator^(Self const &other) const { return {buf ^ other.buf}; }
 };
-io::OS &operator<<(io::OS &o, bitset const &b) { return o << b.str(); }
+namespace std {
+struct hash<::bitset> {
+  size_t operator()(::bitset const &b) const { return b.u64(); }
+};
+} // namespace std
+
+std::ostream &operator<<(std::ostream &o, bitset const &b) {
+  return o << b.str();
+}
 
 #endif
 
