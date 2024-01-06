@@ -38,3 +38,4 @@
 .credential.json
 tasks/*
 ignore_dir/
+cmake-build-debug
