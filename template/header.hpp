@@ -463,18 +463,21 @@ ll ceil_div(ll a, ll b) {
 }
 
 // Hashes
+template <class T> struct tuple_hash_component {
+  const T &value;
+  tuple_hash_component(const T &value) : value(value) {}
+  uintmax_t operator,(uintmax_t n) const {
+    n ^= std::hash<T>()(value);
+    n ^= n << (sizeof(uintmax_t) * 4 - 1);
+    return n ^ std::hash<uintmax_t>()(n);
+  }
+};
 namespace std {
 template <class... Ts> struct hash<tuple<Ts...>> {
   size_t operator()(tuple<Ts...> const &t) const {
-    return std::apply(
-        [&](auto const &...vs) {
-          size_t h = 17;
-          using swallow = std::initializer_list<int>;
-          (void)swallow{
-              (void(h = ((h << 8) - h) ^ std::hash<decltype(vs)>{}(vs)), 0)...};
-          return h ^ (h >> 32);
-        },
-        t);
+    return std::hash<uintmax_t>{}(std::apply(
+        [](const auto &...xs) { return (tuple_hash_component(xs), ..., 0); },
+        t));
   }
 };
 template <class T> struct hash<u_set<T>> {

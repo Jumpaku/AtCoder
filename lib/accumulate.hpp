@@ -49,8 +49,6 @@ template <class T> struct Accumulate2D {
                                   acc[i - 1][j - 1] + arr[i][j]);
       }
     }
-
-    std::partial_sum(begin, end, back_inserter(acc));
   }
   Accumulate2D(Accumulate2D const &) = default;
   Accumulate2D(Accumulate2D &&) = default;
