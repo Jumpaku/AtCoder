@@ -88,7 +88,7 @@ struct bitset {
   Self operator^(Self const &other) const { return {buf ^ other.buf}; }
 };
 namespace std {
-struct hash<::bitset> {
+template <> struct hash<::bitset> {
   size_t operator()(::bitset const &b) const { return b.u64(); }
 };
 } // namespace std
