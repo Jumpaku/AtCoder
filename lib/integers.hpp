@@ -88,8 +88,8 @@ vec<longlong> createFactors(longlong const &N) {
   return factors;
 }
 
-u_map<longlong, longlong> primeFactorize(longlong N) {
-  u_map<longlong, longlong> res;
+std::map<longlong, longlong> primeFactorize(longlong N) {
+  std::map<longlong, longlong> res;
   for (long long a = 2; a * a <= N; ++a) {
     if (N % a != 0)
       continue;
