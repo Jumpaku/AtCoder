@@ -67,20 +67,20 @@ using std::swap;
 
 // Algorithms
 using std::accumulate;
-using std::ranges::all_of;
-using std::ranges::any_of;
-using std::ranges::copy_if;
-using std::ranges::count_if;
-using std::ranges::find_if;
-using std::ranges::lower_bound;
-using std::ranges::max_element;
-using std::ranges::min_element;
-using std::ranges::none_of;
-using std::ranges::remove_if;
-using std::ranges::reverse;
-using std::ranges::sort;
-using std::ranges::transform;
-using std::ranges::upper_bound;
+using std::all_of;
+using std::any_of;
+using std::copy_if;
+using std::count_if;
+using std::find_if;
+using std::lower_bound;
+using std::max_element;
+using std::min_element;
+using std::none_of;
+using std::remove_if;
+using std::reverse;
+using std::sort;
+using std::transform;
+using std::upper_bound;
 
 // Exception
 #define throw_if(ng_expr, msg)                                                 \

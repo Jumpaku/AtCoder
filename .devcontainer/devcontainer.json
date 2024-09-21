@@ -7,5 +7,6 @@
     "settings": {
         "C_Cpp.workspaceSymbols": "All",
         "C_Cpp.updateChannel": "Insiders",
+        "cmake.cmakePath": "/usr/bin/cmake"
     }
 }
