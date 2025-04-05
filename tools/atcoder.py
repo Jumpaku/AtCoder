@@ -16,23 +16,19 @@ def get_user_password(cred_path) -> typing.Dict[str, str]:
         v = json.load(f)
         return {"username": v["username"], "password": v["password"]}
 
+def get_cookie_text(cred_path) -> str:
+    with open(cred_path, "r") as f:
+        v = json.load(f)
+        return v["cookie"]
 
-def request_tasks(contest_id: str, username: str, password: str):
-    tasks_url = "https://atcoder.jp/contests/" + contest_id + "/tasks_print?lang=en"
-    login_url = "https://atcoder.jp/login?continue=" + urlparse.quote(tasks_url, "")
+
+def request_tasks(contest_id: str, cookie_text: str):
     session = requests.Session()
-    login_res = session.get(login_url)
-    login_html = BeautifulSoup(login_res.text, "html.parser")
-    csrf_token = login_html.find_all(attrs={"name": "csrf_token"})[0]["value"]
-    login_info = {
-        "username": username,
-        "password": password,
-        "csrf_token": csrf_token
-    }
-    res = session.post(login_url, data=login_info)
+    session.headers.update({"Cookie": cookie_text})
+    tasks_url = "https://atcoder.jp/contests/" + contest_id + "/tasks_print?lang=en"
+    res = session.get(tasks_url)
     if not res.ok:
         print("Fail login", file=sys.stderr)
-        print(login_info, file=sys.stderr)
         print(res, file=sys.stderr)
         exit()
     return res
@@ -76,13 +72,12 @@ def main(argv: typing.List[str]) -> int:
     parser.add_argument("--credential-json", default=".credential.json")
 
     args = parser.parse_args(argv)
-    cred = get_user_password(args.credential_json)
+    cookie_text = get_cookie_text(args.credential_json)
     contest_id = args.contest
 
     response = request_tasks(
         contest_id=contest_id,
-        username=cred["username"],
-        password=cred["password"]
+        cookie_text=cookie_text,
     )
 
     html_text = re.sub(r"\r\n|\r|\n", "\n", response.text)

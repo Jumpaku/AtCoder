@@ -21,31 +21,24 @@ def get_user_password(cred_path) -> typing.Dict[str, str]:
         return {"username": v["username"], "password": v["password"]}
 
 
+def get_cookie_text(cred_path) -> str:
+    with open(cred_path, "r") as f:
+        v = json.load(f)
+        return v["cookie"]
+
+
 def language_id(lang: str) -> str:
     return {
         "cpp": "5028",
         "py": "5055",
     }[lang]
 
-
-def request_submit(contest_id: str, username: str, password: str, task_id: str, lang: str, source: str):
+def request_submit(contest_id: str, cookie_text: str, task_id: str, lang: str, source: str):
     submit_url = "https://atcoder.jp/contests/" + contest_id + "/submit"
-    login_url = "https://atcoder.jp/login?continue=" + urlparse.quote(submit_url, "")
     session = requests.Session()
-    login_res = session.get(login_url)
-    login_html = BeautifulSoup(login_res.text, "html.parser")
-    csrf_token = login_html.find_all(attrs={"name": "csrf_token"})[0]["value"]
-    login_info = {
-        "username": username,
-        "password": password,
-        "csrf_token": csrf_token
-    }
-
-    res = session.post(login_url, data=login_info)
-    if not res.ok:
-        print("Fail login", file=sys.stderr)
-        print(res, file=sys.stderr)
-        exit(1)
+    session.headers.update({"Cookie": cookie_text})
+    csrf_token = [urlparse.unquote(s) for s in cookie_text.split("%00") if s.startswith("csrf_token")][0]
+    csrf_token = csrf_token.split(":")[1]
 
     submit_info = {
         "csrf_token": csrf_token,
@@ -70,7 +63,7 @@ def main(argv: typing.List[str]) -> int:
     parser.add_argument("--credential-json", default=".credential.json")
 
     args = parser.parse_args(argv)
-    cred = get_user_password(args.credential_json)
+    cookie_text = get_cookie_text(args.credential_json)
 
     source = "(Blank)"
     with open(args.source, "r") as f:
@@ -82,8 +75,7 @@ def main(argv: typing.List[str]) -> int:
 
     request_submit(
         contest_id=args.contest,
-        username=cred["username"],
-        password=cred["password"],
+        cookie_text=cookie_text,
         task_id=args.task,
         lang=args.lang,
         source=source
