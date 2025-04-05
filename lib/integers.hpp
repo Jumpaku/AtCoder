@@ -111,6 +111,30 @@ std::map<longlong, longlong> primeFactorize(longlong N) {
   return res;
 }
 
+// 全てのi \in [1, N]に対して，iの全ての素因数を求める．
+// （N <= 5e6）
+std::map<longlong, std::map<longlong, longlong>> listPrimeFactors(longlong N) {
+  vec<longlong> maxPrimeFactor(N + 1);
+  for (ll p = 2; p <= N; p++) {
+    if (maxPrimeFactor[p] == 0) {
+      for (ll j = p; j <= N; j += p) {
+        maxPrimeFactor[j] = p;
+      }
+    }
+  }
+  std::map<longlong, std::map<longlong, longlong>> result;
+  for (auto &&n : range(N + 1)) {
+    ll m = n;
+    std::map<longlong, longlong> pf;
+    while (m > 1) {
+      pf[maxPrimeFactor[m]]++;
+      m /= maxPrimeFactor[m];
+    }
+    result[n] = pf;
+  }
+  return result;
+}
+
 uint16_t bases[] = {
     15591, 2018,  166,   7429,  8064,  16045, 10503, 4399,  1949,  1295, 2776,
     3620,  560,   3128,  5212,  2657,  2300,  2021,  4652,  1471,  9336, 4018,
