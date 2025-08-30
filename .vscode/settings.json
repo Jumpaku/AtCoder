@@ -84,7 +84,9 @@
         "stop_token": "cpp",
         "*.ipp": "cpp",
         "ranges": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "source_location": "cpp",
+        "format": "cpp"
     },
     "[python]": {
         "editor.defaultFormatter": "ms-python.python", // "ms-python.autopep8",
@@ -95,7 +97,7 @@
         "/usr/include/boost"
     ],
     "[cpp]": {
-        "editor.defaultFormatter": "xaver.clang-format",
+        "editor.defaultFormatter": "ms-vscode.cpptools",
     },
     "editor.formatOnSave": true,
 }
