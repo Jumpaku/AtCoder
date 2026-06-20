@@ -6,31 +6,47 @@
 #include "../template/header.hpp"
 #endif
 
-namespace graphs {
-/**
- * dist is a function that takes two nodes u and v,
- *  and returns a distance between from u to v.
- */
-template <class F>
-vecl dijkstra(ll const start, vec<vecl> const &G, F const &dist) {
-  ll constexpr inf = 1e18;
-  vecl out(G.size(), inf);
+namespace graphs
+{
+  /**
+   * dist is a function that takes two nodes u and v,
+   *  and returns a distance between from u to v.
+   */
+  template <class F>
+  vecl dijkstra(ll const start, vec<std::set<ll>> const &G, F const &dist)
+  {
+    ll n = G.size();
+    ll const INF = 1e16;
+    vecl d(n, INF);
+    using P = std::pair<ll, ll>;
+    std::priority_queue<P, std::vector<P>, std::greater<P>> pq;
 
-  auto q = priority_queue<tuple<ll, ll>, std::greater<tuple<ll, ll>>>();
-  q.emplace(out[start] = 0, start);
-  while (!q.empty()) {
-    auto [d, u] = q.top();
-    q.pop();
-    if (out[u] < d)
-      continue;
-    for (auto const &v : G.at(u)) {
-      auto alt = out[u] + dist(u, v);
-      if (out[v] > alt)
-        q.emplace(out[v] = alt, v);
+    d[start] = 0;
+    pq.push({0, start});
+
+    while (!pq.empty())
+    {
+      auto [current_dist, u] = pq.top();
+      pq.pop();
+
+      if (current_dist > d[u])
+      {
+        continue;
+      }
+
+      for (ll v : G.at(u))
+      {
+        ll cost = dist(u, v);
+
+        if (d[u] + cost < d[v])
+        {
+          d[v] = d[u] + cost;
+          pq.push({d[v], v});
+        }
+      }
     }
+    return d;
   }
-  return out;
-}
 } // namespace graphs
 
 using graphs::dijkstra;
